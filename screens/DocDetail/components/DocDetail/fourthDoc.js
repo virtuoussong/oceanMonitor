@@ -1,6 +1,6 @@
 import React from 'react';
 import {StyleSheet, View, FlatList, Text, Dimensions, TouchableOpacity, ScrollView} from 'react-native';
-import TitleInputView from '../DocDetail/components/TitleInput';
+import TitleInputView from '../TitleInput';
 
 let dataSet = [
     {id: 1, name: "구역 1"},
@@ -22,23 +22,23 @@ let dataSet = [
 ]
 
 export default FourthdDoc = (props) => {
-    return <View style={styles.container}>
+    return <View style={[styles.container, styles.borderRight]}>
                 <TitleInputView/>
                 <View style={[styles.secondSection, styles.borderBottom, styles.firstSectionColor]}>
                     <Text style={styles.secondTitle}>방제작업 설계</Text>
                 </View>
-                <View style={styles.thirdSection}>
+                <View style={[styles.thirdSection]}>
                     <View style={[styles.largeCell, styles.borderRight]}>
                         <View style={[styles.celltitle, styles.borderBottom, styles.firstSectionColor]}>
                             <Text style={styles.cellTitleText}>주요 시방서</Text>
                         </View>
-                        <View></View>
+                        <View style={{flex: 1}}></View>
                     </View>
                     <View style={styles.smallCell}>
                         <View style={[styles.celltitle, styles.borderBottom, styles.firstSectionColor]}>
                             <Text style={styles.cellTitleText}>고려 변수</Text>
                         </View>
-                        <View></View>
+                        <View style={{flex: 1}}></View>
                     </View>
                 </View>
     </View>
@@ -49,14 +49,14 @@ const styles = StyleSheet.create({
         fontSize: 16
     },
     celltitle: {
-        width: '100%',
+        // flex: 1,
         height: 40,
         alignItems: 'center',
         justifyContent: 'center'
     },
     borderRight: {
         borderRightColor: 'black',
-        borderRightWidth: 1
+        borderRightWidth: 1,
     },
     largeCell: {
         flex: 3,
@@ -84,7 +84,8 @@ const styles = StyleSheet.create({
     },
     borderBottom: {
         borderBottomWidth: 1,
-        borderBottomColor: 'black'
+        borderBottomColor: 'black',
+        borderStyle: 'solid'
     },
     container: {
         flex:1,

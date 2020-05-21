@@ -1,7 +1,7 @@
 import React from 'react';
 import {StyleSheet, View, FlatList, Text, Dimensions, TouchableOpacity, ScrollView} from 'react-native';
-import TitleInputView from '../DocDetail/components/TitleInput';
-import PageTitle from '../DocDetail/components//PageTitle';
+import TitleInputView from '../TitleInput';
+import PageTitle from '../PageTitle';
 let dataSet = [
     {id: 1, name: "구역 1"},
     {id: 2, name: "구역 2"},

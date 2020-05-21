@@ -2,6 +2,9 @@ import React from 'react';
 import {StyleSheet, View, FlatList, Text, Dimensions, TouchableOpacity} from 'react-native';
 import DrawerButton from '../../components/DrawerNavButton';
 import FolderCell from '../../components/FolderCell';
+import HeaderCell from '../DocDetail/components/AreaHeaderCell'
+
+
 let dataSet = [
     {id: 1, name: "구역 1"},
     {id: 2, name: "구역 2"},
@@ -30,8 +33,13 @@ export default SecondAreaListView = (props) => {
         props.onPress()
     }
 
+    const headerPressed =()=> {
+        props.viewAreaDetail()
+    }
+
     return <View style={styles.container}>
         <FlatList 
+            ListHeaderComponent={<HeaderCell onPress={headerPressed}/>}
             showsVerticalScrollIndicator={false}
             data={dataSet}
             renderItem={({item}) => 

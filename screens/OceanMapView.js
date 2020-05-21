@@ -4,6 +4,7 @@ import MapView, {PROVIDER_GOOGLE, Polygon, Marker, Polyline, fitToCoordinates } 
 import LocationNameModal from '../screens/LocationNameModel';
 import RightSideView from '../screens/RightSideView';
 import DrawerNavButton from '../components/DrawerNavButton';
+import { getDistance } from 'geolib'
 const polygonArray = [
   {
     id: 0,
@@ -25,21 +26,39 @@ const OceanMapView = (props) => {
   const [isRightDrawerOpen, setRightDrawer] = useState(false)
   const [arrowRotate, setArrowRotate] = useState(new Animated.Value(0))
   const [modalVisible, setModalVisible] = useState(false);
+  const [isMeasuringLength, startMeasureDistance] = useState(false);
+  const [distanceLines, setDistanceDots] = useState([]);
 
   useEffect(() => {
     setPolygonAdd(polygonArray)
     setAddPolygon(false)
   }, [
-    setPolygonAdd, setNewPolygon, setAddPolygon, setAddButton, setViewLevel, setRgithSideDrawer, setArrowRotate, setModalVisible
+    setPolygonAdd, setNewPolygon, setAddPolygon, setAddButton, setViewLevel, setRgithSideDrawer, setArrowRotate, setModalVisible, startMeasureDistance, setDistanceDots
   ])
 
   const onMapTap = e => {
+    let newDots = e.nativeEvent.coordinate
     if (isAddingPolygon) {
-      let newDots = e.nativeEvent.coordinate
-      console.log(newDots)
       setNewPolygon(newPolygon => [...newPolygon, newDots])
     }
+
+    if (isMeasuringLength) {
+      console.log("new dots",newDots)
+      setDistanceDots(newPolygon => [...newPolygon, newDots])
+      let distance = getDistance(distanceLines)
+      console.log("distance", distance)
+      // console.log("distance", getDistance([{
+      //   "latitude": 34.68865088845089,
+      //   "longitude": 127.5228703022003,
+      // }, {
+      //   "latitude": 34.65892416171042,
+      //   "longitude": 127.71298997104167,
+      // }]))
+      
+    }
   };
+
+
 
   const addPolygon = () => {
     if (!isAddingPolygon) {
@@ -52,7 +71,6 @@ const OceanMapView = (props) => {
         console.log("add more dots")
       }
     }
-    
   };
 
 
@@ -146,6 +164,29 @@ const OceanMapView = (props) => {
   let addButtonRef = React.createRef()
   let mapRef = React.createRef()
 
+  const startDistanceMeasurement=()=>{
+    if (isMeasuringLength) {
+      startMeasureDistance(false)
+      setDistanceDots([])
+    } else {
+      startMeasureDistance(true)
+    }
+    
+    console.log("start new distancemeasure", isMeasuringLength)
+  }
+
+  const startAreaMeasurement=()=>{
+
+  }
+
+  const startRadiusMeasurement=()=>{
+
+  }
+
+  const captureScreen=()=>{
+
+  }
+
   return (
     <View style={styles.container}>
       <MapView
@@ -158,7 +199,7 @@ const OceanMapView = (props) => {
           longitudeDelta: 0.5421
         }}
         provider={"google"}
-        mapType={"hybrid"}
+        mapType={"standard"}
         onPress={onMapTap}
       >
         {
@@ -218,12 +259,37 @@ const OceanMapView = (props) => {
               />
           )
         }
+
+        {
+          isMeasuringLength && distanceLines.length > 1 && (
+              <Polyline
+                coordinates={distanceLines}
+                strokeWidth={3}
+                strokeColor={"yellow"}
+              />
+          )
+        }
       </MapView>
       
       {/* <TouchableOpacity style={styles.leftButton} onPress={toggleDrawer}>
         <Image source={require('../assets/drawerNavIcon.png')} resizeMode={'contain'}/>
       </TouchableOpacity> */}
       <DrawerNavButton style={styles.leftButton} toggleDrawer={toggleDrawer}/>
+
+      <View style={[{position: 'absolute', width: 100, top: 'auto', bottom: 'auto',left: 50}]}>
+        <TouchableOpacity onPress={startDistanceMeasurement} style={[{backgroundColor: `${isMeasuringLength ? "lightblue" : "white"}`, width: 50, height: 50, marginBottom: 2}, styles.centerItem]}>
+          <Text style={{fontSize: 15, fontWeight: 'bold'}}>{"거리\n재기"}</Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={startAreaMeasurement} style={[{backgroundColor: 'white', width: 50, height: 50, marginBottom: 2}, styles.centerItem]}>
+          <Text style={{fontSize: 15, fontWeight: 'bold'}}>{"면적\n재기"}</Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={startRadiusMeasurement} style={[{backgroundColor: 'white', width: 50, height: 50, marginBottom: 2}, styles.centerItem]}>
+          <Text style={{fontSize: 15, fontWeight: 'bold'}}>{"반경\n재기"}</Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={captureScreen} style={[{backgroundColor: 'white', width: 50, height: 50, marginBottom: 2}, styles.centerItem]}>
+          <Text style={{fontSize: 15, fontWeight: 'bold'}}>{"화면\n캡쳐"}</Text>
+        </TouchableOpacity>
+      </View>
 
       <View style={styles.addButton}>
         <TouchableOpacity style={styles.polygonAddButtons} onPress={addPolygon}>
@@ -268,6 +334,10 @@ const OceanMapView = (props) => {
 export default OceanMapView;
 
 const styles = StyleSheet.create({
+  centerItem: {
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
   container: {
     flex: 1,
     alignItems: "center",

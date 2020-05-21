@@ -2,42 +2,21 @@ import React from 'react';
 import {StyleSheet, View, FlatList, Text, Dimensions, TouchableOpacity, ScrollView, KeyboardAvoidingView} from 'react-native';
 import DrawerButton from '../../components/DrawerNavButton';
 
-import FirstDoc from '../DocDetail/firstDoc';
-import SecondtDoc from '../DocDetail/secondDoc';
-import ThirdDoc from '../DocDetail/thirdDoc';
-import FourthDoc from '../DocDetail//fourthDoc';
-import FifthDoc from '../DocDetail/fifthDoc';
-import SixthDoc from '../DocDetail/sixthDoc';
+import FirstDoc from '../DocDetail/components/DocDetail/firstDoc';
+import SecondtDoc from '../DocDetail/components/DocDetail/secondDoc';
+import ThirdDoc from '../DocDetail/components/DocDetail/thirdDoc';
+import FourthDoc from '../DocDetail/components/DocDetail/fourthDoc';
 
-let dataSet = [
-    {id: 1, name: "구역 1"},
-    {id: 2, name: "구역 2"},
-    {id: 3, name: "구역 3"},
-    {id: 4, name: "구역 4"},
-    {id: 5, name: "구역 5"},
-    {id: 6, name: "구역 6"},
-    {id: 7, name: "구역 7"},
-    {id: 8, name: "구역 8"},
-    {id: 9, name: "구역 1"},
-    {id: 10, name: "구역 2"},
-    {id: 11, name: "구역 3"},
-    {id: 12, name: "구역 4"},
-    {id: 13, name: "구역 5"},
-    {id: 14, name: "구역 6"},
-    {id: 15, name: "구역 7"},
-    {id: 16, name: "구역 8"},
-]
 
 export default DocumentDetailView = (props) => {
     const toggleDrawer = () => {
         props.toggleDrawer()
-        console.log(dataSet)
     }
 
     return <View style={styles.container}>
             <ScrollView style={styles.scrollView}
                 contentContainerStyle={{
-                    width:Dimensions.get('window').width * 6,
+                    width:Dimensions.get('window').width * 4,
                 }}
                 horizontal={true}
                 snapToAlignment={"center"}
@@ -48,8 +27,8 @@ export default DocumentDetailView = (props) => {
                 <SecondtDoc/>
                 <ThirdDoc/>
                 <FourthDoc/>
-                <FifthDoc/>
-                <SixthDoc/>
+                {/* <FifthDoc/>
+                <SixthDoc/> */}
             </ScrollView>
 
         {/* <DrawerButton toggleDrawer={toggleDrawer}/> */}

@@ -7,8 +7,8 @@ import OceanMapView from './screens/OceanMapView';
 import FirstAreaListView from './screens/FolderViews/DocumentViewListView';
 import SecondAreaListView from './screens/FolderViews/SecondAreaListView';
 import ThirdAreaListView from './screens/FolderViews/ThirdAreaListView';
-import DocumentDetailView from './screens//FolderViews/DocumentDetailView';
-// import DrawerNav from './navigation/DrawerNavigation';
+import DocumentDetailView from './screens/FolderViews/DocumentDetailView';
+import AreaDetailView from './screens/FolderViews/AreaDetailView';
 
 import { createStackNavigator } from '@react-navigation/stack';
 import { createDrawerNavigator } from '@react-navigation/drawer';
@@ -23,9 +23,6 @@ function MapScreen({ navigation }) {
 const Stack = createStackNavigator();
 
 function Document({ navigation }) {
-  // useEffect(()=>{
-
-  // }, [])
 
   let firstListView = props => (<FirstAreaListView 
     toggleDrawer={() => navigation.toggleDrawer()} 
@@ -36,16 +33,24 @@ function Document({ navigation }) {
   let secondListView = () => (<SecondAreaListView 
     toggleDrawer={() => navigation.toggleDrawer()} 
     onPress={() => navigation.navigate("구역 3단계")}
+    viewAreaDetail={() => navigation.navigate("지역 정보")}
   />)
 
   let thirdListView = () => (<ThirdAreaListView 
     toggleDrawer={() => navigation.toggleDrawer()} 
     onPress={() => navigation.navigate("문서 페이지")}
+    viewAreaDetail={() => navigation.navigate("지역 정보")}
   />)
 
   let documentDetailView =()=>(
     <DocumentDetailView 
           toggleDrawer={() => navigation.toggleDrawer()} 
+    />
+  )
+
+  let areaDetailView =()=> (
+    <AreaDetailView 
+      toggleDrawer={() => navigation.toggleDrawer()} 
     />
   )
 
@@ -67,6 +72,10 @@ function Document({ navigation }) {
       <Stack.Screen 
         name="문서 페이지" 
         component={documentDetailView}/>
+
+      <Stack.Screen 
+        name="지역 정보" 
+        component={areaDetailView}/>
     </Stack.Navigator>
   );
 }

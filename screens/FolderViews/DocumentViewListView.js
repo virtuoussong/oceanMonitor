@@ -2,6 +2,8 @@ import React from 'react';
 import {StyleSheet, View, FlatList, Text, Dimensions, TouchableOpacity} from 'react-native';
 import DrawerButton from '../../components/DrawerNavButton';
 import FolderCell from '../../components/FolderCell';
+
+
 let dataSet = [
     {id: 1, name: "구역 1"},
     {id: 2, name: "구역 2"},
@@ -41,7 +43,6 @@ export default DocumentListView = (props) => {
             // numColumns={dataSet.length / 3}
             showsVerticalScrollIndicator={false}
             // showsHorizontalScrollIndicator={false}
-
             data={dataSet}
             renderItem={({item}) => 
                 // <View style={styles.itemStyle}>

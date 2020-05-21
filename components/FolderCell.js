@@ -9,7 +9,7 @@ const FolderCell = (props) => {
         >
             <Image 
                 style={styles.imageStyle}
-                source={require('../assets/folderIcon.png')} resizeMode={'contain'}/>
+                source={require('../assets/folder.png')} resizeMode={'contain'}/>
             <Text style={styles.titleTextStyle}>{props.folderName}</Text>
         </TouchableOpacity>   
     </View>

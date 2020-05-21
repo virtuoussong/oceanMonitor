@@ -1,26 +1,8 @@
 import React from 'react';
-import {StyleSheet, View, FlatList, Text, Dimensions, TouchableOpacity, ScrollView, TextInput} from 'react-native';
-import TitleInputView from '../DocDetail/components/TitleInput';
+import {StyleSheet, View, Text, TouchableOpacity, TextInput} from 'react-native';
+import TitleInputView from '../TitleInput';
 import CheckBox from 'react-native-check-box';
 
-let dataSet = [
-    {id: 1, name: "구역 1"},
-    {id: 2, name: "구역 2"},
-    {id: 3, name: "구역 3"},
-    {id: 4, name: "구역 4"},
-    {id: 5, name: "구역 5"},
-    {id: 6, name: "구역 6"},
-    {id: 7, name: "구역 7"},
-    {id: 8, name: "구역 8"},
-    {id: 9, name: "구역 1"},
-    {id: 10, name: "구역 2"},
-    {id: 11, name: "구역 3"},
-    {id: 12, name: "구역 4"},
-    {id: 13, name: "구역 5"},
-    {id: 14, name: "구역 6"},
-    {id: 15, name: "구역 7"},
-    {id: 16, name: "구역 8"},
-]
 
 export default ThirdDoc = (props) => {
     return (
@@ -500,7 +482,7 @@ export default ThirdDoc = (props) => {
                 </View>
                 <View style={s.s3s3}>
                     <View style={[{flex: 1, width: '100%', justifyContent: 'center', alignItems: 'center'}, s.borderBottom]}>
-                        <Text>동원 인력</Text>
+                        <Text>폐기물</Text>
                     </View>
                     <View style={[{flex: 2, flexDirection: 'row'}]}>
                         <View style={[{flex: 1, justifyContent: 'center', alignItems: 'center'}, s.borderRight]}>
@@ -541,7 +523,159 @@ export default ThirdDoc = (props) => {
                     </View>
                 </View>
             </View>
-            <View style={[s.bottomSection, s.borderBottom]}></View>
+            <View style={[s.lastSection]}>
+                <View style={[{flex: 3}, s.borderRight]}>
+                    <View style={[{flex:1}, s.borderBottom, s.flexWrapper]}><Text>선박</Text></View>
+                    <View style={[{flex:2, flexDirection: 'row'}]}>
+                        <View style={[{flex:1}, s.borderRight]}>
+                            <View style={[{flex:1}, s.borderBottom, s.flexWrapper]}><Text>이선</Text></View>
+                            <View style={[{flex:1}, s.borderBottom, s.flexWrapper]}><TextInput/></View>
+                        </View>
+                        <View style={[{flex:1}, s.borderRight]}>
+                            <View style={[{flex:1}, s.borderBottom, s.flexWrapper]}><Text>선외기</Text></View>
+                            <View style={[{flex:1}, s.borderBottom, s.flexWrapper]}><TextInput/></View>
+                        </View>
+                        <View style={[{flex:1}]}>
+                            <View style={[{flex:1}, s.borderBottom, s.flexWrapper]}><Text>기타</Text></View>
+                            <View style={[{flex:1}, s.borderBottom, s.flexWrapper]}><TextInput/></View>
+                        </View>
+                    </View>
+                </View>
+                <View style={[{flex: 4}, s.borderRight]}>
+                    <View style={[{flex:1}, s.borderBottom, s.flexWrapper]}><Text>유흡착재</Text></View>
+                    <View style={[{flex:2, flexDirection: 'row'}]}>
+                        <View style={[{flex:1}, s.borderRight]}>
+                            <View style={[{flex:1}, s.borderBottom, s.flexWrapper]}><Text>패드형</Text></View>
+                            <View style={[{flex:1}, s.borderBottom, s.flexWrapper]}><TextInput/></View>
+                        </View>
+                        <View style={[{flex:1}, s.borderRight]}>
+                            <View style={[{flex:1}, s.borderBottom, s.flexWrapper]}><Text>펜스형</Text></View>
+                            <View style={[{flex:1}, s.borderBottom, s.flexWrapper]}><TextInput/></View>
+                        </View>
+                        <View style={[{flex:1}, s.borderRight]}>
+                            <View style={[{flex:1}, s.borderBottom, s.flexWrapper]}><Text>중질유</Text></View>
+                            <View style={[{flex:1}, s.borderBottom, s.flexWrapper]}><TextInput/></View>
+                        </View>
+                        <View style={[{flex:1}]}>
+                            <View style={[{flex:1}, s.borderBottom, s.flexWrapper]}><Text>기타</Text></View>
+                            <View style={[{flex:1}, s.borderBottom, s.flexWrapper]}><TextInput/></View>
+                        </View>
+                    </View>
+                </View>
+                <View style={[{flex: 1}, s.borderRight]}>
+                    
+                    <View style={[{flex:1}]}>
+                        <View style={[{flex:2}, s.borderBottom, s.flexWrapper]}><Text>{"유처\n리제"}</Text></View>
+                        <View style={[{flex:1}, s.flexWrapper]}><TextInput/></View>
+                    </View>
+                    
+                </View>
+                <View style={[{flex: 2}, s.borderRight]}>
+                    <View style={[{flex:1}, s.borderBottom, s.flexWrapper]}><Text>세척기</Text></View>
+                    <View style={[{flex:2, flexDirection: 'row'}]}>
+                        <View style={[{flex:1}, s.borderRight]}>
+                            <View style={[{flex:1}, s.borderBottom, s.flexWrapper]}><Text>{"고압\n저압"}</Text></View>
+                            <View style={[{flex:1}, s.borderBottom, s.flexWrapper]}><TextInput/></View>
+                        </View>
+                        <View style={[{flex:1}]}>
+                            <View style={[{flex:1}, s.borderBottom, s.flexWrapper]}><Text>{"자갈\n세척기"}</Text></View>
+                            <View style={[{flex:1}, s.borderBottom, s.flexWrapper]}><TextInput/></View>
+                        </View>
+                    </View>
+                </View>
+                <View style={[{flex: 3}, s.borderRight]}>
+                    <View style={[{flex:1}, s.borderBottom, s.flexWrapper]}><Text>차량</Text></View>
+                    <View style={[{flex:2, flexDirection: 'row'}]}>
+                        <View style={[{flex:1}, s.borderRight]}>
+                            <View style={[{flex:1}, s.borderBottom, s.flexWrapper]}><Text>{"크레인"}</Text></View>
+                            <View style={[{flex:1}, s.flexWrapper]}><TextInput/></View>
+                        </View>
+                        <View style={[{flex:1}, s.borderRight]}>
+                            <View style={[{flex:1}, s.borderBottom, s.flexWrapper]}><Text>{"지게차"}</Text></View>
+                            <View style={[{flex:1}, s.flexWrapper]}><TextInput/></View>
+                        </View>
+                        <View style={[{flex:1}]}>
+                            <View style={[{flex:1}, s.borderBottom, s.flexWrapper]}><Text>{"카고"}</Text></View>
+                            <View style={[{flex:1}, s.flexWrapper]}><TextInput/></View>
+                        </View>
+                    </View>
+                </View>
+                <View style={[{flex: 4}, s.borderRight]}>
+                    <View style={[{flex:1}, s.borderBottom, s.flexWrapper]}><Text>장갑</Text></View>
+                    <View style={[{flex:2, flexDirection: 'row'}]}>
+                        <View style={[{flex:1}, s.borderRight]}>
+                            <View style={[{flex:1}, s.borderBottom, s.flexWrapper]}><Text>{"면"}</Text></View>
+                            <View style={[{flex:1}, s.flexWrapper]}><TextInput/></View>
+                        </View>
+                        <View style={[{flex:1}, s.borderRight]}>
+                            <View style={[{flex:1}, s.borderBottom, s.flexWrapper]}><Text>{"완코팅"}</Text></View>
+                            <View style={[{flex:1}, s.flexWrapper]}><TextInput/></View>
+                        </View>
+                        <View style={[{flex:1}, s.borderRight]}>
+                            <View style={[{flex:1}, s.borderBottom, s.flexWrapper]}><Text>{"반코팅"}</Text></View>
+                            <View style={[{flex:1}, s.flexWrapper]}><TextInput/></View>
+                        </View>
+                        <View style={[{flex:1}]}>
+                            <View style={[{flex:1}, s.borderBottom, s.flexWrapper]}><Text>{"케미컬"}</Text></View>
+                            <View style={[{flex:1}, s.flexWrapper]}><TextInput/></View>
+                        </View>
+                    </View>
+                </View>
+                <View style={[{flex: 2}, s.borderRight]}>
+                    <View style={[{flex:1}, s.borderBottom, s.flexWrapper]}><Text>마대</Text></View>
+                    <View style={[{flex:2, flexDirection: 'row'}]}>
+                        <View style={[{flex:1}, s.borderRight]}>
+                            <View style={[{flex:1}, s.borderBottom, s.flexWrapper]}><Text>{"이중\n마대"}</Text></View>
+                            <View style={[{flex:1}, s.flexWrapper]}><TextInput/></View>
+                        </View>
+                        <View style={[{flex:1}]}>
+                            <View style={[{flex:1}, s.borderBottom, s.flexWrapper]}><Text>{"톤백"}</Text></View>
+                            <View style={[{flex:1}, s.flexWrapper]}><TextInput/></View>
+                        </View>
+                    </View>
+                </View>
+                <View style={[{flex: 4}, s.borderRight]}>
+                    <View style={[{flex:1}, s.borderBottom, s.flexWrapper]}><Text>개인장구류</Text></View>
+                    <View style={[{flex:2, flexDirection: 'row'}]}>
+                        <View style={[{flex:1}, s.borderRight]}>
+                            <View style={[{flex:1}, s.borderBottom, s.flexWrapper]}><Text>{"방제복"}</Text></View>
+                            <View style={[{flex:1}, s.flexWrapper]}><TextInput/></View>
+                        </View>
+                        <View style={[{flex:1}, s.borderRight]}>
+                            <View style={[{flex:1}, s.borderBottom, s.flexWrapper]}><Text>{"비닐\n토시"}</Text></View>
+                            <View style={[{flex:1}, s.flexWrapper]}><TextInput/></View>
+                        </View>
+                        <View style={[{flex:1}, s.borderRight]}>
+                            <View style={[{flex:1}, s.borderBottom, s.flexWrapper]}><Text>{"장화"}</Text></View>
+                            <View style={[{flex:1}, s.flexWrapper]}><TextInput/></View>
+                        </View>
+                        <View style={[{flex:1}]}>
+                            <View style={[{flex:1}, s.borderBottom, s.flexWrapper]}><Text>{"마스크"}</Text></View>
+                            <View style={[{flex:1}, s.flexWrapper]}><TextInput/></View>
+                        </View>
+                    </View> 
+                </View>
+                <View style={[{flex: 4}, s.borderRight]}>
+                    <View style={[{flex:1, flexDirection: 'row'}]}>
+                        <View style={[{flex:1}, s.borderRight]}>
+                            <View style={[{flex:2}, s.borderBottom, s.flexWrapper]}><Text>{"걸래"}</Text></View>
+                            <View style={[{flex:1}, s.flexWrapper]}><TextInput/></View>
+                        </View>
+                        <View style={[{flex:1}, s.borderRight]}>
+                            <View style={[{flex:2}, s.borderBottom, s.flexWrapper]}><Text>{"캔버스"}</Text></View>
+                            <View style={[{flex:1}, s.flexWrapper]}><TextInput/></View>
+                        </View>
+                        <View style={[{flex:1}, s.borderRight]}>
+                            <View style={[{flex:2}, s.borderBottom, s.flexWrapper]}><TextInput placeholder={"직접입력"}/></View>
+                            <View style={[{flex:1}, s.flexWrapper]}><TextInput/></View>
+                        </View>
+                        <View style={[{flex:1}]}>
+                            <View style={[{flex:2}, s.borderBottom, s.flexWrapper]}><TextInput placeholder={"직접입력"}/></View>
+                            <View style={[{flex:1}, s.flexWrapper]}><TextInput/></View>
+                        </View>
+                    </View> 
+                </View>
+            </View>
         </View>
     </View>
     )
@@ -549,6 +683,14 @@ export default ThirdDoc = (props) => {
 }
 
 const s = StyleSheet.create({
+    flexWrapper: {
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    lastSection: {
+        flex: 1,
+        flexDirection: 'row'
+    },
     s3s3: {
         flex: 4,
         justifyContent: 'center',

@@ -1,7 +1,14 @@
 import 'react-native-gesture-handler';
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { StyleSheet, Text, View, Button } from 'react-native';
 import OceanMapView from './screens/OceanMapView';
+
+//redux
+import { createStore, combineReducers, applyMiddleware } from 'redux';
+import {Provider} from 'react-redux';
+import ReduxThunk from 'redux-thunk';
+
+import areaListReducer from './Redux/reducers/area';
 
 //DocumentFolderView
 import FirstAreaListView from './screens/FolderViews/DocumentViewListView';
@@ -13,6 +20,14 @@ import AreaDetailView from './screens/FolderViews/AreaDetailView';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import { NavigationContainer } from '@react-navigation/native';
+
+
+const rootReducer = combineReducers({
+  areaListRoot : areaListReducer
+});
+
+const store = createStore(rootReducer, applyMiddleware(ReduxThunk));
+
 
 function MapScreen({ navigation }) {
   return (
@@ -85,12 +100,14 @@ const Drawer = createDrawerNavigator();
 
 export default function App() {
   return (
-    <NavigationContainer>
+    <Provider store={store}>
+       <NavigationContainer>
         <Drawer.Navigator initialRouteName="지도">
           <Drawer.Screen name="지도" component={MapScreen} />
           <Drawer.Screen name="파일" component={Document}/>
         </Drawer.Navigator>
     </NavigationContainer>
+    </Provider>
   );
 }
 

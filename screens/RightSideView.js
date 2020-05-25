@@ -1,7 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { createStackNavigator } from '@react-navigation/stack';
 import { NavigationContainer  } from '@react-navigation/native';
 import 'react-native-gesture-handler';
+
+import * as areaActions from '../Redux/actions/area'
+import { useSelector, useDispatch } from "react-redux";
 
 import { 
     StyleSheet, 
@@ -14,23 +17,26 @@ import {
 
 import RightSideFlatListView from '../screens/RightSideFlatListView';
 
-// let DATA =[
-//     {id: 0, name: "여수바다1"}, 
-//     {id: 1, name: "여수바다2"},
-//     {id: 2, name: "여수바다3"},
-//     {id: 3, name: "여수바다4"},
-//     {id: 4, name: "여수바다5"},
-//     {id: 5, name: "여수바다6"},
-//     {id: 6, name: "여수바다7"}
-// ]
-
-
 const Stack = createStackNavigator();
 
 function RightsideViewFunction({ props }) {
+    const [isLoading, setIsLoading] = useState(false);
+
+    const areaList = useSelector(state => state.areaListRoot.areaList)
+    const dispatch = useDispatch();
+    const loadAreas = useCallback( async()=>{
+      setError(null)
+      try {
+        await dispatch(areaActions.fetchArea())
+      } catch (err) {
+        setError(err)
+      }
+    }, [dispatch, setIsLoading])
+
 
     let listView = props => (
         <RightSideFlatListView 
+            list={areaList}
             onPress={() => props.navigation.navigate("리스트페이지2")}
         />
     );
@@ -46,9 +52,8 @@ function RightsideViewFunction({ props }) {
             onPress={() => props.navigation.navigate("리스트페이지3")}
         />
     )
-
     return (
-        <NavigationContainer independent={true}>
+        <NavigationContainer independent={true} >
              <Stack.Navigator initialRouteName="리스트페이지" >
                 <Stack.Screen name="리스트페이지" component={listView} />
                 <Stack.Screen name="리스트페이지2" component={listView2} options={{headerBackTitleVisible: false}}/>
@@ -75,9 +80,8 @@ export default RightSideView = (props) => {
     //         viewAreaDetail={() => navigation.navigate("리스트페이지")}
     //     />
     // )
-
     return (
-            <RightsideViewFunction/>
+            <RightsideViewFunction list={props.list}/>
         // <Stack.Navigator>
         //     <Stack.Screen 
         //         name="리스트페이지" 

@@ -5,7 +5,7 @@ export default LocationNameModal = (props) => {
     const [textValue, onChangeText] = useState('')
     const completPressed = () => {
         if (textValue.length > 1) {
-            props.addCompletion()
+            props.addCompletion(textValue)
         } else {
             console.log("add more text")
         }

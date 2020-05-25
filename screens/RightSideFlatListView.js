@@ -15,14 +15,13 @@ export default RightSideFlatList = (props) => {
     const [locations, setLocations] = useState([])
 
     useEffect(()=>{
-        setLocations(DATA)
+        // setLocations(DATA)
     }, [locations])
-
 
     return (
         <SafeAreaView style={styles.viewContainer}>
             <FlatList 
-                data={locations}
+                data={props.list}
                 renderItem={(item) => (
                     <RightSideCell onPress={props.onPress}  name={item.item.name}/>
                 // <Text style={styles.title}>{`${item.item.name}`}</Text>

@@ -1,24 +1,29 @@
-import React, { useState, useEffect } from "react";
-import { StyleSheet, Text, View, TouchableOpacity, Animated, Image, Easing, Modal } from "react-native";
-import MapView, {PROVIDER_GOOGLE, Polygon, Marker, Polyline, fitToCoordinates } from "react-native-maps";
+import React, { useState, useEffect, useCallback } from "react";
+import {ActivityIndicator, StyleSheet, Text, View, TouchableOpacity, Animated, Image, Easing, Modal } from "react-native";
+import MapView, {PROVIDER_GOOGLE, Polygon, Marker, Polyline, Circle, fitToCoordinates } from "react-native-maps";
 import LocationNameModal from '../screens/LocationNameModel';
 import RightSideView from '../screens/RightSideView';
 import DrawerNavButton from '../components/DrawerNavButton';
-import { getDistance } from 'geolib'
-const polygonArray = [
-  {
-    id: 0,
-    coordinates: [
-      { latitude: 34.897496004554114, longitude: 127.66647946089506 },
-      { latitude: 34.88281733008958, longitude: 127.79087428003548 },
-      { latitude: 34.712926735580794, longitude: 127.70314324647188 }
-    ]
-  }
-];
+import { getDistance, getAreaOfPolygon, getCenterOfBounds } from 'geolib'
+import * as areaActions from '../Redux/actions/area'
+import { useSelector, useDispatch } from "react-redux";
+
+// const polygonArray = [
+//   {
+//     id: 0,
+//     coordinates: [
+//       { latitude: 34.897496004554114, longitude: 127.66647946089506 },
+//       { latitude: 34.88281733008958, longitude: 127.79087428003548 },
+//       { latitude: 34.712926735580794, longitude: 127.70314324647188 }
+//     ],
+//     name: "1-1",
+//     nameCoordinate: null
+//   }
+// ];
 
 const OceanMapView = (props) => {
   const [newPolygon, setNewPolygon] = useState([]);
-  const [polygonsState, setPolygonAdd] = useState([]);
+  // const [polygonsState, setPolygonAdd] = useState(polygonArray);
   const [isAddingPolygon, setAddPolygon] = useState(false);
   const [addButtonText, setAddButton] = useState("지역 추가");
   const [viewLevel, setViewLevel] = useState(1);
@@ -28,54 +33,148 @@ const OceanMapView = (props) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [isMeasuringLength, startMeasureDistance] = useState(false);
   const [distanceLines, setDistanceDots] = useState([]);
+  const [distanceArray, setDistanceText] = useState([]);
+  const [totalDistance, setTotalDistance] = useState();
+  const [isMeasuringArea, setIsMeasuringArea] = useState(false);
+  const [measuredArea, setMeasuredArea] = useState();
+  const [isMeasuringCircle, setIsMeasuringCircle] = useState(false)
+  const [circleCoordinates, setCircleCoordinates] = useState([])
+  const [circleValue, setCircleCoordinate] = useState();
+  const [error, setError] = useState();
+  const [isLoading, setIsLoading] = useState(false);
+
+
+
+  // useEffect(() => {
+  //   setPolygonAdd(polygonArray)
+  //   // setAddPolygon(false)
+  // }, [
+  //   circleCoordinates, circleValue, isMeasuringCircle, measuredArea, totalDistance, setPolygonAdd, setNewPolygon, setAddPolygon, setAddButton, setViewLevel, setRgithSideDrawer, setArrowRotate, setModalVisible, startMeasureDistance, setDistanceDots
+  // ])
 
   useEffect(() => {
-    setPolygonAdd(polygonArray)
-    setAddPolygon(false)
+    // setPolygonAdd(polygonArray)
+    // setAddPolygon(false)
   }, [
-    setPolygonAdd, setNewPolygon, setAddPolygon, setAddButton, setViewLevel, setRgithSideDrawer, setArrowRotate, setModalVisible, startMeasureDistance, setDistanceDots
+    newPolygon, 
+    // polygonsState, 
+    addButtonText, 
+    rightSideDrawer, isRightDrawerOpen, arrowRotate, 
+    modalVisible, 
+    isMeasuringLength, totalDistance, 
+    isMeasuringArea, measuredArea,  
+    isMeasuringCircle, circleValue,   
   ])
+
+  const areaList = useSelector(state => state.areaListRoot.areaList)
+  const dispatch = useDispatch();
+  const loadAreas = useCallback( async()=>{
+    setError(null)
+    try {
+      await dispatch(areaActions.fetchArea())
+    } catch (err) {
+      setError(err)
+    }
+  }, [dispatch, setIsLoading])
+
+  useEffect(()=>{
+    setIsLoading(true);
+    loadAreas().then(()=>{
+      setIsLoading(false)
+      console.log("areaListReducer", areaList)
+    })
+    // console.log("areaListReducer", areaList)
+  }, [dispatch, loadAreas])
 
   const onMapTap = e => {
     let newDots = e.nativeEvent.coordinate
-    if (isAddingPolygon) {
+    if (isAddingPolygon || isMeasuringArea) {
       setNewPolygon(newPolygon => [...newPolygon, newDots])
     }
 
     if (isMeasuringLength) {
-      console.log("new dots",newDots)
       setDistanceDots(newPolygon => [...newPolygon, newDots])
-      let distance = getDistance(distanceLines)
-      console.log("distance", distance)
-      // console.log("distance", getDistance([{
-      //   "latitude": 34.68865088845089,
-      //   "longitude": 127.5228703022003,
-      // }, {
-      //   "latitude": 34.65892416171042,
-      //   "longitude": 127.71298997104167,
-      // }]))
+    }
+
+    if (isMeasuringCircle) {
+      if (circleCoordinates.length == 2) {
+        let newArray = [...circleCoordinates]
+        newArray[1] = newDots
+        setCircleCoordinates(newArray)
+      } else {
+        setCircleCoordinates(array => [...array, newDots])
+      }
       
     }
   };
 
+  useEffect(()=>{
+    createRadius()
+    // console.log("circleValue", circleValue)
+  }, [circleCoordinates])
 
+  const createRadius = () => {
+    // console.log("circleCoordinates", circleCoordinates)
+    if (circleCoordinates.length > 1) {
+      let radiusCalc = getDistance(circleCoordinates[0], circleCoordinates[1])
 
-  const addPolygon = () => {
-    if (!isAddingPolygon) {
-      setAddButton("완료")
-      setAddPolygon(true)
-    } else {
-      if (newPolygon.length > 2) {
-        toggleModal()
-      } else {
-        console.log("add more dots")
+      let value = {
+        coordinate: circleCoordinates[0],
+        radius: radiusCalc
       }
-    }
-  };
 
+      setCircleCoordinate(value)
+    }
+    
+  }
+
+  useEffect(()=>{
+    if (distanceLines.length > 1) {
+      let lastIndex = distanceLines.length - 1
+      let onebeforeIndex = lastIndex - 1
+      let firstCooridinate = distanceLines[onebeforeIndex]
+      let lastCoordinate = distanceLines[lastIndex]
+
+      let distanceObject = {
+        distanceVal: getDistance(firstCooridinate, lastCoordinate),
+        coordinate: lastCoordinate
+      }
+      setDistanceText(distanceText => [...distanceText, distanceObject])
+    }
+  }, [distanceLines])
+
+  useEffect(()=>{
+    calcTotalDistance()
+  }, [distanceArray])
+
+  const calcTotalDistance = () => {
+    let total = 0
+    distanceArray.forEach((i)=>{
+      total += i.distanceVal
+    })
+    setTotalDistance(total)
+    console.log("total distance", total)
+  }
+
+  useEffect(()=>{
+    if (isMeasuringArea) {
+      calcArea()
+    } 
+  },[newPolygon])
+
+  const calcArea =() => {
+    let array = []
+    newPolygon.forEach((item, index) => {
+      let element = [item.latitude, item.longitude]
+      array.push(element)
+    })
+    let result = getAreaOfPolygon(array)
+    setMeasuredArea(result)
+  }
 
   const cancelAddPolygon = () => {
     setAddPolygon(false)
+    setNewPolygon([])
     setAddButton("지역 추가")
   }
 
@@ -99,16 +198,6 @@ const OceanMapView = (props) => {
       let deleteIndex = newPolygon.length - 1
       setNewPolygon(newPolygon.filter((item, index) => index != deleteIndex))
     } 
-  }
-
-
-  const addPolygonToMap = () => {
-    let newPolygonObject = {
-      id: polygonsState.length + 1,
-      coordinates: newPolygon
-    }
-    console.log("add value", newPolygonObject)
-    setPolygonAdd(oldArray => [...oldArray, newPolygonObject])
   }
 
   const rightViewToggle = () => {
@@ -136,55 +225,136 @@ const OceanMapView = (props) => {
   })
 
   const movePoint = (e, index) => {
-    console.log("moving point", e.nativeEvent.coordinate)
     let array = [...newPolygon]
     var movingPoint = e.nativeEvent.coordinate
     array[index] = movingPoint
     setNewPolygon(array)
   }
 
-  const saveNameAdded = () => {
+  const addPolygon = () => {
+    if (!isAddingPolygon) {
+      setAddButton("완료")
+      setAddPolygon(true)
+    } else {
+      if (newPolygon.length > 2) {
+        toggleModal()
+      } else {
+        console.log("add more dots")
+      }
+    }
+  };
+
+  const saveNameAdded = (text) => {
     toggleModal()
     setAddButton("지역 추가")
     setAddPolygon(false)
-    addPolygonToMap()
+    addPolygonToMap(text)
     setNewPolygon([])
   }
 
+  const addPolygonToMap = (text) => {
+    // console.log("added name", text)
+    let coordinateForName = getCenterOfBounds(newPolygon)
+    let newPolygonObject = {
+      id: new Date().toString(),
+      coordinates: newPolygon,
+      name: text,
+      nameCoordinate: coordinateForName
+    }
+
+    // console.log("add polygon triggered", newPolygonObject)
+    dispatch(
+      areaActions.addArea(
+        new Date().toString(),
+        text,
+        coordinateForName,
+        newPolygon,
+      )
+    )
+    
+    // console.log("newPolygonObject", newPolygonObject)
+    // setPolygonAdd(oldArray => [...oldArray, newPolygonObject])
+  }
+
+  // const addPolygonToMap = useCallback(async (text)=> {
+  //   let coordinateForName = getCenterOfBounds(newPolygon)
+  //   // let newPolygonObject = {
+  //   //   id: new Date().toString(),
+  //   //   coordinates: newPolygon,
+  //   //   name: text,
+  //   //   nameCoordinate: coordinateForName
+  //   // }
+  //   try {
+  //     await dispatch(
+  //       areaActions.addArea(
+  //         new Date().toString(),
+  //         newPolygon,
+  //         text,
+  //         coordinateForName
+  //       )
+  //     )
+  //   } catch (err) {
+
+  //   }
+  // }, [dispatch])
+
   const toggleModal = () => {
-    console.log("toggle")
     setModalVisible(!modalVisible)
   }
 
   const toggleDrawer = () => {
-    console.log("toggle drawer menu")
+    // console.log("toggle drawer menu")
     props.toggleDrawer()
   }
 
   let addButtonRef = React.createRef()
   let mapRef = React.createRef()
 
-  const startDistanceMeasurement=()=>{
+  const startDistanceMeasurement = ()=>{
     if (isMeasuringLength) {
       startMeasureDistance(false)
       setDistanceDots([])
+      setDistanceText([])
     } else {
-      startMeasureDistance(true)
+      startMeasureDistance(true)      
     }
-    
-    console.log("start new distancemeasure", isMeasuringLength)
   }
 
-  const startAreaMeasurement=()=>{
+  
 
+  const startAreaMeasurement=()=>{
+    if (isMeasuringArea) {
+      setIsMeasuringArea(false)
+      setNewPolygon([])
+    } else {
+      setIsMeasuringArea(true)
+    }
   }
 
   const startRadiusMeasurement=()=>{
-
+    if (isMeasuringCircle) {
+      setIsMeasuringCircle(false)
+      setCircleCoordinate()
+      setCircleCoordinates([])
+    } else {
+      setIsMeasuringCircle(true)
+    }
   }
 
   const captureScreen=()=>{
 
+  }
+
+  if (isLoading) {
+    return <View style={styles.centered}>
+        <ActivityIndicator size={'large'} color={"red"} />
+    </View>
+  }
+
+  if (!isLoading && areaList === null) {
+    return <View style={styles.centered}>
+        <Text>No Products Found. Maybe Start Adding Some Shit</Text>
+    </View>
   }
 
   return (
@@ -202,23 +372,65 @@ const OceanMapView = (props) => {
         mapType={"standard"}
         onPress={onMapTap}
       >
-        {
+        {/* {
           viewLevel==1 && polygonsState && polygonsState.map((i, index) => {
-            return <Polygon
-            key={`${index}polygon`}
-            coordinates={i.coordinates}
-            strokeWidth={3}
-            strokeColor={"yellow"}
-            fillColor={"#000, rgba(r,g,b,0.5)"}
-            lineCap={"round"}
-            tappable={true}
-            onPress={() => polygonTapp(index)}
-            geodesic={true}
-          />
+            console.log("i.coordinateforname", i)
+            return <React.Fragment>
+              <Polygon
+                  key={`${index}polygon`}
+                  coordinates={i.coordinates}
+                  strokeWidth={3}
+                  strokeColor={"yellow"}
+                  // fillColor={"#000, rgba(r,g,b,0.5)"}
+                  lineCap={"round"}
+                  tappable={true}
+                  onPress={() => polygonTapp(index)}
+                  geodesic={true}
+              />
+              <Marker
+             
+                key={`${index}marker`}
+                coordinate={i.nameCoordinate}
+                anchor={{ x: 0.5, y: 0.5 }}
+                resizeMode={'contain'}
+              >
+                <Text style={{fontSize: 24, fontWeight: "bold"}}>{i.name}</Text>
+              </Marker>
+
+            </React.Fragment> 
+          })
+        } */}
+
+        {
+          !isLoading && areaList && areaList.map((i, index) => {
+            // console.log("i.coordinateforname", i)
+            return <React.Fragment>
+              <Polygon
+                  key={`${index}polygon`}
+                  coordinates={i.coordinates}
+                  strokeWidth={3}
+                  strokeColor={"yellow"}
+                  // fillColor={"#000, rgba(r,g,b,0.5)"}
+                  lineCap={"round"}
+                  tappable={true}
+                  onPress={() => polygonTapp(index)}
+                  geodesic={true}
+              />
+              <Marker
+             
+                key={`${index}marker`}
+                coordinate={i.nameCoordinate}
+                anchor={{ x: 0.5, y: 0.5 }}
+                resizeMode={'contain'}
+              >
+                <Text style={{fontSize: 24, fontWeight: "bold"}}>{i.name}</Text>
+              </Marker>
+            </React.Fragment> 
           })
         }
+
         {
-          isAddingPolygon && newPolygon.length > 0 && newPolygon.map((i, index)=>{
+          (isAddingPolygon || isMeasuringArea) && newPolygon.length > 0 && newPolygon.map((i, index)=>{
             return <Marker
               draggable
               onDrag={(e) => movePoint(e, index)}
@@ -237,21 +449,20 @@ const OceanMapView = (props) => {
           })
         }
         {
-          isAddingPolygon && newPolygon.length > 2 && (
+          (isAddingPolygon || isMeasuringArea) && newPolygon.length > 2 && (
               <Polygon
                 coordinates={newPolygon}
                 strokeWidth={3}
                 strokeColor={"yellow"}
-                fillColor={"#000, rgba(r,g,b,0.5)"}
+                // fillColor={"#000, rgba(r,g,b,0.5)"}
                 lineCap={"round"}
                 tappable={true}
-                onPress={polygonTapp}
                 geodesic={true}
               />
           )
         }
         {
-          isAddingPolygon && newPolygon.length > 1 && (
+           (isAddingPolygon || isMeasuringArea) && newPolygon.length > 1 && (
               <Polyline
                 coordinates={newPolygon}
                 strokeWidth={3}
@@ -259,7 +470,7 @@ const OceanMapView = (props) => {
               />
           )
         }
-
+        
         {
           isMeasuringLength && distanceLines.length > 1 && (
               <Polyline
@@ -269,6 +480,117 @@ const OceanMapView = (props) => {
               />
           )
         }
+
+        {
+          isMeasuringLength && distanceLines.length > 0 && distanceLines.map((i, index)=>{
+            return <Marker
+              key={`${index}marker`}
+              coordinate={i}
+              anchor={{ x: 0.5, y: 0.5 }}
+              resizeMode={'contain'}
+            >
+              <Image 
+                source={require('../assets/yellowCircle.png')} 
+                style={{width: 20, height: 20}}
+                resizeMode="contain"
+              />
+            </Marker>
+          })
+        }
+        {
+          distanceArray.length > 0 && distanceArray.map((i, index) => {
+            return <Marker
+              key={`${index}marker`}
+              coordinate={i.coordinate}
+              anchor={{ x: 0.5, y: 1.7 }}
+              resizeMode={'contain'}
+            >
+              <Text>{`${i.distanceVal.toLocaleString()}m`}</Text>
+            </Marker>
+          })
+        }
+        {
+          distanceArray.length > 1 && (
+              <Marker
+                coordinate={distanceArray[distanceArray.length-1].coordinate}
+                anchor={{ x: 0.4, y: 2.7 }}
+                resizeMode={'contain'}
+              >
+                <Text style={{fontWeight: 'bold', fontSize: 16}}>
+                  {`합: ${totalDistance.toLocaleString()}m`}
+                </Text>
+              </Marker>
+          )
+        }
+        {
+          isMeasuringArea && newPolygon.length > 2 && (
+            <Marker
+                coordinate={newPolygon[newPolygon.length-1]}
+                anchor={{ x: 0.4, y: 2.7 }}
+                resizeMode={'contain'}
+              >
+                <Text style={{fontWeight: 'bold', fontSize: 16}}>
+                  {`면적: ${Math.round(measuredArea).toLocaleString()}m²`}
+                </Text>
+            </Marker>
+          )
+        }
+
+        {
+          isMeasuringCircle && circleValue && (
+            <Circle 
+              center={circleValue.coordinate} 
+              radius={circleValue.radius} 
+              fillColor={"rgba(255,69,57, 0.4)"}
+              strokeWidth={3}
+              strokeColor={"red"}
+            />
+          )
+        }
+
+        {
+          isMeasuringCircle && circleCoordinates.length > 0 && (
+            circleCoordinates.map((i, index)=>{
+              return (
+                <Marker
+                  key={`${index}circleMarker`}
+                  coordinate={i}
+                  anchor={{ x: 0.5, y: 0.5 }}
+                  resizeMode={'contain'}
+                >
+                  <Image 
+                    source={require('../assets/yellowCircle.png')} 
+                    style={{width: 20, height: 20}}
+                    resizeMode="contain"
+                  />
+                </Marker>
+            )
+            })
+          )
+        }
+        {
+          isMeasuringCircle && circleCoordinates.length > 1 && (
+            <Polyline
+              coordinates={circleCoordinates}
+              strokeWidth={3}
+              strokeColor={"yellow"}
+            />
+        )
+        }
+        {
+          isMeasuringCircle && circleValue && (
+            <Marker
+                coordinate={circleCoordinates[1]}
+                anchor={{ x: 0.4, y: 2.7 }}
+                resizeMode={'contain'}
+              >
+                <Text style={{fontWeight: 'bold', fontSize: 16}}>
+                  {`지름: ${Math.round(circleValue.radius).toLocaleString()}m²`}
+                </Text>
+            </Marker>
+          )
+        }
+
       </MapView>
       
       {/* <TouchableOpacity style={styles.leftButton} onPress={toggleDrawer}>
@@ -280,10 +602,10 @@ const OceanMapView = (props) => {
         <TouchableOpacity onPress={startDistanceMeasurement} style={[{backgroundColor: `${isMeasuringLength ? "lightblue" : "white"}`, width: 50, height: 50, marginBottom: 2}, styles.centerItem]}>
           <Text style={{fontSize: 15, fontWeight: 'bold'}}>{"거리\n재기"}</Text>
         </TouchableOpacity>
-        <TouchableOpacity onPress={startAreaMeasurement} style={[{backgroundColor: 'white', width: 50, height: 50, marginBottom: 2}, styles.centerItem]}>
+        <TouchableOpacity onPress={startAreaMeasurement} style={[{backgroundColor: `${isMeasuringArea ? "lightblue" : "white"}`, width: 50, height: 50, marginBottom: 2}, styles.centerItem]}>
           <Text style={{fontSize: 15, fontWeight: 'bold'}}>{"면적\n재기"}</Text>
         </TouchableOpacity>
-        <TouchableOpacity onPress={startRadiusMeasurement} style={[{backgroundColor: 'white', width: 50, height: 50, marginBottom: 2}, styles.centerItem]}>
+        <TouchableOpacity onPress={startRadiusMeasurement} style={[{backgroundColor: `${isMeasuringCircle ? "lightblue" : "white"}`, width: 50, height: 50, marginBottom: 2}, styles.centerItem]}>
           <Text style={{fontSize: 15, fontWeight: 'bold'}}>{"반경\n재기"}</Text>
         </TouchableOpacity>
         <TouchableOpacity onPress={captureScreen} style={[{backgroundColor: 'white', width: 50, height: 50, marginBottom: 2}, styles.centerItem]}>
@@ -315,7 +637,7 @@ const OceanMapView = (props) => {
                 resizeMode="contain"
               />
           </TouchableOpacity>
-          <RightSideView/>
+          <RightSideView list={areaList}/>
       </Animated.View>
 
       <Modal
@@ -324,7 +646,7 @@ const OceanMapView = (props) => {
         visible={modalVisible}
         onPress={toggleModal}
       >
-          <LocationNameModal toggle={toggleModal} addCompletion={saveNameAdded}/>
+          <LocationNameModal toggle={toggleModal} addCompletion={(text)=>saveNameAdded(text)}/>
       </Modal>
     </View>
   );
@@ -334,6 +656,11 @@ const OceanMapView = (props) => {
 export default OceanMapView;
 
 const styles = StyleSheet.create({
+  centered: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
   centerItem: {
     justifyContent: 'center',
     alignItems: 'center'

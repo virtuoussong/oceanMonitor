@@ -8,7 +8,10 @@ import { createStore, combineReducers, applyMiddleware } from 'redux';
 import {Provider} from 'react-redux';
 import ReduxThunk from 'redux-thunk';
 
-import areaListReducer from './Redux/reducers/area';
+import areaListReducer from './Redux/reducers/area.js';
+import area2ListReducer from './Redux/reducers/area2.js';
+import area3ListReducer from './Redux/reducers/area3.js';
+import coordinateReducer from './Redux/reducers/coordinateNav.js'
 
 //DocumentFolderView
 import FirstAreaListView from './screens/FolderViews/DocumentViewListView';
@@ -23,7 +26,10 @@ import { NavigationContainer } from '@react-navigation/native';
 
 
 const rootReducer = combineReducers({
-  areaListRoot : areaListReducer
+  areaListRoot : areaListReducer,
+  area2ListRoot : area2ListReducer,
+  area3ListRoot : area3ListReducer,
+  focusedPolygonRoot : coordinateReducer
 });
 
 const store = createStore(rootReducer, applyMiddleware(ReduxThunk));

@@ -1,7 +1,13 @@
 import Area from '../../Models/Area';
 
 export const ADD_AREA = "ADD_AREA";
+export const ADD_AREA2 = "ADD_AREA2";
+export const ADD_AREA3 = "ADD_AREA3";
+
 export const GET_AREA = "GET_AREA";
+export const GET_AREA2 = "GET_AREA2";
+export const GET_AREA3 = "GET_AREA3";
+
 export const DELETE_AREA = "DELETE_AREA";
 
 let initialArea = [
@@ -36,7 +42,6 @@ export const fetchArea = () => {
 }
 
 export const addArea = (id, name, nameCoordinate, coordinates) => {
-    console.log("ADD_AREA triggered in ACTION", id)
     return async (dispatch, getState) => {
         dispatch({
             type: ADD_AREA,
@@ -47,9 +52,9 @@ export const addArea = (id, name, nameCoordinate, coordinates) => {
                 coordinates
             }
         });
-    }
-
-    
+    } 
 }
+
+
 
 

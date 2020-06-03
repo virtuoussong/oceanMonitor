@@ -4,29 +4,21 @@ import MapView, {PROVIDER_GOOGLE, Polygon, Marker, Polyline, Circle, fitToCoordi
 import LocationNameModal from '../screens/LocationNameModel';
 import RightSideView from '../screens/RightSideView';
 import DrawerNavButton from '../components/DrawerNavButton';
-import { getDistance, getAreaOfPolygon, getCenterOfBounds } from 'geolib'
-import * as areaActions from '../Redux/actions/area'
-import { useSelector, useDispatch } from "react-redux";
+import { getDistance, getAreaOfPolygon, getCenterOfBounds } from 'geolib';
 
-// const polygonArray = [
-//   {
-//     id: 0,
-//     coordinates: [
-//       { latitude: 34.897496004554114, longitude: 127.66647946089506 },
-//       { latitude: 34.88281733008958, longitude: 127.79087428003548 },
-//       { latitude: 34.712926735580794, longitude: 127.70314324647188 }
-//     ],
-//     name: "1-1",
-//     nameCoordinate: null
-//   }
-// ];
+import * as areaActions from '../Redux/actions/area.js';
+import * as area2Actions from '../Redux/actions/area2.js';
+import * as area3Actions from '../Redux/actions/area3.js';
+import * as polygonNavAction from '../Redux/actions/coordinateNav.js';
+
+import { useSelector, useDispatch } from "react-redux";
 
 const OceanMapView = (props) => {
   const [newPolygon, setNewPolygon] = useState([]);
   // const [polygonsState, setPolygonAdd] = useState(polygonArray);
   const [isAddingPolygon, setAddPolygon] = useState(false);
   const [addButtonText, setAddButton] = useState("지역 추가");
-  const [viewLevel, setViewLevel] = useState(1);
+  const [viewLevel, setViewLevel] = useState({currentViewLevel: 1});
   const [rightSideDrawer, setRgithSideDrawer] = useState(new Animated.Value(-270))
   const [isRightDrawerOpen, setRightDrawer] = useState(false)
   const [arrowRotate, setArrowRotate] = useState(new Animated.Value(0))
@@ -42,6 +34,7 @@ const OceanMapView = (props) => {
   const [circleValue, setCircleCoordinate] = useState();
   const [error, setError] = useState();
   const [isLoading, setIsLoading] = useState(false);
+
 
 
 
@@ -65,10 +58,14 @@ const OceanMapView = (props) => {
     isMeasuringArea, measuredArea,  
     isMeasuringCircle, circleValue,   
   ])
+  
+  const dispatch = useDispatch();
+
+  
+
 
   const areaList = useSelector(state => state.areaListRoot.areaList)
-  const dispatch = useDispatch();
-  const loadAreas = useCallback( async()=>{
+  const loadAreas = useCallback(async()=>{
     setError(null)
     try {
       await dispatch(areaActions.fetchArea())
@@ -83,9 +80,106 @@ const OceanMapView = (props) => {
       setIsLoading(false)
       console.log("areaListReducer", areaList)
     })
-    // console.log("areaListReducer", areaList)
   }, [dispatch, loadAreas])
 
+  //Area 2
+  const area2List = useSelector(state => state.area2ListRoot.areaList)
+  // const load2Areas = useCallback(async()=>{
+  //   setError(null)
+  //   try {
+  //     await dispatch(area2Actions.fetchArea2())
+  //   } catch (err) {
+  //     setError(err)
+  //   }
+  // }, [dispatch, setIsLoading])
+
+  // useEffect(()=>{
+    // setIsLoading(true);
+    // load2Areas().then(()=>{
+    //   setIsLoading(false)
+    //   // console.log("area2ListReducer", area2List)
+    // })
+  // }, [dispatch, area2List])
+
+  const area3List = useSelector(state => state.area3ListRoot.areaList)
+  const load3Areas = useCallback(async()=>{
+    setError(null)
+    try {
+      await dispatch(area3Actions.fetchArea3())
+    } catch (err) {
+      setError(err)
+    }
+  }, [dispatch, setIsLoading])
+  
+  useEffect(()=>{
+    setIsLoading(true);
+    load3Areas().then(()=>{
+      setIsLoading(false)
+      console.log("area2ListReducer", area2List)
+    })
+  }, [dispatch, load3Areas])
+
+  // const backtoLevel1 = useSelector(state => state.area2ListRoot.idForLevel1)
+  // const backToLevel1Load = useCallback(async()=>{
+  //   console.log("back t0 level 1")
+  // }, [dispatch, backtoLevel1])
+
+  const polygonNav = useSelector(state => state.focusedPolygonRoot.focusedPolygon)
+  const loadPolyNav = useCallback(async()=>{
+    try {
+        await dispatch(polygonNavAction.fetchCoordinate())
+    } catch (err) {
+        setError(err)
+    }
+  }, [dispatch])
+
+  useEffect(()=>{
+    loadPolyNav().then(()=>{
+      if (polygonNav.level == 1) {
+        let region = {
+          latitude: 34.7834049,
+          longitude: 127.79654869999999,
+          latitudeDelta: 0.5922,
+          longitudeDelta: 0.5421
+        }
+        mapRef.current.animateToRegion(region, 3)
+      } else if (polygonNav.level == 2) {
+        console.log("poly nav changed")
+        let coordinates = polygonNav.areaData.coordinates
+        mapRef.current.fitToCoordinates(coordinates, {
+          edgePadding: { 
+            top: 10,
+            right: 10,
+            bottom: 10,
+            left: 10
+          },
+          animated: true
+        })
+      }
+    })
+ 
+  }, [dispatch, polygonNav])
+
+  // useEffect(()=>{
+   
+  //   let region = {
+  //     latitude: 34.7834049,
+  //     longitude: 127.79654869999999,
+  //     latitudeDelta: 0.5922,
+  //     longitudeDelta: 0.5421
+  //   }
+  //   mapRef.current.animateToRegion(region, 3)
+
+  //   let newLevel = {
+  //     currentViewLevel : 1,
+  //     parentID : null
+  //   }
+
+  //   setViewLevel(newLevel)
+
+  //   dispatch(focusePolygonData.updateCoordinate(1))
+  // }, [dispatch, backtoLevel1])
+  
   const onMapTap = e => {
     let newDots = e.nativeEvent.coordinate
     if (isAddingPolygon || isMeasuringArea) {
@@ -108,10 +202,116 @@ const OceanMapView = (props) => {
     }
   };
 
+  const polygonTapp = (index, data) => {
+
+    let currentLevel = polygonNav.level
+
+    if (currentLevel < 4) {
+      // currentLevel += 1
+      let focusedPolygonView = {
+        currentViewLevel : currentLevel,
+        parentID : viewingList[index].id
+      }
+      // setViewLevel(focusedPolygonView)
+      let coordinates = viewingList[index].coordinates
+      if (currentLevel == 1) {
+        dispatch(polygonNavAction.updateCoordinate(2, data))
+      }
+
+    }    
+  };
+
+  
+
+  const loadAreaData = (data) => {
+    let currentLevel = data.currentViewLevel
+    if (currentLevel == 2) {
+      // load2Areas()
+      console.log("id for filter", data.parentID)
+      dispatch(area2Actions.fetchFilteredList(data.parentID))
+    }
+    if (currentLevel == 3) {
+      load3Areas()
+    }
+
+  }
+
+ 
+
+
+  const addPolygon = () => {
+    if (!isAddingPolygon) {
+      setAddButton("완료")
+      setAddPolygon(true)
+    } else {
+      if (newPolygon.length > 2) {
+        toggleModal()
+      } else {
+        console.log("add more dots")
+      }
+    }
+  };
+
+  const saveNameAdded = (text) => {
+    toggleModal()
+    setAddButton("지역 추가")
+    setAddPolygon(false)
+    addPolygonToMap(text)
+    setNewPolygon([])
+  }
+
+  const addPolygonToMap = (text) => {
+    
+    let coordinateForName = getCenterOfBounds(newPolygon)
+
+    if (polygonNav.level == 1) {
+      dispatch(
+        areaActions.addArea(
+          new Date().toString(),
+          text,
+          coordinateForName,
+          newPolygon,
+        )
+      )
+    } else if (polygonNav.level == 2) {
+      // console.log("polygonNav", polygonNav)
+      dispatch(
+        area2Actions.addArea2(
+          new Date().toString(),
+          text,
+          coordinateForName,
+          newPolygon,
+          polygonNav.areaData.id
+        )
+      )
+    } else if (polygonNav.level == 3) {
+
+      dispatch(
+        area3Actions.addArea3(
+          new Date().toString(),
+          text,
+          coordinateForName,
+          newPolygon,
+          polygonNav.areaData.id
+        )
+      )
+      
+    }
+  }
+
+  const deletePoint = () => {
+    if (isAddingPolygon) {
+      let deleteIndex = newPolygon.length - 1
+      setNewPolygon(newPolygon.filter((item, index) => index != deleteIndex))
+    } 
+  }
+
+
   useEffect(()=>{
     createRadius()
     // console.log("circleValue", circleValue)
   }, [circleCoordinates])
+
 
   const createRadius = () => {
     // console.log("circleCoordinates", circleCoordinates)
@@ -178,28 +378,7 @@ const OceanMapView = (props) => {
     setAddButton("지역 추가")
   }
 
-  const polygonTapp = (id) => {
-    let coordinates = polygonsState[id].coordinates
-
-    mapRef.current.fitToCoordinates(coordinates, {
-        edgePadding: { 
-          top: 10,
-          right: 10,
-          bottom: 10,
-          left: 10
-        },
-        animated: true
-      })
-    setViewLevel(2)
-  };
-
-  const deletePoint = () => {
-    if (isAddingPolygon) {
-      let deleteIndex = newPolygon.length - 1
-      setNewPolygon(newPolygon.filter((item, index) => index != deleteIndex))
-    } 
-  }
-
+  
   const rightViewToggle = () => {
     setRightDrawer(!isRightDrawerOpen)
     Animated.timing(
@@ -231,73 +410,6 @@ const OceanMapView = (props) => {
     setNewPolygon(array)
   }
 
-  const addPolygon = () => {
-    if (!isAddingPolygon) {
-      setAddButton("완료")
-      setAddPolygon(true)
-    } else {
-      if (newPolygon.length > 2) {
-        toggleModal()
-      } else {
-        console.log("add more dots")
-      }
-    }
-  };
-
-  const saveNameAdded = (text) => {
-    toggleModal()
-    setAddButton("지역 추가")
-    setAddPolygon(false)
-    addPolygonToMap(text)
-    setNewPolygon([])
-  }
-
-  const addPolygonToMap = (text) => {
-    // console.log("added name", text)
-    let coordinateForName = getCenterOfBounds(newPolygon)
-    let newPolygonObject = {
-      id: new Date().toString(),
-      coordinates: newPolygon,
-      name: text,
-      nameCoordinate: coordinateForName
-    }
-
-    // console.log("add polygon triggered", newPolygonObject)
-    dispatch(
-      areaActions.addArea(
-        new Date().toString(),
-        text,
-        coordinateForName,
-        newPolygon,
-      )
-    )
-    
-    // console.log("newPolygonObject", newPolygonObject)
-    // setPolygonAdd(oldArray => [...oldArray, newPolygonObject])
-  }
-
-  // const addPolygonToMap = useCallback(async (text)=> {
-  //   let coordinateForName = getCenterOfBounds(newPolygon)
-  //   // let newPolygonObject = {
-  //   //   id: new Date().toString(),
-  //   //   coordinates: newPolygon,
-  //   //   name: text,
-  //   //   nameCoordinate: coordinateForName
-  //   // }
-  //   try {
-  //     await dispatch(
-  //       areaActions.addArea(
-  //         new Date().toString(),
-  //         newPolygon,
-  //         text,
-  //         coordinateForName
-  //       )
-  //     )
-  //   } catch (err) {
-
-  //   }
-  // }, [dispatch])
-
   const toggleModal = () => {
     setModalVisible(!modalVisible)
   }
@@ -319,8 +431,6 @@ const OceanMapView = (props) => {
       startMeasureDistance(true)      
     }
   }
-
-  
 
   const startAreaMeasurement=()=>{
     if (isMeasuringArea) {
@@ -345,6 +455,10 @@ const OceanMapView = (props) => {
 
   }
 
+  const backPressed=()=> {
+    console.log("back pressed in right side view")
+  }
+
   if (isLoading) {
     return <View style={styles.centered}>
         <ActivityIndicator size={'large'} color={"red"} />
@@ -355,6 +469,15 @@ const OceanMapView = (props) => {
     return <View style={styles.centered}>
         <Text>No Products Found. Maybe Start Adding Some Shit</Text>
     </View>
+  }
+
+  let viewingList;
+  if (polygonNav.level == 1) {
+    viewingList = areaList
+  } else if (polygonNav.level == 2) {
+    viewingList = area2List
+  } else if (polygonNav.level == 3) {
+    viewingList = area3List
   }
 
   return (
@@ -402,7 +525,7 @@ const OceanMapView = (props) => {
         } */}
 
         {
-          !isLoading && areaList && areaList.map((i, index) => {
+          !isLoading && viewingList && viewingList.map((i, index) => {
             // console.log("i.coordinateforname", i)
             return <React.Fragment>
               <Polygon
@@ -413,7 +536,7 @@ const OceanMapView = (props) => {
                   // fillColor={"#000, rgba(r,g,b,0.5)"}
                   lineCap={"round"}
                   tappable={true}
-                  onPress={() => polygonTapp(index)}
+                  onPress={() => polygonTapp(index, i)}
                   geodesic={true}
               />
               <Marker
@@ -637,7 +760,7 @@ const OceanMapView = (props) => {
                 resizeMode="contain"
               />
           </TouchableOpacity>
-          <RightSideView list={areaList}/>
+          <RightSideView list={areaList} backPressed={backPressed}/>
       </Animated.View>
 
       <Modal

@@ -1,12 +1,13 @@
 import {
-    GET_AREA,
-    ADD_AREA,
-    DELETE_AREA
-} from '../actions/area';
+    GET_AREA3,
+    ADD_AREA3,
+    DELETE_AREA3
+} from '../actions/area3';
 
-import Area from '../../Models/Area';
+import Area2 from '../../Models/Area2';
 
-let dummydata = [
+
+let initialArea = [
     {
         coordinates: [
             {
@@ -22,30 +23,28 @@ let dummydata = [
             longitude: 127.70314324647188,
             }
         ],
-        id: "0-1",
+        id: 0,
         name: "1-1",
         nameCoordinate: null
     }
 ]
 
-let initialArea = {
-    areaList: dummydata
-}
-
 export default (state = initialArea, action) => {
     switch (action.type) {
-        case GET_AREA:
-            
+        case GET_AREA3:
             return {
-                areaList : state.areaList
+                areaList : action.areas
             };
-        case ADD_AREA:
-            const addingAreaData = new Area(
+        case ADD_AREA3:
+
+            const addingAreaData = new Area2(
                 action.areaData.id,
                 action.areaData.name,
                 action.areaData.coordinates,
-                action.areaData.nameCoordinate
+                action.areaData.nameCoordinate,
+                action.areaData.parentID
             )
+
             return {
                 ...state,
                 areaList : state.areaList.concat(addingAreaData)

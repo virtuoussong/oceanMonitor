@@ -74,22 +74,21 @@ function RightsideViewFunction({ props }) {
         // />
         <RightSideArea3 
         // list={areaList}
+        {...props}
         onPress={() => props.navigation.navigate("리스트페이지4")}/>
     )
 
     let listView4 = props => (
-        // <RightSideFlatListView 
-        //     onPress={() => props.navigation.navigate("리스트페이지3")}
-        // />
         <RightSideArea4 
-        // list={areaList}
-        onPress={() => props.navigation.navigate("리스트페이지4")}/>
+            {...props}
+            onPress={() => props.navigation.navigate("리스트페이지4")}
+        />
     )
 
-    const headerBack = (navigation) => {
-        console.log("header back pressed from 2", navigation)
-        navigation.goBack()
-    }
+    // const headerBack = (navigation) => {
+    //     console.log("header back pressed from 2", navigation)
+    //     navigation.goBack()
+    // }
 
     return (
         <NavigationContainer independent={true} >
@@ -108,8 +107,16 @@ function RightsideViewFunction({ props }) {
                         RightSideArea2.navigationOptions
                     }
                 />
-                <Stack.Screen name="리스트페이지3" component={listView3} options={{headerBackTitleVisible: false}}/>
-                <Stack.Screen name="리스트페이지4" component={listView4} options={{headerBackTitleVisible: false}}/>
+                <Stack.Screen name="리스트페이지3" component={listView3} 
+                     options={
+                        RightSideArea3.navigationOptions
+                    }
+                />
+                <Stack.Screen name="리스트페이지4" component={listView4} 
+                     options={
+                        RightSideArea4.navigationOptions
+                    }
+                />
 
             </Stack.Navigator>
         </NavigationContainer>
@@ -135,7 +142,7 @@ export default RightSideView = (props) => {
     // )
     return (
             <RightsideViewFunction 
-                backPressed={props.backPressed()}
+                // backPressed={props.backPressed()}
             // list={props.list}
             />
         // <Stack.Navigator>

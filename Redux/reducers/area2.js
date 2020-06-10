@@ -8,28 +8,6 @@ import {
 
 import Area2 from '../../Models/Area2';
 
-// let dummyData2 = [
-//     {
-//         coordinates: [
-//             {
-//             latitude: 34.897496004554114,
-//             longitude: 127.66647946089506,
-//             },
-//             {
-//             latitude: 34.88281733008958,
-//             longitude: 127.79087428003548,
-//             },
-//             {
-//             latitude: 34.712926735580794,
-//             longitude: 127.70314324647188,
-//             }
-//         ],
-//         id: 0,
-//         name: "1-1",
-//         nameCoordinate: null,
-//         parentID: 0
-//     }
-// ]
 
 let initialState2 = {
     areaList: [],
@@ -77,6 +55,7 @@ export default (state = initialState2, action) => {
                 filteredList : filteredData,
                 // parentID : action.parentID
             };
+
         case BACK_LEVEL1:
             console.log("reducer back to level 1", action.id);
             return {

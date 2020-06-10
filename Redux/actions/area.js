@@ -41,15 +41,15 @@ export const fetchArea = () => {
     }
 }
 
-export const addArea = (id, name, nameCoordinate, coordinates) => {
+export const addArea = (id, name, coordinates, nameCoordinate) => {
     return async (dispatch, getState) => {
         dispatch({
             type: ADD_AREA,
             areaData: {
-                id, 
-                name, 
-                nameCoordinate, 
-                coordinates
+                id: id, 
+                name: name, 
+                coordinates: coordinates, 
+                nameCoordinate: nameCoordinate, 
             }
         });
     } 

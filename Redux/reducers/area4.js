@@ -1,32 +1,30 @@
 import {
-    GET_AREA3,
-    ADD_AREA3,
-    DELETE_AREA3,
-    GET_FILTERED_AREA3
-} from '../actions/area3';
+    GET_AREA4,
+    ADD_AREA4,
+    DELETE_AREA4,
+    GET_FILTERED_AREA4
+} from '../actions/area4';
 
 import Area2 from '../../Models/Area2';
 
 
-let initialState3 = {
+let initialState4 = {
     areaList: [],
     filteredList: [],
     parentID: null
 }
 
-export default (state = initialState3, action) => {
+export default (state = initialState4, action) => {
     switch (action.type) {
-        case GET_AREA3:
+        case GET_AREA4:
             let data = state.areaList.filter(item => item.parentID == action.parentID)
 
             return {
-                areaList : state.areaList,
+                areaList : action.areas,
                 filteredList: data
             };
-        
-        case ADD_AREA3:
-            console.log("reducer area3 add area:", action.areaData.name);
-            
+        case ADD_AREA4:
+
             const addingAreaData = new Area2(
                 action.areaData.id,
                 action.areaData.name,
@@ -39,9 +37,8 @@ export default (state = initialState3, action) => {
                 ...state,
                 areaList : state.areaList.concat(addingAreaData)
             };
-    
         
-        case GET_FILTERED_AREA3: 
+        case GET_FILTERED_AREA4: 
            
             let filteredData = state.areaList.filter(item => item.parentID == action.parentID)
             return {
@@ -49,7 +46,6 @@ export default (state = initialState3, action) => {
                 filteredList : filteredData,
             };
 
-       
     }
     return state;
 }

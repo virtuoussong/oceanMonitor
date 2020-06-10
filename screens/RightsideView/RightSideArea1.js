@@ -44,9 +44,11 @@ export default RightSideArea1 = (props) => {
     const listTapped = (item) => {
         props.navigation.navigate("리스트페이지2", {
             parentID: item.id,
-            parentName: item.name
+            parentName: item.name,
+            coordinates: item.coordinates,
         })
-        console.log("list tapped", item)
+
+        console.log("list 1 tapped", item)
 
         dispatch(areaActions2.fetchFilteredList(item.id))
         
@@ -67,23 +69,24 @@ export default RightSideArea1 = (props) => {
     useEffect(()=>{
         loadPolyNav().then(()=>{
             if (polygonNav.level == 2) {
+
                 let pushData = {
                   id: polygonNav.areaData.id,
-                  name: polygonNav.areaData.name
+                  name: polygonNav.areaData.name,
+                  coordinates: polygonNav.areaData.coordinates
                 }            
-                // console.log("push RightSideArea1 data!!!!")
-
+                console.log("push RightSideArea1 data!!!!", pushData)
                 listTapped(pushData)
             }
         })
         
     }, [dispatch, polygonNav])
 
-      if (isLoading) {
+    if (isLoading) {
         return <View style={styles.centered}>
             <ActivityIndicator size={'large'} color={"red"} />
         </View>
-      }
+    }
     
     //   if (!isLoading && areaList === null) {
     //     return <View style={styles.centered}>
@@ -97,7 +100,6 @@ export default RightSideArea1 = (props) => {
                 data={areaList}
                 renderItem={(item) => (
                     <RightSideCell
-                        
                         onPress={(id) => listTapped(item.item)}  
                         name={item.item.name}
                     />
@@ -126,12 +128,12 @@ const styles = StyleSheet.create({
 });
 
 
-let DATA =[
-    {id: 0, name: "여수바다1"}, 
-    {id: 1, name: "여수바다2"},
-    {id: 2, name: "여수바다3"},
-    {id: 3, name: "여수바다4"},
-    {id: 4, name: "여수바다5"},
-    {id: 5, name: "여수바다6"},
-    {id: 6, name: "여수바다7"}
-]
+// let DATA =[
+//     {id: 0, name: "여수바다1"}, 
+//     {id: 1, name: "여수바다2"},
+//     {id: 2, name: "여수바다3"},
+//     {id: 3, name: "여수바다4"},
+//     {id: 4, name: "여수바다5"},
+//     {id: 5, name: "여수바다6"},
+//     {id: 6, name: "여수바다7"}
+// ]

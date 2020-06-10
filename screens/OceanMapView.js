@@ -9,6 +9,8 @@ import { getDistance, getAreaOfPolygon, getCenterOfBounds } from 'geolib';
 import * as areaActions from '../Redux/actions/area.js';
 import * as area2Actions from '../Redux/actions/area2.js';
 import * as area3Actions from '../Redux/actions/area3.js';
+import * as area4Actions from '../Redux/actions/area4.js';
+
 import * as polygonNavAction from '../Redux/actions/coordinateNav.js';
 
 import { useSelector, useDispatch } from "react-redux";
@@ -119,6 +121,11 @@ const OceanMapView = (props) => {
     })
   }, [dispatch, load3Areas])
 
+  const area4List = useSelector(state => state.area4ListRoot.areaList)
+  useEffect(()=>{
+
+  }, [dispatch, area4List])
+
   // const backtoLevel1 = useSelector(state => state.area2ListRoot.idForLevel1)
   // const backToLevel1Load = useCallback(async()=>{
   //   console.log("back t0 level 1")
@@ -135,6 +142,28 @@ const OceanMapView = (props) => {
 
   useEffect(()=>{
     loadPolyNav().then(()=>{
+      // if (polygonNav.level == 1) {
+      //   let region = {
+      //     latitude: 34.7834049,
+      //     longitude: 127.79654869999999,
+      //     latitudeDelta: 0.5922,
+      //     longitudeDelta: 0.5421
+      //   }
+      //   mapRef.current.animateToRegion(region, 3)
+      // } else if (polygonNav.level == 2) {
+      //   console.log("poly nav changed")
+      //   let coordinates = polygonNav.areaData.coordinates
+      //   mapRef.current.fitToCoordinates(coordinates, {
+      //     edgePadding: { 
+      //       top: 10,
+      //       right: 10,
+      //       bottom: 10,
+      //       left: 10
+      //     },
+      //     animated: true
+      //   })
+      // }
+
       if (polygonNav.level == 1) {
         let region = {
           latitude: 34.7834049,
@@ -143,9 +172,37 @@ const OceanMapView = (props) => {
           longitudeDelta: 0.5421
         }
         mapRef.current.animateToRegion(region, 3)
-      } else if (polygonNav.level == 2) {
-        console.log("poly nav changed")
-        let coordinates = polygonNav.areaData.coordinates
+      } else {
+        // let coordinates = polygonNav.areaData.coordinates
+        console.log("new coordinates", polygonNav)
+        let coordinates;
+        if (polygonNav.level == 2) {
+
+          // console.log("area 2 view")
+          let list2Item = area2List.filter(item => item.id == polygonNav.areaData.id)
+          // console.log("list2Item count", list2Item.length)
+          // console.log("new list2Item 2", list2Item[0].parentID)
+          
+
+          if (list2Item.length > 0) {
+            let list1Item = areaList.filter(item => item.id = list2Item[0].parentID)
+            coordinates = list1Item[0].coordinates
+          } 
+
+          if (list2Item.length == 0) {
+            coordinates = polygonNav.areaData.coordinates
+          }
+
+         
+        } else if (polygonNav.level == 3) {
+
+          
+          coordinates = polygonNav.coordinates3
+        } else if (polygonNav.level == 4) {
+          coordinates = polygonNav.coordinates4
+        } 
+       
+
         mapRef.current.fitToCoordinates(coordinates, {
           edgePadding: { 
             top: 10,
@@ -157,8 +214,31 @@ const OceanMapView = (props) => {
         })
       }
     })
- 
   }, [dispatch, polygonNav])
+
+  const polygonTapp = (index, data) => {
+
+    let currentLevel = polygonNav.level
+
+    if (currentLevel < 4) {
+      // currentLevel += 1
+      // let focusedPolygonView = {
+      //   currentViewLevel : currentLevel,
+      //   parentID : viewingList[index].id
+      // }
+      // setViewLevel(focusedPolygonView)
+      // let coordinates = viewingList[index].coordinates
+
+      if (currentLevel == 1) {
+        dispatch(polygonNavAction.updateCoordinate(2, data))
+      } else if (currentLevel == 2) {
+        dispatch(polygonNavAction.updateCoordinate(3, data))
+      } else if (currentLevel == 3) {
+        dispatch(polygonNavAction.updateCoordinate(4, data))
+      }
+
+    }    
+  };
 
   // useEffect(()=>{
    
@@ -202,24 +282,7 @@ const OceanMapView = (props) => {
     }
   };
 
-  const polygonTapp = (index, data) => {
-
-    let currentLevel = polygonNav.level
-
-    if (currentLevel < 4) {
-      // currentLevel += 1
-      let focusedPolygonView = {
-        currentViewLevel : currentLevel,
-        parentID : viewingList[index].id
-      }
-      // setViewLevel(focusedPolygonView)
-      let coordinates = viewingList[index].coordinates
-      if (currentLevel == 1) {
-        dispatch(polygonNavAction.updateCoordinate(2, data))
-      }
-
-    }    
-  };
+ 
 
   
 
@@ -227,7 +290,7 @@ const OceanMapView = (props) => {
     let currentLevel = data.currentViewLevel
     if (currentLevel == 2) {
       // load2Areas()
-      console.log("id for filter", data.parentID)
+      // console.log("id for filter", data.parentID)
       dispatch(area2Actions.fetchFilteredList(data.parentID))
     }
     if (currentLevel == 3) {
@@ -263,18 +326,18 @@ const OceanMapView = (props) => {
   const addPolygonToMap = (text) => {
     
     let coordinateForName = getCenterOfBounds(newPolygon)
-
+   
     if (polygonNav.level == 1) {
+    
       dispatch(
         areaActions.addArea(
           new Date().toString(),
           text,
-          coordinateForName,
           newPolygon,
+          coordinateForName,
         )
       )
     } else if (polygonNav.level == 2) {
-      // console.log("polygonNav", polygonNav)
       dispatch(
         area2Actions.addArea2(
           new Date().toString(),
@@ -285,7 +348,6 @@ const OceanMapView = (props) => {
         )
       )
     } else if (polygonNav.level == 3) {
-
       dispatch(
         area3Actions.addArea3(
           new Date().toString(),
@@ -295,7 +357,16 @@ const OceanMapView = (props) => {
           polygonNav.areaData.id
         )
       )
-      
+    } else {
+      dispatch(
+        area4Actions.addArea4(
+          new Date().toString(),
+          text,
+          coordinateForName,
+          newPolygon,
+          polygonNav.areaData.id
+        )
+      )
     }
   }
 
@@ -455,9 +526,9 @@ const OceanMapView = (props) => {
 
   }
 
-  const backPressed=()=> {
-    console.log("back pressed in right side view")
-  }
+  // const backPressed=()=> {
+  //   console.log("back pressed in right side view")
+  // }
 
   if (isLoading) {
     return <View style={styles.centered}>
@@ -478,6 +549,8 @@ const OceanMapView = (props) => {
     viewingList = area2List
   } else if (polygonNav.level == 3) {
     viewingList = area3List
+  } else if (polygonNav.level == 4) {
+    viewingList = area4List
   }
 
   return (
@@ -760,7 +833,9 @@ const OceanMapView = (props) => {
                 resizeMode="contain"
               />
           </TouchableOpacity>
-          <RightSideView list={areaList} backPressed={backPressed}/>
+          <RightSideView list={areaList} 
+          // backPressed={backPressed}
+          />
       </Animated.View>
 
       <Modal

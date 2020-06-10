@@ -33,16 +33,6 @@ export const BACK_LEVEL1 = "BACK_LEVEL1";
 // ]
 
 
-export const fetchFilteredList = (id) => {
-    return async (dispatch, getState) => {
-        console.log("filter action area2 inited", id)
-
-        dispatch({
-            type: GET_FILTERED_AREA2,
-            parentID: id
-        });
-    }
-}
 
 
 export const fetchArea2 = (id) => {
@@ -56,7 +46,7 @@ export const fetchArea2 = (id) => {
 }
 
 export const addArea2 = (id, name, nameCoordinate, coordinates, parentID) => {
-    console.log("ADD_AREA triggered in ACTION2 parentID", parentID)
+    // console.log("ADD_AREA triggered in ACTION2 parentID", parentID)
     return async (dispatch, getState) => {
         dispatch({
             type: ADD_AREA2,
@@ -69,6 +59,18 @@ export const addArea2 = (id, name, nameCoordinate, coordinates, parentID) => {
             }
         });
     } 
+}
+
+
+export const fetchFilteredList = (id) => {
+    return async (dispatch, getState) => {
+        // console.log("filter action area2 inited", id)
+
+        dispatch({
+            type: GET_FILTERED_AREA2,
+            parentID: id
+        });
+    }
 }
 
 export const backToLevel1 = (id) => {

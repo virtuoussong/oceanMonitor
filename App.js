@@ -11,6 +11,8 @@ import ReduxThunk from 'redux-thunk';
 import areaListReducer from './Redux/reducers/area.js';
 import area2ListReducer from './Redux/reducers/area2.js';
 import area3ListReducer from './Redux/reducers/area3.js';
+import area4ListReducer from './Redux/reducers/area4.js';
+
 import coordinateReducer from './Redux/reducers/coordinateNav.js'
 
 //DocumentFolderView
@@ -29,6 +31,7 @@ const rootReducer = combineReducers({
   areaListRoot : areaListReducer,
   area2ListRoot : area2ListReducer,
   area3ListRoot : area3ListReducer,
+  area4ListRoot : area4ListReducer,
   focusedPolygonRoot : coordinateReducer
 });
 

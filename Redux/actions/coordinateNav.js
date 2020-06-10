@@ -23,7 +23,12 @@ export const updateCoordinate = (level, areaData) => {
             type: UPDATE_COORDINATE,
             data: {
                 level: level,
-                areaData: areaData
+                // areaData: areaData,
+                areaData: {
+                    id: areaData.id,
+                    name: areaData.name,
+                    coordinates: areaData.coordinates
+                },
             }
         })
     }

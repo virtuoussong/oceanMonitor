@@ -71,9 +71,9 @@ export default RightSideArea1 = (props) => {
             if (polygonNav.level == 2) {
 
                 let pushData = {
-                  id: polygonNav.areaData.id,
-                  name: polygonNav.areaData.name,
-                  coordinates: polygonNav.areaData.coordinates
+                  id: polygonNav.coordinates2.id,
+                  name: polygonNav.coordinates2.name,
+                  coordinates: polygonNav.coordinates2.coordinates
                 }            
                 console.log("push RightSideArea1 data!!!!", pushData)
                 listTapped(pushData)

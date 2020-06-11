@@ -72,9 +72,9 @@ export default RightSideArea2 = (props) => {
     useEffect(()=>{
         if (polygonNav.level == 3) {
             let pushData = {
-                id: polygonNav.areaData.id,
-                name: polygonNav.areaData.name,
-                coordinates: polygonNav.areaData.coordinates
+                id: polygonNav.coordinates3.id,
+                name: polygonNav.coordinates3.name,
+                coordinates: polygonNav.coordinates3.coordinates
             }
             console.log("polygonNav level 2", polygonNav)            
             listTapped(pushData)
@@ -115,7 +115,8 @@ RightSideArea2.navigationOptions = (navData, props) => {
             name: "no name",
             coordinates: []
         }
-        dispatch(coordinateNavAction.updateCoordinate(1, data))
+        // dispatch(coordinateNavAction.updateCoordinate(1, data))
+        dispatch(coordinateNavAction.navBack(1))
         navData.navigation.goBack()        
     }
 

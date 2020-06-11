@@ -87,7 +87,8 @@ RightSideArea3.navigationOptions = (navData, props) => {
 
     const backPressed = () => {
         console.log("back pressed params from area3", data)
-        dispatch(coordinateNavAction.updateCoordinate(2, data))
+        // dispatch(coordinateNavAction.updateCoordinate(2, data))
+        dispatch(coordinateNavAction.navBack(2))
         navData.navigation.goBack()        
     }
 

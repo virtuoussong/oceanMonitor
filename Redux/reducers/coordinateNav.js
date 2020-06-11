@@ -1,12 +1,17 @@
 import {
     GET_COORDINATE,
-    UPDATE_COORDINATE
+    UPDATE_COORDINATE,
+    NAVBACK
 } from '../actions/coordinateNav';
 
 
 let initialData = {
     focusedPolygon: {
-        level: 1
+        level: 1,
+        areaData: "",
+        coordinates2: [],
+        coordinates3: [],
+        coordinates4: []
     }
 }
     
@@ -25,7 +30,7 @@ export default (state = initialData, action) => {
                     ...state,
                     focusedPolygon : {
                         level: action.data.level,
-                        areaData: action.data.areaData
+                        areaData: action.data.areaData,
                     }
                 };
 
@@ -36,7 +41,10 @@ export default (state = initialData, action) => {
                     focusedPolygon : {
                         level: action.data.level,
                         areaData: action.data.areaData,
-                        coordinates2: action.data.areaData.coordinates
+                        // coordinates2: action.data.areaData.coordinates,
+                        coordinates2: action.data.areaData,
+                        coordinates3: state.focusedPolygon.coordinates3,
+                        coordinates4: state.focusedPolygon.coordinates4
                     }
                 };
 
@@ -47,7 +55,11 @@ export default (state = initialData, action) => {
                     focusedPolygon : {
                         level: action.data.level,
                         areaData: action.data.areaData,
-                        coordinates3: action.data.areaData.coordinates
+                        coordinates2: state.focusedPolygon.coordinates2,
+
+                        coordinates3: action.data.areaData,
+
+                        coordinates4: state.focusedPolygon.coordinates4
                     }
                 };
 
@@ -57,15 +69,27 @@ export default (state = initialData, action) => {
                     focusedPolygon : {
                         level: action.data.level,
                         areaData: action.data.areaData,
-                        coordinates4: action.data.areaData.coordinates
+
+                        coordinates2: state.focusedPolygon.coordinates2,
+                        coordinates3: state.focusedPolygon.coordinates3,
+
+                        coordinates4: action.data.areaData
                     }
                 };
             }
-
-            // return {
-            //     ...state,
-            //     focusedPolygon : action.data
-            // };
+        
+        case NAVBACK: 
+            console.log("navback", action)
+            return {
+                ...state,
+                focusedPolygon : {
+                    level: action.data.level,
+                    areaData: state.focusedPolygon.areaData,
+                    coordinates2: state.focusedPolygon.coordinates2,
+                    coordinates3: state.focusedPolygon.coordinates3,
+                    coordinates4: state.focusedPolygon.coordinates4
+                }
+            };
     }
     return state;
 }

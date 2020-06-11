@@ -163,7 +163,7 @@ const OceanMapView = (props) => {
       //     animated: true
       //   })
       // }
-
+      console.log("poly changed", polygonNav)
       if (polygonNav.level == 1) {
         let region = {
           latitude: 34.7834049,
@@ -177,29 +177,42 @@ const OceanMapView = (props) => {
         console.log("new coordinates", polygonNav)
         let coordinates;
         if (polygonNav.level == 2) {
-
+          console.log("nav coordinates level 2", polygonNav)
           // console.log("area 2 view")
-          let list2Item = area2List.filter(item => item.id == polygonNav.areaData.id)
-          // console.log("list2Item count", list2Item.length)
-          // console.log("new list2Item 2", list2Item[0].parentID)
+          // let list2Item2 = area2List.filter(item => item.id == polygonNav.areaData.id)
           
+          // if (list2Item2.length > 0) {
+          //   // console.log("list2Item back", list2Item2)
+          //   let list1Item = areaList.filter(item => item.id = list2Item2[0].parentID)
+          //   // console.log("list1Item back", list1Item)
+          //   coordinates = list1Item[0].coordinates
+          // } 
 
-          if (list2Item.length > 0) {
-            let list1Item = areaList.filter(item => item.id = list2Item[0].parentID)
-            coordinates = list1Item[0].coordinates
-          } 
-
-          if (list2Item.length == 0) {
-            coordinates = polygonNav.areaData.coordinates
-          }
-
-         
+          // if (list2Item2.length == 0) {
+          //   coordinates = polygonNav.areaData.coordinates
+          // }
+          coordinates = polygonNav.coordinates2.coordinates
         } else if (polygonNav.level == 3) {
+          console.log("nav coordinates level 3", polygonNav)
 
-          
-          coordinates = polygonNav.coordinates3
+          // let list3Item3 = area3List.filter(item => item.id == polygonNav.areaData.id)
+          // // console.log("list3Item count", list3Item3)
+          // if (list3Item3.length > 0) {
+          //   let list2Item3 = area2List.filter(item => item.id = list3Item3[0].parentID)
+          //   coordinates = list2Item3[0].coordinates
+          //   // console.log("level 3 back coordinates", list2Item3)
+          // } 
+
+          // if (list3Item3.length == 0) {
+          //   // console.log("level 3", polygonNav.areaData.coordinates)
+          //   coordinates = polygonNav.areaData.coordinates
+          // }
+          coordinates = polygonNav.coordinates3.coordinates
+
         } else if (polygonNav.level == 4) {
-          coordinates = polygonNav.coordinates4
+          console.log("nav coordinates level 4", polygonNav)
+
+          coordinates = polygonNav.coordinates4.coordinates
         } 
        
 

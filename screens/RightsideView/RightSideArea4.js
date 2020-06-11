@@ -39,8 +39,8 @@ export default RightSideArea4 = (props) => {
     useEffect(()=>{
         if (polygonNav.level == 4) {
             let pushData = {
-                id: polygonNav.areaData.id,
-                name: polygonNav.areaData.name
+                id: polygonNav.coordinates4.id,
+                name: polygonNav.coordinates4.name
             }            
             listTapped(pushData)
         }
@@ -61,12 +61,19 @@ export default RightSideArea4 = (props) => {
 
 RightSideArea4.navigationOptions = (navData, props) => {
     const areaTitle = navData.route.params.parentName;
-    // const coordinates = navData.route.params.coordinates;
+    const areaID = navData.route.params.parentID;
+    const coordinates = navData.route.params.coordinates
+    let data = {
+        id: areaID,
+        name: areaTitle,
+        coordinates : coordinates
+    }
     const dispatch = useDispatch();
 
     const backPressed = () => {
         // console.log("back pressed from area3")
-        dispatch(coordinateNavAction.updateCoordinate(2))
+        // dispatch(coordinateNavAction.updateCoordinate(3, data))
+        dispatch(coordinateNavAction.navBack(3))
         navData.navigation.goBack()
     }
 

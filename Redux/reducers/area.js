@@ -29,7 +29,7 @@ let dummydata = [
 ]
 
 let initialArea = {
-    areaList: dummydata
+    areaList: []
 }
 
 export default (state = initialArea, action) => {

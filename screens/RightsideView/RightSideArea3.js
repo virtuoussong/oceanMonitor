@@ -6,7 +6,8 @@ import {
     FlatList,
     View, 
     ActivityIndicator,
-    TextInput, TouchableOpacity, Animated, Image, Easing 
+    TextInput, TouchableOpacity, Animated, Image, Easing,
+    Modal 
 } from "react-native";
 
 import { HeaderBackButton } from 'react-navigation-stack'
@@ -14,11 +15,12 @@ import RightSideCell from '../../components/RightSideFlatListCell';
 import { useSelector, useDispatch } from "react-redux";
 import * as areaAction4 from '../../Redux/actions/area4';
 import * as coordinateNavAction from '../../Redux/actions/coordinateNav';
-
+import RegionDetail from '../FolderViews/DocumentDetailView';
 export default RightSideArea3 = (props) => {
 
     // const [locations, setLocations] = useState([])
     const [isLoading, setIsLoading] = useState(false);
+    const [isDocOn, setDoc] = useState(false)
 
     const dispatch = useDispatch();
     const areaList = useSelector(state => state.area3ListRoot)
@@ -57,14 +59,30 @@ export default RightSideArea3 = (props) => {
         
     }, [dispatch, polygonNav])
 
+    const showDoc = (id) => {
+        console.log("doc tapped")
+        setDoc(!isDocOn)
+    }
+
     return (
         <SafeAreaView style={styles.viewContainer}>
+            <Modal visible={isDocOn} animationType="slide">
+                <View style={{width: '100%', height: 50}}>
+                    <TouchableOpacity style={{height: '100%' ,marginLeft: 'auto', marginRight: 20, justifyContent: 'center'}} onPress={()=>showDoc()}>
+                        <Text>닫기</Text>
+                    </TouchableOpacity>    
+                </View>
+                <RegionDetail hasCloseButton={true} close={()=>showDoc()}/>
+            </Modal>
+
             <FlatList 
                 data={areaList.filteredList}
                 renderItem={(item) => (
                     <RightSideCell 
                         onPress={()=> listTapped(item.item)}  
                         name={item.item.name}
+                        isDocShown={true}
+                        docTapped={()=>showDoc()}
                     />
                 )}
                 keyExtractor={item => `${item.id}listKey`}

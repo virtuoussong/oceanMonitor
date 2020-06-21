@@ -1,16 +1,17 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { 
-    StyleSheet, 
-    Text, 
+    StyleSheet,  
     SafeAreaView,
     FlatList,
     View,
     ActivityIndicator, 
-    TextInput, TouchableOpacity, Animated, Image, Easing 
+    Modal,
+    TouchableOpacity,
+    Text
 } from "react-native";
 import { HeaderBackButton } from 'react-navigation-stack'
 import RightSideCell from '../../components/RightSideFlatListCell';
-
+import RegionDetail from '../DocDetail/components/RegionDetail/RegionDetailView';
 import { useSelector, useDispatch } from "react-redux";
 import * as areaActions from '../../Redux/actions/area2';
 import * as areaAction3 from '../../Redux/actions/area3';
@@ -21,7 +22,7 @@ export default RightSideArea2 = (props) => {
     // const [locations, setLocations] = useState([])
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState();
-
+    const [isDocOn, setDoc] = useState(false)
     // useEffect(()=>{
     //     // setLocations(DATA)
     // }, [locations])
@@ -87,15 +88,31 @@ export default RightSideArea2 = (props) => {
         <ActivityIndicator size={'large'} color={"red"} />
     </View>
     }
+
+    const showDoc = (id) => {
+        setDoc(!isDocOn)
+    }
     
     return (
         <SafeAreaView style={styles.viewContainer}>
+
+            <Modal visible={isDocOn} animationType="slide">
+                <View style={{width: '100%', height: 50}}>
+                    <TouchableOpacity style={{height: '100%' ,marginLeft: 'auto', marginRight: 20, justifyContent: 'center'}} onPress={()=>showDoc()}>
+                        <Text>닫기</Text>
+                    </TouchableOpacity>    
+                </View>
+                <RegionDetail hasCloseButton={true} close={()=>showDoc()}/>
+            </Modal>
+
             <FlatList 
                 data={areaList.filteredList}
                 renderItem={(item) => (
                     <RightSideCell 
                         onPress={(id) => listTapped(item.item)}  
                         name={item.item.name}
+                        isDocShown={true}
+                        docTapped={()=>showDoc()}
                     />
                 )}
                 keyExtractor={item => `${item.id}listKey`}

@@ -9,10 +9,20 @@ import {
 } from "react-native";
 
 export default RightSideCell = (props) => {
+    const docTapped = () => {
+        console.log("show doc")
+        props.docTapped()
+    }
+
     return (
-        <TouchableOpacity onPress={props.onPress}>
-            <Text style={styles.title}>{props.name}</Text>
-        </TouchableOpacity>
+        <View style={{width: '100%', flexDirection: 'row'}}>
+            <TouchableOpacity onPress={props.onPress} >
+                <Text style={styles.title}>{props.name}</Text>
+            </TouchableOpacity>
+            {props.isDocShown &&  <TouchableOpacity onPress={()=>docTapped()} style={{position: 'absolute',top: -8, right: 20, width: 24, hegiht: 24}}>
+                <Image  resizeMode={'contain'} style={{width: 24, hegiht: 24}} source={require("../assets/plusIcon.png")}/>
+            </TouchableOpacity>}
+        </View>
     )
 }
 

@@ -1,25 +1,12 @@
-import React, { useState } from 'react';
-import {StyleSheet, View, FlatList, Text, TextInput, KeyboardAvoidingView, Image, TouchableOpacity} from 'react-native';
-import DrawerButton from '../../components/DrawerNavButton';
-import TitleInputView from '../DocDetail/components/DocDetail/TitleInput';
-import AreaDoc from '../../Models/AreaDoc.js';
-import area from '../../Redux/reducers/area';
+import React, { useState, useEffect } from 'react';
+import {StyleSheet, View, FlatList, Text, TextInput, KeyboardAvoidingView, Image, TouchableOpacity, Modal} from 'react-native';
+// import DrawerButton from '../../components/DrawerNavButton';
+import TitleInputView from '../DocDetail/TitleInput';
+import AreaDoc from '../../../../Models/AreaDoc';
+// import area from '../../Redux/reducers/area';
+import Camera from '../../../Camera';
+import * as ImagePicker from 'expo-image-picker';
 
-let areaDocData = new AreaDoc(
-    1234, 
-    "여수 2-1 구역", 
-    ["김수영, 송치만, 송치만2, 송치만3"], 
-    "2020-3-4", 
-    "12:30", 
-    "12/23", 
-    "맑음", 
-    "1m", 
-     "100m/h", 
-    23, 
-    20, 
-    "200m", 
-    "1km"
-)
 
 let areaDataDoc2 = new AreaDoc(
     1234, 
@@ -34,23 +21,56 @@ let areaDataDoc2 = new AreaDoc(
     "20c", 
     "15c", 
     "12m", 
-    "1km"
+    "1km",
+    ""
 )
 
-export default AreaDetailView = (props) => {
+export default BasicInfoDoc = (props) => {
 
     const [areaData, editAreaData] = useState(areaDataDoc2)
+    const [isModalOn, setModal] = useState(false);
+    useEffect(()=>{
 
-    const pictureTapped = () => {
+    }, [areaData])
+
+    const pictureTapped = async () => {
         console.log("picture tapped")
+        let result = await ImagePicker.launchImageLibraryAsync({
+            mediaTypes: ImagePicker.MediaTypeOptions.All,
+            allowsEditing: true,
+            aspect: [4, 3],
+            quality: 1,
+        });
         
+        
+        if (!result.cancelled) {
+            editAreaData({
+                ...areaData,
+                imageLink: result.uri
+            })
+        }
     }
 
     const cameraTapped = () => {
         console.log("camera tapped")
+        setModal(!isModalOn)
+    }
+
+    const toggleCamera = () => {
+        setModal(!isModalOn)
+    }
+
+    const savePhoto=(i)=> {
+        editAreaData({
+            ...areaData,
+            imageLink: i
+        })
     }
 
     return <View style={styles.container}>
+        <Modal visible={isModalOn}>
+            <Camera toggleCamera={()=>toggleCamera()} save={(i)=>savePhoto(i)}/>
+        </Modal>
         <TitleInputView/>
         <View style={styles.divisionWrapper}>
             {/* 섹션 1 */}
@@ -147,16 +167,24 @@ export default AreaDetailView = (props) => {
 
             {/* 섹션 2 */}
             <View style={[{flex: 5.2}, styles.flexRow, styles.centerView]}>
-                <View style={[{flex: 1}, styles.centerView]}>
-                    <TouchableOpacity onPress={()=>cameraTapped()}>
-                        <Image style={[, {width: 100, height: 100}]} source={require("../../assets/cameraIcon.png")}/>
-                    </TouchableOpacity>
-                </View>
-                <View style={[{flex:1}, styles.centerView]}>
-                    <TouchableOpacity onPress={()=>pictureTapped()}>
-                        <Image style={[{width: 100, height: 100}]} source={require("../../assets/pictureIcon.png")}/>
-                    </TouchableOpacity>
-                </View>
+                {areaData.imageLink ? 
+                    <TouchableOpacity style={{flex: 1}} onPress={()=>pictureTapped()}>
+                        <Image style={{flex: 1}} source={{uri: areaData.imageLink}}/>  
+                    </TouchableOpacity> :
+                    <React.Fragment>
+                        <View style={[{flex: 1}, styles.centerView]}>
+                            <TouchableOpacity onPress={()=>cameraTapped()}>
+                                <Image style={[, {width: 100, height: 100}]} source={require("../../../../assets/cameraIcon.png")}/>
+                            </TouchableOpacity>
+                        </View>
+                        <View style={[{flex:1}, styles.centerView]}>
+                            <TouchableOpacity onPress={()=>pictureTapped()}>
+                                <Image style={[{width: 100, height: 100}]} source={require("../../../../assets/pictureIcon.png")}/>
+                            </TouchableOpacity>
+                        </View>
+                    </React.Fragment>
+                }
+                
             </View>
         </View>
     </View>

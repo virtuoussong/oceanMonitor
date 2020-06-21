@@ -7,9 +7,7 @@ export default TitleInput = (props) => {
     return <KeyboardAvoidingView style={styles.keyboardContainer} behavior="position" enabled   keyboardVerticalOffset={100}>
         <View style={styles.firstRow}>
             <Text style={styles.areaName}>구역명</Text>
-            <View style={styles.areaNameImage}></View>
             <TextInput placeholder={"text"} style={styles.nameInputField}/>
-            <View style={styles.nameDocImage}></View>
             <Text style={styles.inspectors}>조사자</Text>
             <View style={styles.inspectorBox}>
                 <View style={[styles.agenBoxRow , {borderBottomWidth: 1, borderBottomColor: 'black'}]}>
@@ -85,7 +83,7 @@ const styles = StyleSheet.create({
         borderRightWidth: 1,
         borderRightColor: 'black',
 
-        width: "40%",
+        width: "50%",
         backgroundColor: 'white',
         height: '100%',
         padding: 20,

@@ -21,6 +21,7 @@ import SecondAreaListView from './screens/FolderViews/SecondAreaListView';
 import ThirdAreaListView from './screens/FolderViews/ThirdAreaListView';
 import DocumentDetailView from './screens/FolderViews/DocumentDetailView';
 import AreaDetailView from './screens/FolderViews/AreaDetailView';
+import RegionDetailView from './screens/DocDetail/components/RegionDetail/RegionDetailView';
 
 import { createStackNavigator } from '@react-navigation/stack';
 import { createDrawerNavigator } from '@react-navigation/drawer';
@@ -72,11 +73,18 @@ function Document({ navigation }) {
     />
   )
 
+  // let areaDetailView =()=> (
+  //   <AreaDetailView 
+  //     toggleDrawer={() => navigation.toggleDrawer()} 
+  //   />
+  // )
+
   let areaDetailView =()=> (
-    <AreaDetailView 
+    <RegionDetailView 
       toggleDrawer={() => navigation.toggleDrawer()} 
     />
   )
+  
 
   return (
     <Stack.Navigator>

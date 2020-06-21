@@ -1,167 +1,443 @@
-import React from 'react';
-import {StyleSheet, View, FlatList, Text, Dimensions, TouchableOpacity, ScrollView, Image} from 'react-native';
-import TitleInputView from '../../components/TitleInput';
+import React, { useState, useEffect } from 'react';
+import {StyleSheet, View, FlatList, Text, Dimensions, TouchableOpacity, ScrollView, Image, Modal, TextInput} from 'react-native';
+import TitleInputView from './TitleInput';
 import PageTitle from '../../components/PageTitle';
+import PickerView from '../PickerView';
 import WhiteTriangle from '../../../../assets/whiteTriangle.png';
+import {SectionType} from "../../../../Models/FirstPage";
+// import ImagePicker from 'react-native-image-picker';
+// import {Permissions, ImagePicker} from 'expo';
+import * as ImagePicker from 'expo-image-picker';
+import Camera from '../../../Camera';
+
+import {
+    SecondPage,
+    BeachStatus,
+    ThicknessType,
+    OilStatus,
+  } from "../../../../Models/SecondPage";
+// import { TextInput } from 'react-native-gesture-handler';
+
+let dataSetForPage2 = new SecondPage (
+    new BeachStatus(
+        SectionType.MIDDLE,
+        "100",
+        "10",
+        "10",
+        ThicknessType.PO,
+        OilStatus.FR,
+        ""
+    ),
+    new BeachStatus(
+        SectionType.MIDDLE,
+        "100",
+        "10",
+        "10",
+        ThicknessType.PO,
+        OilStatus.FR,
+        ""
+    ),
+    new BeachStatus(
+        SectionType.MIDDLE_BOTTOM,
+        "100",
+        "10",
+        "10",
+        ThicknessType.PO,
+        OilStatus.FR,
+        ""
+    )
+);
 
 export default SecondDoc = (props) => {
+    const [data, setData] = useState(dataSetForPage2);
+    const [isPickerOn, setPickerView] = useState(false);
+    const [dataForSelect, setDataForSelect] = useState([]);
+    const [targetData, setTargetDate] = useState({
+        section: null,
+        field: null
+    });
+    const [isCameraOn, setCamera] = useState(false)
+
+  
+
+    useEffect(()=>{
+    
+    },[data, isPickerOn])
+
+    const selectInput = (section, field) => {
+        setTargetDate({
+            section: section,
+            field: field
+        })
+
+        if (field == 'thickness') {
+            setDataForSelect(Object.values(ThicknessType))
+        } else if (field == 'oilType') {
+            setDataForSelect(Object.values(OilStatus))
+        } else if (field == 'spread') {
+            setDataForSelect(["10", "20", "30", "40", "50", "60", "70", "80", "90", "100"])
+        } else if (field == 'location') {
+            setDataForSelect(Object.values(SectionType))
+        }
+
+        togglePicker()
+    }
+
+    const togglePicker=()=>{
+        setPickerView(!isPickerOn)
+    }
+
+    const selectedData =(i)=>{
+        setData({
+            ...data,
+            [targetData.section]: {
+                ...data[targetData.section],
+                [targetData.field]: i
+            }
+        })
+    }
+
+    useEffect(()=>{
+        if (targetData.field == "imageLink") {
+            if (!isCameraOn) {
+                openGallery()
+            } else {
+
+            }
+        }
+    }, [targetData])
+
+    const pickPhoto = async (section, field) => {
+        setTargetDate({
+            section: section,
+            field: field
+        })
+      };
+
+    const openGallery = async () => {
+        let result = await ImagePicker.launchImageLibraryAsync({
+            mediaTypes: ImagePicker.MediaTypeOptions.All,
+            allowsEditing: true,
+            aspect: [4, 3],
+            quality: 1,
+        });
+        
+        if (!result.cancelled) {
+            selectedData(result.uri)
+        }
+    }
+
+
+    const takePhoto=(section, field)=>{
+        setCamera(!isCameraOn)
+        setTargetDate({
+            section: section,
+            field: field
+        })
+    }
+
+    const savePhoto=(i)=> {
+        setData({
+            ...data,
+            [targetData.section]: {
+                ...data[targetData.section],
+                [targetData.field]: i
+            }
+        })
+    }
+
+    const toggleCamera = () => {
+    setCamera(!isCameraOn)
+    }
+    
     return <View style={styles.container}>
+        <Modal visible={isCameraOn}>
+            <Camera toggleCamera={()=>toggleCamera()} save={(i)=>savePhoto(i)}/>
+        </Modal>
+
+        <Modal
+            animationType="slide"
+            transparent={true}
+            visible={isPickerOn}
+        >
+            <PickerView data={dataForSelect} onSelect={(i)=>selectedData(i)} hide={()=>togglePicker()}/>
+        </Modal>
+
         <TitleInputView/>
-        <PageTitle title={"표면상 오염상태"}/>
+        <PageTitle title={`${props.isLower ? "표면상 오염상태 하" :"표면상 오염상태 상"}`}/>
         <View style={styles.divisionWrapper}>
             {/* first section*/}
             <View style={[styles.divisionSection, styles.rightBorderLine]}>
-                <View style={[styles.sectionTop, styles.borderBottom, styles.firstSectionColor]}>
-                    <Text style={styles.topSelectButton}>구간선택</Text>
+                <TouchableOpacity onPress={()=>selectInput('firstSection', 'location')} style={[styles.sectionTop, styles.borderBottom, styles.firstSectionColor]}>
+                    <Text style={styles.topSelectButton}>{data.firstSection.location}</Text>
                     <Image style={styles.triangle} source={WhiteTriangle}/>
-                </View>
+                </TouchableOpacity>
                 <View style={[styles.secondColumn, styles.borderBottom, styles.firstSectionColor]}>
                     <Text style={styles.regularFont}>기름범위(m,%)</Text>
                 </View>
                 <View style={[styles.flexRowColumn, styles.borderBottom]}>
                     <View style={[styles.midSizeCell, styles.rightBorderLine]}>
                         <View style={[styles.smallCell, styles.firstSectionColor, styles.borderBottom]}><Text style={styles.regularFont}>길이</Text></View>
-                        <View style={[styles.smallCell]}></View>
+                        <View style={[styles.smallCell]}>
+                            <TextInput 
+                                keyboardType="number-pad"
+                                style={{flex: 1, textAlign: 'center'}} 
+                                value={data.firstSection.length}
+                                onChange={(i)=>setData({
+                                    ...data,
+                                    firstSection: {
+                                        ...data.firstSection,
+                                        length: i.target.value
+                                    }
+                                })}
+                            />
+                        </View>
                     </View>
                     <View style={[styles.midSizeCell, styles.rightBorderLine]}>
                         <View style={[styles.smallCell, styles.firstSectionColor, styles.borderBottom]}><Text style={styles.regularFont}>폭</Text></View>
-                        <View style={[styles.smallCell]}></View>
+                        <View style={[styles.smallCell]}>
+                            <TextInput 
+                                keyboardType="number-pad"
+                                style={{flex: 1, textAlign: 'center'}} 
+                                value={data.firstSection.width}
+                                onChange={(i)=>setData({
+                                    ...data,
+                                    firstSection: {
+                                        ...data.firstSection,
+                                        length: i.target.value
+                                    }
+                                })}
+                            />
+                        </View>
                     </View>
                     <View style={[styles.midSizeCell]}>
-                        <View style={[styles.smallCell, styles.firstSectionColor, styles.borderBottom]}>
+                        <TouchableOpacity onPress={()=>selectInput('firstSection', 'spread')} style={[styles.smallCell, styles.firstSectionColor, styles.borderBottom]}>
                             <Text style={[styles.regularFont, styles.smallCellWithImage]}>분포</Text>
                             <Image style={styles.triangleInSmallCell} source={WhiteTriangle}/>
-                        </View>
-                        <View style={[styles.smallCell]}></View>
+                        </TouchableOpacity>
+                            <View style={[styles.smallCell]}>
+                                <Text>{`${data.firstSection.spread}%`}</Text>
+                            </View>
                     </View>
                 </View>
                 <View style={[styles.flexRowColumn, styles.borderBottom]}>
                     <View style={[styles.midSizeCell, styles.rightBorderLine]}>
-                        <View style={[styles.smallCell, styles.firstSectionColor, styles.borderBottom]}>
+                        <TouchableOpacity onPress={()=>selectInput('firstSection', 'thickness')} style={[styles.smallCell, styles.firstSectionColor, styles.borderBottom]}>
                             <Text style={[styles.regularFont, styles.smallCellWithImage]}>기름 두께</Text>
                             <Image style={styles.triangleInSmallCell} source={WhiteTriangle}/>
+                        </TouchableOpacity>
+                        <View style={[styles.smallCell]}>
+                            <Text style={{textAlign:'center'}}>{data.firstSection.thickness}</Text>
                         </View>
-                        <View style={[styles.smallCell]}></View>
                     </View>
                     <View style={[styles.midSizeCell, styles.rightBorderLine]}>
-                        <View style={[styles.smallCell, styles.firstSectionColor, styles.borderBottom]}>
+                        <TouchableOpacity onPress={()=>selectInput('firstSection', 'oilType')} style={[styles.smallCell, styles.firstSectionColor, styles.borderBottom]}>
                             <Text style={[styles.regularFont, styles.smallCellWithImage]}>기름 상태</Text>
                             <Image style={styles.triangleInSmallCell} source={WhiteTriangle}/>
-                        </View>
-                        <View style={[styles.smallCell]}></View>
+                        </TouchableOpacity>
+                            <View style={[styles.smallCell]}>
+                                <Text style={{textAlign:'center'}}>{data.firstSection.oilType}</Text>
+                            </View>
                     </View>
                 </View>
                 <View style={[styles.imageSection]}>
-                    <View style={styles.imageSection}>
-                        <Image source={require('../../../../assets/cameraIcon.png')}/>
-                    </View>
-                    <View style={styles.imageSection}>
-                        <Image source={require('../../../../assets/pictureIcon.png')}/>
-                    </View>
+                    {data.firstSection.imageLink ? 
+                        <TouchableOpacity onPress={()=>pickPhoto('firstSection', "imageLink")} style={{flex:1}}>
+                            <Image  style={{flex:1}} source={{uri: data.firstSection.imageLink}}/>
+                        </TouchableOpacity> : 
+                        <View style={{flex: 1, flexDirection:'row'}}>
+                            <TouchableOpacity style={styles.imageSection} onPress={()=>takePhoto('firstSection', 'imageLink')}>
+                                <Image source={require('../../../../assets/cameraIcon.png')}/>
+                            </TouchableOpacity>
+                            <TouchableOpacity style={styles.imageSection} onPress={()=>pickPhoto('firstSection', "imageLink")}>
+                                <Image 
+                                    source={require('../../../../assets/pictureIcon.png')}
+                                />
+                            </TouchableOpacity>
+                        </View>
+                    }
                 </View>
             </View>
             {/* second section*/}
             <View style={[styles.divisionSection, styles.rightBorderLine]}>
-                <View style={[styles.sectionTop, styles.borderBottom, styles.secondSectionColor]}>
-                    <Text style={styles.topSelectButton}>구간선택</Text>
+                <TouchableOpacity onPress={()=>selectInput('secondSection', 'location')} style={[styles.sectionTop, styles.borderBottom, styles.secondSectionColor]}>
+                    <Text style={styles.topSelectButton}>{data.secondSection.location}</Text>
                     <Image style={styles.triangle} source={WhiteTriangle}/>
-                </View>
+                </TouchableOpacity>
                 <View style={[styles.secondColumn, styles.borderBottom, styles.secondSectionColor]}>
                     <Text style={styles.regularFont}>기름범위(m,%)</Text>
                 </View>
                 <View style={[styles.flexRowColumn, styles.borderBottom]}>
                     <View style={[styles.midSizeCell, styles.rightBorderLine]}>
                         <View style={[styles.smallCell, styles.secondSectionColor, styles.borderBottom]}><Text style={styles.regularFont}>길이</Text></View>
-                        <View style={[styles.smallCell]}></View>
+                        <View style={[styles.smallCell]}>
+                            <TextInput 
+                                keyboardType="number-pad"
+                                style={{flex: 1, textAlign: 'center'}} 
+                                value={data.secondSection.length} 
+                                onChange={(i)=>setData({
+                                    ...data,
+                                    secondSection: {
+                                        ...data.secondSection,
+                                        length: i.target.value
+                                    }
+                                })}
+                            />
+                        </View>
                     </View>
                     <View style={[styles.midSizeCell, styles.rightBorderLine]}>
                         <View style={[styles.smallCell, styles.secondSectionColor, styles.borderBottom]}><Text style={styles.regularFont}>폭</Text></View>
-                        <View style={[styles.smallCell]}></View>
+                        <View style={[styles.smallCell]}>
+                            <TextInput 
+                                keyboardType="number-pad"
+                                style={{flex: 1, textAlign: 'center'}} 
+                                value={data.secondSection.width} 
+                                onChange={(i)=>setData({
+                                    ...data,
+                                    secondSection: {
+                                        ...data.secondSection,
+                                        width: i.target.value
+                                    }
+                                })}
+                            />
+                        </View>
                     </View>
                     <View style={[styles.midSizeCell]}>
-                        <View style={[styles.smallCell, styles.secondSectionColor, styles.borderBottom]}>
+                        <TouchableOpacity  onPress={()=>selectInput('secondSection', 'spread')} style={[styles.smallCell, styles.secondSectionColor, styles.borderBottom]}>
                             <Text style={[styles.regularFont, styles.smallCellWithImage]}>분포</Text>
                             <Image style={styles.triangleInSmallCell} source={WhiteTriangle}/>
-                        </View>
-                        <View style={[styles.smallCell]}></View>
+                        </TouchableOpacity>
+                            <View style={[styles.smallCell]}>
+                                <Text>{`${data.secondSection.spread}%`}</Text>
+                            </View>
                     </View>
                 </View>
                 <View style={[styles.flexRowColumn, styles.borderBottom]}>
                     <View style={[styles.midSizeCell, styles.rightBorderLine]}>
-                        <View style={[styles.smallCell, styles.secondSectionColor, styles.borderBottom]}>
+                        <TouchableOpacity  onPress={()=>selectInput('secondSection', 'thickness')} style={[styles.smallCell, styles.secondSectionColor, styles.borderBottom]}>
                             <Text style={[styles.regularFont, styles.smallCellWithImage]}>기름 두께</Text>
                             <Image style={styles.triangleInSmallCell} source={WhiteTriangle}/>
+                        </TouchableOpacity>
+                        <View style={[styles.smallCell]}>
+                            <Text style={{textAlign:'center'}}>{data.secondSection.thickness}</Text>
                         </View>
-                        <View style={[styles.smallCell]}></View>
                     </View>
                     <View style={[styles.midSizeCell]}>
-                        <View style={[styles.smallCell, styles.secondSectionColor, styles.borderBottom]}>
+                        <TouchableOpacity  onPress={()=>selectInput('secondSection', 'oilType')}  style={[styles.smallCell, styles.secondSectionColor, styles.borderBottom]}>
                             <Text style={[styles.regularFont, styles.smallCellWithImage]}>기름 상태</Text>
                             <Image style={styles.triangleInSmallCell} source={WhiteTriangle}/>
-                        </View>
+                        </TouchableOpacity>
                         <View style={[styles.smallCell]}>
-
+                            <Text style={{textAlign:'center'}}>{data.secondSection.oilType}</Text>
                         </View>
                     </View>
                 </View>
                 <View style={[styles.imageSection]}>
-                    <View style={styles.imageSection}>
-                        <Image source={require('../../../../assets/cameraIcon.png')}/>
-                    </View>
-                    <View style={styles.imageSection}>
-                        <Image source={require('../../../../assets/pictureIcon.png')}/>
-                    </View>
+                    {data.secondSection.imageLink ? 
+                        <TouchableOpacity onPress={()=>pickPhoto('secondSection', "imageLink")} style={{flex:1}}>
+                            <Image  style={{flex:1}} source={{uri: data.secondSection.imageLink}}/>
+                        </TouchableOpacity> : 
+                        <View style={{flex: 1, flexDirection:'row'}}>
+                            <TouchableOpacity style={styles.imageSection} onPress={()=>takePhoto('secondSection', 'imageLink')}>
+                                <Image source={require('../../../../assets/cameraIcon.png')}/>
+                            </TouchableOpacity>
+                            <TouchableOpacity style={styles.imageSection} onPress={()=>pickPhoto('secondSection', "imageLink")}>
+                                <Image 
+                                    source={require('../../../../assets/pictureIcon.png')}
+                                />
+                            </TouchableOpacity>
+                        </View>
+                    }
                 </View>
             </View>
             {/* third section*/}
             <View style={styles.divisionSection}>
-            <View style={[styles.sectionTop, styles.borderBottom, styles.thirdSectionColor]}>
-                    <Text style={styles.topSelectButton}>구간선택</Text>
+                <TouchableOpacity  onPress={()=>selectInput('thirdSection', 'location')} style={[styles.sectionTop, styles.borderBottom, styles.thirdSectionColor]}>
+                    <Text style={styles.topSelectButton}>{data.thirdSection.location}</Text>
                     <Image style={styles.triangle} source={WhiteTriangle}/>
-                </View>
+                </TouchableOpacity>
                 <View style={[styles.secondColumn, styles.borderBottom, styles.thirdSectionColor]}>
                     <Text style={styles.regularFont}>기름범위(m,%)</Text>
                 </View>
                 <View style={[styles.flexRowColumn, styles.borderBottom]}>
                     <View style={[styles.midSizeCell, styles.rightBorderLine]}>
                         <View style={[styles.smallCell, styles.thirdSectionColor, styles.borderBottom]}><Text style={styles.regularFont}>길이</Text></View>
-                        <View style={[styles.smallCell]}></View>
+                        <View style={[styles.smallCell]}>
+                            <TextInput 
+                                keyboardType="number-pad"
+                                style={{flex: 1, textAlign: 'center'}} 
+                                value={data.thirdSection.length} 
+                                onChange={(i)=>setData({
+                                    ...data,
+                                    thirdSection: {
+                                        ...data.thirdSection,
+                                        length: i.target.value
+                                    }
+                                })}
+                            />
+                        </View>
                     </View>
                     <View style={[styles.midSizeCell, styles.rightBorderLine]}>
                         <View style={[styles.smallCell, styles.thirdSectionColor, styles.borderBottom]}><Text style={styles.regularFont}>폭</Text></View>
-                        <View style={[styles.smallCell]}></View>
+                        <View style={[styles.smallCell]}>
+                            <TextInput 
+                                keyboardType="number-pad"
+                                style={{flex: 1, textAlign: 'center'}} 
+                                value={data.thirdSection.width} 
+                                onChange={(i)=>setData({
+                                    ...data,
+                                    thirdSection: {
+                                        ...data.thirdSection,
+                                        width: i.target.value
+                                    }
+                                })}
+                            />
+                        </View>
                     </View>
                     <View style={[styles.midSizeCell]}>
-                        <View style={[styles.smallCell, styles.thirdSectionColor, styles.borderBottom]}>
+                        <TouchableOpacity onPress={()=>selectInput('thirdSection', 'spread')}  style={[styles.smallCell, styles.thirdSectionColor, styles.borderBottom]}>
                             <Text style={[styles.regularFont, styles.smallCellWithImage]}>분포</Text>
                             <Image style={styles.triangleInSmallCell} source={WhiteTriangle}/>
-                        </View>
-                        <View style={[styles.smallCell]}></View>
+                        </TouchableOpacity>
+                            <View style={[styles.smallCell]}><Text>{`${data.thirdSection.spread}%`}</Text></View>
                     </View>
                 </View>
                 <View style={[styles.flexRowColumn, styles.borderBottom]}>
                     <View style={[styles.midSizeCell, styles.rightBorderLine]}>
-                        <View style={[styles.smallCell, styles.thirdSectionColor, styles.borderBottom]}>
+                        <TouchableOpacity onPress={()=>selectInput('thirdSection', 'thickness')} style={[styles.smallCell, styles.thirdSectionColor, styles.borderBottom]}>
                             <Text style={[styles.regularFont, styles.smallCellWithImage]}>기름 두께</Text>
                             <Image style={styles.triangleInSmallCell} source={WhiteTriangle}/>
+                        </TouchableOpacity>
+                        <View style={[styles.smallCell]}>
+                            <Text style={{textAlign:'center'}}>{data.thirdSection.thickness}</Text>
                         </View>
-                        <View style={[styles.smallCell]}></View>
                     </View>
                     <View style={[styles.midSizeCell, styles.rightBorderLine]}>
-                        <View style={[styles.smallCell, styles.thirdSectionColor, styles.borderBottom]}>
+                        <TouchableOpacity onPress={()=>selectInput('thirdSection', 'oilType')} style={[styles.smallCell, styles.thirdSectionColor, styles.borderBottom]}>
                             <Text style={[styles.regularFont, styles.smallCellWithImage]}>기름 상태</Text>
                             <Image style={styles.triangleInSmallCell} source={WhiteTriangle}/>
+                        </TouchableOpacity>
+                        <View style={[styles.smallCell]}>
+                            <Text style={{textAlign:'center'}}>{data.thirdSection.oilType}</Text>
                         </View>
-                        <View style={[styles.smallCell]}></View>
                     </View>
                 </View>
                 <View style={[styles.imageSection]}>
-                    <View style={styles.imageSection}>
-                        <Image source={require('../../../../assets/cameraIcon.png')}/>
-                    </View>
-                    <View style={styles.imageSection}>
-                        <Image source={require('../../../../assets/pictureIcon.png')}/>
-                    </View>
+                    {data.thirdSection.imageLink ? 
+                        <TouchableOpacity onPress={()=>pickPhoto('thirdSection', "imageLink")} style={{flex:1}}>
+                            <Image  style={{flex:1}} source={{uri: data.thirdSection.imageLink}}/>
+                        </TouchableOpacity> : 
+                        <View style={{flex: 1, flexDirection:'row'}}>
+                            <TouchableOpacity style={styles.imageSection} onPress={()=>takePhoto('thirdSection', 'imageLink')}>
+                                <Image source={require('../../../../assets/cameraIcon.png')}/>
+                            </TouchableOpacity>
+                            <TouchableOpacity style={styles.imageSection} onPress={()=>pickPhoto('thirdSection', "imageLink")}>
+                                <Image 
+                                    source={require('../../../../assets/pictureIcon.png')}
+                                />
+                            </TouchableOpacity>
+                        </View>
+                    }
                 </View>
             </View>
         </View>

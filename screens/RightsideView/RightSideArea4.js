@@ -6,7 +6,8 @@ import {
     FlatList,
     View, 
     ActivityIndicator,
-    TextInput, TouchableOpacity, Animated, Image, Easing 
+    TextInput, TouchableOpacity, Animated, Image, Easing,
+    Modal 
 } from "react-native";
 import { HeaderBackButton } from 'react-navigation-stack'
 
@@ -14,17 +15,21 @@ import { useSelector, useDispatch } from "react-redux";
 import RightSideCell from '../../components/RightSideFlatListCell';
 import * as coordinateNavAction from '../../Redux/actions/coordinateNav';
 import * as areaAction4 from '../../Redux/actions/area4';
+import RegionDetail from '../DocDetail/components/RegionDetail/RegionDetailView';
+
 export default RightSideArea4 = (props) => {
 
-    const [locations, setLocations] = useState([])
+    const [locations, setLocations] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
-    const areaList = useSelector(state => state.area4ListRoot)
+    const areaList = useSelector(state => state.area4ListRoot);
+    const [isDocOn, setDoc] = useState(false);
+
     const dispatch = useDispatch();
 
 
     useEffect(()=>{
         // setLocations(DATA)
-    }, [dispatch, areaList])
+    }, [dispatch, areaList]);
 
     let passedID = props.route.params.parentID
     const listTapped = (item) => {
@@ -47,12 +52,28 @@ export default RightSideArea4 = (props) => {
         
     }, [dispatch, polygonNav])
 
+    const showDoc = (id) => {
+        setDoc(!isDocOn)
+    }
 
     return (
         <SafeAreaView style={styles.viewContainer}>
+            <Modal visible={isDocOn} animationType="slide">
+                <View style={{width: '100%', height: 50}}>
+                    <TouchableOpacity style={{height: '100%' ,marginLeft: 'auto', marginRight: 20, justifyContent: 'center'}} onPress={()=>showDoc()}>
+                        <Text>닫기</Text>
+                    </TouchableOpacity>    
+                </View>
+                <RegionDetail hasCloseButton={true} close={()=>showDoc()}/>
+            </Modal>
+
             <FlatList 
                 data={areaList.filteredList}
-                renderItem={(item) => (<RightSideCell  name={item.item.name}/>)}
+                renderItem={(item) => (<RightSideCell  
+                    name={item.item.name}
+                    isDocShown={true}
+                    docTapped={()=>showDoc()}
+                />)}
                 keyExtractor={item => `${item.id}listKey`}
             />
         </SafeAreaView>

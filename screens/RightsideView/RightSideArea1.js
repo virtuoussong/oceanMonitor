@@ -100,6 +100,7 @@ export default RightSideArea1 = (props) => {
                 data={areaList}
                 renderItem={(item) => (
                     <RightSideCell
+                        // style={{flex: 1, backgroundColor: 'red'}}
                         onPress={(id) => listTapped(item.item)}  
                         name={item.item.name}
                     />

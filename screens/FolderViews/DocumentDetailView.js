@@ -2,6 +2,7 @@ import React from 'react';
 import {StyleSheet, View, FlatList, Text, Dimensions, TouchableOpacity, ScrollView, KeyboardAvoidingView} from 'react-native';
 import DrawerButton from '../../components/DrawerNavButton';
 
+import BasicInfoDoc from '../DocDetail/components/DocDetail/BasicInfoDoc';
 import FirstDoc from '../DocDetail/components/DocDetail/firstDoc';
 import SecondtDoc from '../DocDetail/components/DocDetail/secondDoc';
 import ThirdDoc from '../DocDetail/components/DocDetail/thirdDoc';
@@ -16,15 +17,17 @@ export default DocumentDetailView = (props) => {
     return <View style={styles.container}>
             <ScrollView style={styles.scrollView}
                 contentContainerStyle={{
-                    width:Dimensions.get('window').width * 4,
+                    width:Dimensions.get('window').width * 6,
                 }}
                 horizontal={true}
                 snapToAlignment={"center"}
                 pagingEnabled={true}
                 
             >
+                <BasicInfoDoc/>
                 <FirstDoc/>
                 <SecondtDoc/>
+                <SecondtDoc isLower={true}/>
                 <ThirdDoc/>
                 <FourthDoc/>
                 {/* <FifthDoc/>

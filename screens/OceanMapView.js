@@ -142,27 +142,7 @@ const OceanMapView = (props) => {
 
   useEffect(()=>{
     loadPolyNav().then(()=>{
-      // if (polygonNav.level == 1) {
-      //   let region = {
-      //     latitude: 34.7834049,
-      //     longitude: 127.79654869999999,
-      //     latitudeDelta: 0.5922,
-      //     longitudeDelta: 0.5421
-      //   }
-      //   mapRef.current.animateToRegion(region, 3)
-      // } else if (polygonNav.level == 2) {
-      //   console.log("poly nav changed")
-      //   let coordinates = polygonNav.areaData.coordinates
-      //   mapRef.current.fitToCoordinates(coordinates, {
-      //     edgePadding: { 
-      //       top: 10,
-      //       right: 10,
-      //       bottom: 10,
-      //       left: 10
-      //     },
-      //     animated: true
-      //   })
-      // }
+
       console.log("poly changed", polygonNav)
       if (polygonNav.level == 1) {
         let region = {
@@ -234,13 +214,6 @@ const OceanMapView = (props) => {
     let currentLevel = polygonNav.level
 
     if (currentLevel < 4) {
-      // currentLevel += 1
-      // let focusedPolygonView = {
-      //   currentViewLevel : currentLevel,
-      //   parentID : viewingList[index].id
-      // }
-      // setViewLevel(focusedPolygonView)
-      // let coordinates = viewingList[index].coordinates
 
       if (currentLevel == 1) {
         dispatch(polygonNavAction.updateCoordinate(2, data))
@@ -252,26 +225,6 @@ const OceanMapView = (props) => {
 
     }    
   };
-
-  // useEffect(()=>{
-   
-  //   let region = {
-  //     latitude: 34.7834049,
-  //     longitude: 127.79654869999999,
-  //     latitudeDelta: 0.5922,
-  //     longitudeDelta: 0.5421
-  //   }
-  //   mapRef.current.animateToRegion(region, 3)
-
-  //   let newLevel = {
-  //     currentViewLevel : 1,
-  //     parentID : null
-  //   }
-
-  //   setViewLevel(newLevel)
-
-  //   dispatch(focusePolygonData.updateCoordinate(1))
-  // }, [dispatch, backtoLevel1])
   
   const onMapTap = e => {
     let newDots = e.nativeEvent.coordinate
@@ -302,8 +255,7 @@ const OceanMapView = (props) => {
   const loadAreaData = (data) => {
     let currentLevel = data.currentViewLevel
     if (currentLevel == 2) {
-      // load2Areas()
-      // console.log("id for filter", data.parentID)
+     
       dispatch(area2Actions.fetchFilteredList(data.parentID))
     }
     if (currentLevel == 3) {
@@ -393,12 +345,10 @@ const OceanMapView = (props) => {
 
   useEffect(()=>{
     createRadius()
-    // console.log("circleValue", circleValue)
   }, [circleCoordinates])
 
 
   const createRadius = () => {
-    // console.log("circleCoordinates", circleCoordinates)
     if (circleCoordinates.length > 1) {
       let radiusCalc = getDistance(circleCoordinates[0], circleCoordinates[1])
 
@@ -437,7 +387,6 @@ const OceanMapView = (props) => {
       total += i.distanceVal
     })
     setTotalDistance(total)
-    console.log("total distance", total)
   }
 
   useEffect(()=>{
@@ -539,9 +488,6 @@ const OceanMapView = (props) => {
 
   }
 
-  // const backPressed=()=> {
-  //   console.log("back pressed in right side view")
-  // }
 
   if (isLoading) {
     return <View style={styles.centered}>
@@ -581,35 +527,7 @@ const OceanMapView = (props) => {
         mapType={"standard"}
         onPress={onMapTap}
       >
-        {/* {
-          viewLevel==1 && polygonsState && polygonsState.map((i, index) => {
-            console.log("i.coordinateforname", i)
-            return <React.Fragment>
-              <Polygon
-                  key={`${index}polygon`}
-                  coordinates={i.coordinates}
-                  strokeWidth={3}
-                  strokeColor={"yellow"}
-                  // fillColor={"#000, rgba(r,g,b,0.5)"}
-                  lineCap={"round"}
-                  tappable={true}
-                  onPress={() => polygonTapp(index)}
-                  geodesic={true}
-              />
-              <Marker
-             
-                key={`${index}marker`}
-                coordinate={i.nameCoordinate}
-                anchor={{ x: 0.5, y: 0.5 }}
-                resizeMode={'contain'}
-              >
-                <Text style={{fontSize: 24, fontWeight: "bold"}}>{i.name}</Text>
-              </Marker>
-
-            </React.Fragment> 
-          })
-        } */}
-
+ 
         {
           !isLoading && viewingList && viewingList.map((i, index) => {
             // console.log("i.coordinateforname", i)
@@ -802,9 +720,6 @@ const OceanMapView = (props) => {
 
       </MapView>
       
-      {/* <TouchableOpacity style={styles.leftButton} onPress={toggleDrawer}>
-        <Image source={require('../assets/drawerNavIcon.png')} resizeMode={'contain'}/>
-      </TouchableOpacity> */}
       <DrawerNavButton style={styles.leftButton} toggleDrawer={toggleDrawer}/>
 
       <View style={[{position: 'absolute', width: 100, top: 'auto', bottom: 'auto',left: 50}]}>

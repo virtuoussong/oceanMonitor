@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {StyleSheet, View, FlatList, Text, Dimensions, TouchableOpacity, ScrollView} from 'react-native';
 import TitleInputView from './TitleInput';
 
@@ -22,6 +22,9 @@ let dataSet = [
 ]
 
 export default FourthdDoc = (props) => {
+
+    const [data, dataSet] = useState()
+
     return <View style={[styles.container, styles.borderRight]}>
                 <TitleInputView/>
                 <View style={[styles.secondSection, styles.borderBottom, styles.firstSectionColor]}>

@@ -15,7 +15,7 @@ import { useSelector, useDispatch } from "react-redux";
 import RightSideCell from '../../components/RightSideFlatListCell';
 import * as coordinateNavAction from '../../Redux/actions/coordinateNav';
 import * as areaAction4 from '../../Redux/actions/area4';
-import RegionDetail from '../DocDetail/components/RegionDetail/RegionDetailView';
+import RegionDetail from '../FolderViews/DocumentDetailView';
 
 export default RightSideArea4 = (props) => {
 

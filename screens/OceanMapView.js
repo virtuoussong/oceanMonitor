@@ -142,6 +142,9 @@ const OceanMapView = (props) => {
 
   useEffect(()=>{
     loadPolyNav().then(()=>{
+      if (mapRef.current == null) {
+        return
+      }
 
       console.log("poly changed", polygonNav)
       if (polygonNav.level == 1) {
@@ -720,7 +723,7 @@ const OceanMapView = (props) => {
 
       </MapView>
       
-      <DrawerNavButton style={styles.leftButton} toggleDrawer={toggleDrawer}/>
+      <DrawerNavButton style={styles.leftButton} toggleDrawer={()=>toggleDrawer()}/>
 
       <View style={[{position: 'absolute', width: 100, top: 'auto', bottom: 'auto',left: 50}]}>
         <TouchableOpacity onPress={startDistanceMeasurement} style={[{backgroundColor: `${isMeasuringLength ? "lightblue" : "white"}`, width: 50, height: 50, marginBottom: 2}, styles.centerItem]}>
@@ -738,7 +741,7 @@ const OceanMapView = (props) => {
       </View>
 
       <View style={styles.addButton}>
-        <TouchableOpacity style={styles.polygonAddButtons} onPress={addPolygon}>
+        <TouchableOpacity style={styles.polygonAddButtons} onPress={()=>addPolygon()}>
           <Text ref={addButtonRef}>
             {addButtonText}
           </Text>
@@ -754,7 +757,7 @@ const OceanMapView = (props) => {
       </View>
 
       <Animated.View style={[styles.rightViewContainer, {right: rightSideDrawer}]}>
-          <TouchableOpacity onPress={rightViewToggle} style={styles.rightViewButton}>
+          <TouchableOpacity onPress={()=>rightViewToggle()} style={styles.rightViewButton}>
               <Animated.Image 
                 source={require('../assets/triangle.png')}
                 style={[styles.triangleButton, {transform: [{rotate: spin}]}]}
@@ -770,10 +773,11 @@ const OceanMapView = (props) => {
         animationType="slide"
         transparent={true}
         visible={modalVisible}
-        onPress={toggleModal}
+
       >
           <LocationNameModal toggle={toggleModal} addCompletion={(text)=>saveNameAdded(text)}/>
       </Modal>
+
     </View>
   );
 };

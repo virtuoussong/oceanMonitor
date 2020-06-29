@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-import { StyleSheet, Text, View, TextInput, TouchableOpacity, Animated, Image, Easing } from "react-native";
+import React, { useState } from "react";
+import { StyleSheet, Text, View, TextInput, TouchableOpacity } from "react-native";
 
 export default LocationNameModal = (props) => {
     const [textValue, onChangeText] = useState('')
@@ -79,6 +79,7 @@ const style = StyleSheet.create({
         shadowRadius: 3.84,
         elevation: 5
     },
+    
     textStyle:{
         color: 'black',
         fontWeight: 'bold',

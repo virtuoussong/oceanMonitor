@@ -23,6 +23,9 @@ import DocumentDetailView from './screens/FolderViews/DocumentDetailView';
 import AreaDetailView from './screens/FolderViews/AreaDetailView';
 import RegionDetailView from './screens/DocDetail/components/RegionDetail/RegionDetailView';
 
+//User List View
+import UserListView from './screens/UserListView';
+
 import { createStackNavigator } from '@react-navigation/stack';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import { NavigationContainer } from '@react-navigation/native';
@@ -112,6 +115,22 @@ function Document({ navigation }) {
   );
 }
 
+// function Users({navigation}) {
+//   let userEditView = () => <UserListView
+//       toggleDrawer={() => navigation.toggleDrawer()} 
+//   />
+
+//   return userEditView;
+// }
+
+function Users({ navigation }) {
+  return (
+    <UserListView
+      toggleDrawer={() => navigation.toggleDrawer()} 
+  />
+  );
+}
+
 const Drawer = createDrawerNavigator();
 
 
@@ -122,6 +141,7 @@ export default function App() {
         <Drawer.Navigator initialRouteName="지도">
           <Drawer.Screen name="지도" component={MapScreen} />
           <Drawer.Screen name="파일" component={Document}/>
+          <Drawer.Screen name="작성자 목록" component={Users}/>
         </Drawer.Navigator>
     </NavigationContainer>
     </Provider>

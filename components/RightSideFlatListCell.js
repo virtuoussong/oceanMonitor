@@ -19,8 +19,8 @@ export default RightSideCell = (props) => {
             <TouchableOpacity onPress={props.onPress} >
                 <Text style={styles.title}>{props.name}</Text>
             </TouchableOpacity>
-            {props.isDocShown &&  <TouchableOpacity onPress={()=>docTapped()} style={{position: 'absolute',top: -8, right: 20, width: 24, hegiht: 24}}>
-                <Image  resizeMode={'contain'} style={{width: 24, hegiht: 24}} source={require("../assets/plusIcon.png")}/>
+            {props.isDocShown &&  <TouchableOpacity onPress={()=>docTapped()} style={{position: 'absolute',top: -8, right: 20, width: 24, height: 24}}>
+                <Image  resizeMode={'contain'} style={{width: 24}} source={require("../assets/plusIcon.png")}/>
             </TouchableOpacity>}
         </View>
     )

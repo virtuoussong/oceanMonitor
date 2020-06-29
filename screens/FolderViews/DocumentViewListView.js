@@ -62,7 +62,7 @@ export default DocumentListView = (props) => {
             numColumns={3}
         />
         <DrawerButton 
-        // style={styles.leftButton} 
+            style={styles.leftButton} 
             toggleDrawer={toggleDrawer}
         />
     </View>
@@ -81,14 +81,11 @@ const styles = StyleSheet.create({
         // width: 2000,
         // height: 2000
     },
-    // leftButton: {
-    //     width: 50,
-    //     height: 50,
-    //     position: "absolute",
-    //     left: 30,
-    //     top: 30,
-    //     backgroundColor: "red"
-    // },
+    leftButton: {
+        position: 'absolute',
+        top: 6,
+        left: 10
+    },
     itemStyle : {
         // flexGrow: 1,
         // width: (Dimensions.get('window').width/3)-0,

@@ -20,6 +20,24 @@ export const init = () => {
     return promise
 };
 
+export const initArea1Table = () => {
+    const promise = new Promise((resolve, reject) => {
+        db.transaction( tx => {
+            tx.executeSql(
+                'CREATE TABLE IF NOT EXISTS area1 (id INTEGER PRIMARY KEY NOT NULL, data TEXT NOT NULL);',
+                [],
+                () => {
+                    resolve();
+                },
+                (_, err)=> {
+                    reject(err);
+                }
+            );
+        });
+    })
+    return promise
+};
+
 export const insertNewUser = (name, title, department, email, phoneNumber) => {
 
     const promise = new Promise((resolve, reject) => {

@@ -31,6 +31,14 @@ import { createDrawerNavigator } from '@react-navigation/drawer';
 import { NavigationContainer } from '@react-navigation/native';
 
 
+import { init } from './Redux/database/db';
+
+init().then(()=>{
+  console.log("initialized database")
+}).catch(err => {
+  console.log("initialize db failed", err)
+});
+
 const rootReducer = combineReducers({
   areaListRoot : areaListReducer,
   area2ListRoot : area2ListReducer,

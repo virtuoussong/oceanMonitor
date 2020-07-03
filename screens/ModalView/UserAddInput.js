@@ -1,19 +1,39 @@
 import React, {useState, useEffect } from 'react';
 import {View, TextInput, StyleSheet, Text, TouchableOpacity} from 'react-native';
 import User from '../../Models/User'
+import AsyncStorage from '@react-native-community/async-storage';
 
-
-let dataFake = new User("송치만", '부장', '여수', "010-1111-3455", 'chi@gmail.com')
+let dataFake = new User("", '', '', "", '')
 
 
 const UserInputView = (props) => {
 
     const [data, setData] = useState(dataFake)
+
     useEffect(()=>{
-        // if (props.data) {
-        //     setData(props.data)            
-        // }
+        
     }, [data])
+
+    useEffect(()=>{
+        loadData()
+    }, [])
+
+    const loadData = () => {
+        console.log("load data input", props.data)
+        if (props.data) {
+            setData(props.data)
+        } else {
+
+        }
+    }
+
+    const save = async() => {
+        props.save(data)
+        props.close()
+    }
+
+
+
 
     return <TouchableOpacity style={{flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: "rgba(0, 0, 1, 0.5)"}} onPress={props.close}>
         <View style={styles.modalBox}>
@@ -90,6 +110,7 @@ const UserInputView = (props) => {
                 </TouchableOpacity>
 
                 <TouchableOpacity 
+                    onPress={()=>save()}
                     style={styles.saveButton}>
                     <Text style={{color: 'white', fontWeight: 'bold', fontSize: 24}}>저장</Text>
                 </TouchableOpacity>

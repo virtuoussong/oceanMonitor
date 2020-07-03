@@ -1,30 +1,26 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, FlatList, TextInput, ScrollView, Modal} from 'react-native';
 import DrawerButton from '../components/DrawerNavButton';
 import { TouchableOpacity, TouchableNativeFeedback } from 'react-native-gesture-handler';
 import User from '../Models/User';
 import UserInput from './ModalView/UserAddInput';
+import AsyncStorage from '@react-native-community/async-storage';
 
-let dataFake = new User("송치만", '부장', '여수', "010-1111-3455", 'chi@gmail.com')
+import { insertNewUser, fetchUsers, deleteUser, updateUser } from '../Redux/database/db.js';
+
 let dataArraySample = [
-    new User("송치만", '부장', '여수', "010-1111-3455", 'chi@gmail.com'),
-    new User("송치만", '부장', '여수', "010-1111-3455", 'chi@gmail.com'),
-    new User("송치만", '부장', '여수', "010-1111-3455", 'chi@gmail.com'),
-    new User("송치만", '부장', '여수', "010-1111-3455", 'chi@gmail.com'),
-    new User("송치만", '부장', '여수', "010-1111-3455", 'chi@gmail.com'),
-    new User("송치만", '부장', '여수', "010-1111-3455", 'chi@gmail.com'),
-    new User("송치만", '부장', '여수', "010-1111-3455", 'chi@gmail.com'),
-    new User("송치만", '부장', '여수', "010-1111-3455", 'chi@gmail.com'),
-    new User("송치만", '부장', '여수', "010-1111-3455", 'chi@gmail.com'),
-    new User("송치만", '부장', '여수', "010-1111-3455", 'chi@gmail.com'),
-    new User("송치만", '부장', '여수', "010-1111-3455", 'chi@gmail.com'),
-    new User("송치만", '부장', '여수', "010-1111-3455", 'chi@gmail.com')
+    new User("송치만", '차장', '여수', "010-1111-3455", 'chi@gmail.com'),
 ]
 
 const UserListView = (props) => {
-    const [data, setData] = useState(dataFake)
+    const [data, setData] = useState()
     const [dataArray, setDataArray] = useState(dataArraySample)
     const [isModalOn, setModal] = useState(false)
+
+    useEffect(()=>{
+        loadData()
+    }, [])
+
     const toggleDrawer = () => {
         props.toggleDrawer()
     }
@@ -33,6 +29,56 @@ const UserListView = (props) => {
         setModal(!isModalOn)
     }
 
+    const loadData = async()=> {
+        try {
+            const dbResult = await fetchUsers();
+            if (dbResult._array !== null) {
+                setDataArray(dbResult.rows._array)
+            }           
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    const save = async(i) => {
+        try {
+            if (data == null) {
+                const dbRequest = await insertNewUser(i.name, i.title, i.department, i.email, i.phoneNumber).then(()=>{
+                    loadData()
+                });
+            } else {
+                console.log("update", i)
+                await updateUser(data.id, i).then(()=>{
+                    loadData()
+                    setData(null)
+                })
+            }
+           
+        } catch (error) {
+            throw Error(error)
+        }
+    }
+
+    const deleteTapped = async(id)=> {
+        try {
+            const dbRequest = await deleteUser(id).then(()=>{
+                uploadData()
+            });
+        } catch (error) {
+            throw Error(error)
+        }
+    }
+
+    const updateUserAction = async (id) => {
+        let item = dataArray.find(i => i.id === id)
+        setData(item)
+    }
+    useEffect(()=>{
+        if (data) {
+            setModal(true)
+        }
+    }, [data])
+
     return <View style={[styles.container]}>
         <Modal 
             visible={isModalOn}
@@ -40,8 +86,9 @@ const UserListView = (props) => {
             transparent={true}
             style={{backgroundColor: 'black'}}
         >
-            <UserInput  close={()=>addTapped()}/>
+            <UserInput  data={data} close={()=>addTapped()} save={(i)=>save(i)} />
         </Modal>
+        <View style={{width: '100%', height: 20, backgroundColor: 'white'}}/>
         <View style={{width: '100%', flexDirection: 'row', height: 60, backgroundColor: 'white', justifyContent: 'center', alignItems: 'center'}}>
             <View style={{marginLeft: 'auto', paddingLeft: 80}}>
                 <Text style={{fontSize: 24, fontWeight: 'bold'}}>작성자 명부</Text>
@@ -54,7 +101,7 @@ const UserListView = (props) => {
         </View>
         <ScrollView>
             <View style={styles.useListContainer}>
-                {dataArray.map((i)=>{
+                {dataArray && dataArray.map((i)=>{
                     let item = <View style={styles.userListWrapper}>
                             <View style={styles.userListView}><Text style={styles.userListText}>{i.name}</Text></View>
                             <View style={styles.userListView}><Text style={styles.userListText}>{i.title}</Text></View>
@@ -62,12 +109,12 @@ const UserListView = (props) => {
                             <View style={styles.userListView}><Text style={styles.userListText}>{i.phoneNumber}</Text></View>
                             <View style={styles.userListView}><Text style={styles.userListText}>{i.email}</Text></View>
                             <View style={[styles.userListView, {marginLeft: 'auto'}]}>
-                                <TouchableOpacity>
+                                <TouchableOpacity onPress={()=>updateUserAction(i.id)}>
                                     <Text style={styles.userListText}>수정</Text>
                                 </TouchableOpacity>
                             </View>
                             <View style={styles.userListView}>
-                                <TouchableOpacity>
+                                <TouchableOpacity onPress={()=>deleteTapped(i.id)}>
                                     <Text style={styles.userListText}>삭제</Text>
                                 </TouchableOpacity>
                             </View>
@@ -109,7 +156,7 @@ const styles = StyleSheet.create({
     },
     draweButton: {
         position: 'absolute',
-        top: 6,
+        top: 24,
         left: 10
     },
     topBar:{

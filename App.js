@@ -31,12 +31,18 @@ import { createDrawerNavigator } from '@react-navigation/drawer';
 import { NavigationContainer } from '@react-navigation/native';
 
 
-import { init } from './Redux/database/db';
+import { init, initArea1Table } from './Redux/database/db';
 
 init().then(()=>{
   console.log("initialized database")
 }).catch(err => {
   console.log("initialize db failed", err)
+});
+
+initArea1Table().then(()=>{
+  console.log("initialized initArea1Table database")
+}).catch(err => {
+  console.log("initialize initArea1Table db failed", err)
 });
 
 const rootReducer = combineReducers({

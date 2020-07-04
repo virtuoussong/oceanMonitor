@@ -35,20 +35,21 @@ let initialArea = {
 export default (state = initialArea, action) => {
     switch (action.type) {
         case GET_AREA:
-            
             return {
-                areaList : state.areaList
+                // areaList : state.areaList
+                areaList : action.areas
             };
         case ADD_AREA:
-            const addingAreaData = new Area(
-                action.areaData.id,
-                action.areaData.name,
-                action.areaData.coordinates,
-                action.areaData.nameCoordinate
-            )
+            // const addingAreaData = new Area(
+            //     action.areaData.id,
+            //     action.areaData.name,
+            //     action.areaData.coordinates,
+            //     action.areaData.nameCoordinate
+            // )
             return {
                 ...state,
-                areaList : state.areaList.concat(addingAreaData)
+                // areaList : state.areaList.concat(addingAreaData)
+                areaList : state.areaList.concat(action.areaData)
             };
     }
     return state;

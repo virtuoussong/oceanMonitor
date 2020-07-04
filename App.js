@@ -31,18 +31,53 @@ import { createDrawerNavigator } from '@react-navigation/drawer';
 import { NavigationContainer } from '@react-navigation/native';
 
 
-import { init, initArea1Table } from './Redux/database/db';
+import { init, initArea1Table, 
+  // initArea2Table, 
+  initArea3Table, initArea4Table, initRegionDocTable, initLocationDocTable } from './Redux/database/db';
+
+import {initArea2Table} from './Redux/database/area2DB'
 
 init().then(()=>{
-  console.log("initialized database")
+  // console.log("initialized database")
 }).catch(err => {
   console.log("initialize db failed", err)
 });
 
 initArea1Table().then(()=>{
-  console.log("initialized initArea1Table database")
+  // console.log("initialized initArea1Table database")
 }).catch(err => {
   console.log("initialize initArea1Table db failed", err)
+});
+
+initArea2Table().then(()=>{
+  console.log("initialized initArea2Table database")
+}).catch(err => {
+  console.log("initialize initArea2Table db failed", err)
+});
+
+
+initArea3Table().then(()=>{
+  // console.log("initialized initArea1Table database")
+}).catch(err => {
+  console.log("initialize initArea3Table db failed", err)
+});
+
+initArea4Table().then(()=>{
+  // console.log("initialized initArea1Table database")
+}).catch(err => {
+  console.log("initialize initArea4Table db failed", err)
+});
+
+initRegionDocTable().then(()=>{
+  // console.log("initialized initArea1Table database")
+}).catch(err => {
+  console.log("initialize initRegionDocTable db failed", err)
+});
+
+initLocationDocTable().then(()=>{
+  // console.log("initialized initArea1Table database")
+}).catch(err => {
+  console.log("initialize initLocationDocTable db failed", err)
 });
 
 const rootReducer = combineReducers({

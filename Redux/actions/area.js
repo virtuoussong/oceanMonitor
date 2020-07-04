@@ -1,4 +1,5 @@
 import Area from '../../Models/Area';
+import { getAllArea1, insertNewArea1, deleteAllArea1 } from '../database/db';
 
 export const ADD_AREA = "ADD_AREA";
 export const ADD_AREA2 = "ADD_AREA2";
@@ -32,26 +33,56 @@ let initialArea = [
     }
 ]
 
+// import { getAllArea1, insertNewArea1, deleteAllArea1 } from '../database/db'
+
+
 export const fetchArea = () => {
+
     return async (dispatch, getState) => {
-        dispatch({
-            type: GET_AREA,
-            areas: initialArea
-        });
+        try {
+            let newArray = []
+            await getAllArea1().then((i)=>{
+                i.rows._array.forEach(element => {
+                    let pasedData = JSON.parse(element.data)
+                    newArray.push(pasedData)
+                });
+            })
+            dispatch({
+                type: GET_AREA,
+                // areas: initialArea
+                areas: newArray
+            });
+        } catch (error) {
+            throw error
+        }
+        
     }
 }
 
 export const addArea = (id, name, coordinates, nameCoordinate) => {
+    const addingAreaData = new Area(id, name, coordinates, nameCoordinate)
+
+
     return async (dispatch, getState) => {
-        dispatch({
-            type: ADD_AREA,
-            areaData: {
-                id: id, 
-                name: name, 
-                coordinates: coordinates, 
-                nameCoordinate: nameCoordinate, 
-            }
-        });
+        try {
+            await insertNewArea1(JSON.stringify(addingAreaData))
+
+            dispatch({
+                type: ADD_AREA,
+                // areaData: {
+                //     id: id, 
+                //     name: name, 
+                //     coordinates: coordinates, 
+                //     nameCoordinate: nameCoordinate, 
+                // }
+                areaData: addingAreaData
+            })
+        } catch (error) {
+
+        }
+
+        
+        
     } 
 }
 

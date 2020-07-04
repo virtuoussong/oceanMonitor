@@ -62,7 +62,7 @@ const UserListView = (props) => {
     const deleteTapped = async(id)=> {
         try {
             const dbRequest = await deleteUser(id).then(()=>{
-                uploadData()
+                loadData()
             });
         } catch (error) {
             throw Error(error)
@@ -102,7 +102,7 @@ const UserListView = (props) => {
         <ScrollView>
             <View style={styles.useListContainer}>
                 {dataArray && dataArray.map((i)=>{
-                    let item = <View style={styles.userListWrapper}>
+                    let item = <View style={styles.userListWrapper} key={i.id}>
                             <View style={styles.userListView}><Text style={styles.userListText}>{i.name}</Text></View>
                             <View style={styles.userListView}><Text style={styles.userListText}>{i.title}</Text></View>
                             <View style={styles.userListView}><Text style={styles.userListText}>{i.department}</Text></View>

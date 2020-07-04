@@ -33,15 +33,21 @@ export const BACK_LEVEL1 = "BACK_LEVEL1";
 // ]
 
 
-
+import { getAllArea2 } from '../database/area2DB'
 
 export const fetchArea2 = (id) => {
     return async (dispatch, getState) => {
         // console.log("area 2 get action inited", id)
-        dispatch({
-            type: GET_AREA2,
-            parentID: id
-        });
+        try {
+            const data = await getAllArea2(id)
+            dispatch({
+                type: GET_AREA2,
+                parentID: id
+            });
+        } catch (error) {
+            throw error;
+        }
+        
     }
 }
 

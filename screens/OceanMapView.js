@@ -63,9 +63,6 @@ const OceanMapView = (props) => {
   
   const dispatch = useDispatch();
 
-  
-
-
   const areaList = useSelector(state => state.areaListRoot.areaList)
   const loadAreas = useCallback(async()=>{
     setError(null)
@@ -80,7 +77,7 @@ const OceanMapView = (props) => {
     setIsLoading(true);
     loadAreas().then(()=>{
       setIsLoading(false)
-      console.log("areaListReducer", areaList)
+      // console.log("area1 areaListReducer fetched", areaList)
     })
   }, [dispatch, loadAreas])
 
@@ -534,7 +531,7 @@ const OceanMapView = (props) => {
         {
           !isLoading && viewingList && viewingList.map((i, index) => {
             // console.log("i.coordinateforname", i)
-            return <React.Fragment>
+            return <React.Fragment key={`${index}polygonKey`}>
               <Polygon
                   key={`${index}polygon`}
                   coordinates={i.coordinates}

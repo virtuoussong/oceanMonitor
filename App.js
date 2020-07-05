@@ -31,11 +31,12 @@ import { createDrawerNavigator } from '@react-navigation/drawer';
 import { NavigationContainer } from '@react-navigation/native';
 
 
-import { init, initArea1Table, 
-  // initArea2Table, 
-  initArea3Table, initArea4Table, initRegionDocTable, initLocationDocTable } from './Redux/database/db';
+import { init, initArea1Table, initRegionDocTable, initLocationDocTable } from './Redux/database/db';
 
-import {initArea2Table} from './Redux/database/area2DB'
+import {initArea2Table} from './Redux/database/area2DB';
+import {initArea3Table} from './Redux/database/area3DB';
+import {initArea4Table} from './Redux/database/area4DB';
+
 
 init().then(()=>{
   // console.log("initialized database")
@@ -63,7 +64,7 @@ initArea3Table().then(()=>{
 });
 
 initArea4Table().then(()=>{
-  // console.log("initialized initArea1Table database")
+  console.log("initialized initArea4Table database")
 }).catch(err => {
   console.log("initialize initArea4Table db failed", err)
 });

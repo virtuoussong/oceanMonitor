@@ -58,41 +58,41 @@ export const initArea1Table = () => {
 //     return promise
 // };
 
-export const initArea3Table = () => {
-    const promise = new Promise((resolve, reject) => {
-        db.transaction( tx => {
-            tx.executeSql(
-                'CREATE TABLE IF NOT EXISTS area3 (id INTEGER PRIMARY KEY NOT NULL, data TEXT NOT NULL);',
-                [],
-                () => {
-                    resolve();
-                },
-                (_, err)=> {
-                    reject(err);
-                }
-            );
-        });
-    })
-    return promise
-};
+// export const initArea3Table = () => {
+//     const promise = new Promise((resolve, reject) => {
+//         db.transaction( tx => {
+//             tx.executeSql(
+//                 'CREATE TABLE IF NOT EXISTS area3 (id INTEGER PRIMARY KEY NOT NULL, data TEXT NOT NULL);',
+//                 [],
+//                 () => {
+//                     resolve();
+//                 },
+//                 (_, err)=> {
+//                     reject(err);
+//                 }
+//             );
+//         });
+//     })
+//     return promise
+// };
 
-export const initArea4Table = () => {
-    const promise = new Promise((resolve, reject) => {
-        db.transaction( tx => {
-            tx.executeSql(
-                'CREATE TABLE IF NOT EXISTS area4 (id INTEGER PRIMARY KEY NOT NULL, data TEXT NOT NULL);',
-                [],
-                () => {
-                    resolve();
-                },
-                (_, err)=> {
-                    reject(err);
-                }
-            );
-        });
-    })
-    return promise
-};
+// export const initArea4Table = () => {
+//     const promise = new Promise((resolve, reject) => {
+//         db.transaction( tx => {
+//             tx.executeSql(
+//                 'CREATE TABLE IF NOT EXISTS area4 (id INTEGER PRIMARY KEY NOT NULL, data TEXT NOT NULL);',
+//                 [],
+//                 () => {
+//                     resolve();
+//                 },
+//                 (_, err)=> {
+//                     reject(err);
+//                 }
+//             );
+//         });
+//     })
+//     return promise
+// };
 
 export const initRegionDocTable = () => {
     const promise = new Promise((resolve, reject) => {

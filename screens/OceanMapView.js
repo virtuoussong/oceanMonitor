@@ -13,6 +13,8 @@ import * as area4Actions from '../Redux/actions/area4.js';
 
 import * as polygonNavAction from '../Redux/actions/coordinateNav.js';
 
+import UUIDGenerator from 'react-native-uuid-generator'
+
 import { useSelector, useDispatch } from "react-redux";
 
 const OceanMapView = (props) => {
@@ -77,12 +79,11 @@ const OceanMapView = (props) => {
     setIsLoading(true);
     loadAreas().then(()=>{
       setIsLoading(false)
-      // console.log("area1 areaListReducer fetched", areaList)
     })
-  }, [dispatch, loadAreas])
+  }, [])
 
   //Area 2
-  const area2List = useSelector(state => state.area2ListRoot.areaList)
+  const area2List = useSelector(state => state.area2ListRoot.filteredList)
   // const load2Areas = useCallback(async()=>{
   //   setError(null)
   //   try {
@@ -92,36 +93,37 @@ const OceanMapView = (props) => {
   //   }
   // }, [dispatch, setIsLoading])
 
-  // useEffect(()=>{
+  useEffect(()=>{
     // setIsLoading(true);
     // load2Areas().then(()=>{
     //   setIsLoading(false)
     //   // console.log("area2ListReducer", area2List)
     // })
-  // }, [dispatch, area2List])
+  }, [area2List])
 
-  const area3List = useSelector(state => state.area3ListRoot.areaList)
-  const load3Areas = useCallback(async()=>{
-    setError(null)
-    try {
-      await dispatch(area3Actions.fetchArea3())
-    } catch (err) {
-      setError(err)
-    }
-  }, [dispatch, setIsLoading])
+  //Area 3
+  const area3List = useSelector(state => state.area3ListRoot.filteredList)
+  // const load3Areas = useCallback(async()=>{
+  //   setError(null)
+  //   try {
+  //     await dispatch(area3Actions.fetchArea3())
+  //   } catch (err) {
+  //     setError(err)
+  //   }
+  // }, [dispatch, setIsLoading])
   
   useEffect(()=>{
-    setIsLoading(true);
-    load3Areas().then(()=>{
-      setIsLoading(false)
-      console.log("area2ListReducer", area2List)
-    })
-  }, [dispatch, load3Areas])
+    // setIsLoading(true);
+    // load3Areas().then(()=>{
+    //   setIsLoading(false)
+    //   // console.log("area2ListReducer", area2List)
+    // })
+  }, [area3List])
 
-  const area4List = useSelector(state => state.area4ListRoot.areaList)
+  const area4List = useSelector(state => state.area4ListRoot.filteredList)
   useEffect(()=>{
-
-  }, [dispatch, area4List])
+    
+  }, [area4List])
 
   // const backtoLevel1 = useSelector(state => state.area2ListRoot.idForLevel1)
   // const backToLevel1Load = useCallback(async()=>{
@@ -143,7 +145,7 @@ const OceanMapView = (props) => {
         return
       }
 
-      console.log("poly changed", polygonNav)
+      // console.log("poly changed", polygonNav)
       if (polygonNav.level == 1) {
         let region = {
           latitude: 34.7834049,
@@ -154,10 +156,10 @@ const OceanMapView = (props) => {
         mapRef.current.animateToRegion(region, 3)
       } else {
         // let coordinates = polygonNav.areaData.coordinates
-        console.log("new coordinates", polygonNav)
+        // console.log("new coordinates", polygonNav)
         let coordinates;
         if (polygonNav.level == 2) {
-          console.log("nav coordinates level 2", polygonNav)
+          // console.log("nav coordinates level 2", polygonNav)
           // console.log("area 2 view")
           // let list2Item2 = area2List.filter(item => item.id == polygonNav.areaData.id)
           
@@ -173,7 +175,7 @@ const OceanMapView = (props) => {
           // }
           coordinates = polygonNav.coordinates2.coordinates
         } else if (polygonNav.level == 3) {
-          console.log("nav coordinates level 3", polygonNav)
+          // console.log("nav coordinates level 3", polygonNav)
 
           // let list3Item3 = area3List.filter(item => item.id == polygonNav.areaData.id)
           // // console.log("list3Item count", list3Item3)
@@ -190,7 +192,7 @@ const OceanMapView = (props) => {
           coordinates = polygonNav.coordinates3.coordinates
 
         } else if (polygonNav.level == 4) {
-          console.log("nav coordinates level 4", polygonNav)
+          // console.log("nav coordinates level 4", polygonNav)
 
           coordinates = polygonNav.coordinates4.coordinates
         } 
@@ -214,16 +216,21 @@ const OceanMapView = (props) => {
     let currentLevel = polygonNav.level
 
     if (currentLevel < 4) {
-
       if (currentLevel == 1) {
-        dispatch(polygonNavAction.updateCoordinate(2, data))
+        console.log("data", data.id)
+        dispatch(polygonNavAction.updateCoordinate(2, data)).then(()=>{
+          dispatch(area2Actions.fetchFilteredList(data.id))
+        })
       } else if (currentLevel == 2) {
-        dispatch(polygonNavAction.updateCoordinate(3, data))
+        dispatch(polygonNavAction.updateCoordinate(3, data)).then(()=>{
+          dispatch(area3Actions.fetchFilteredList(data.id))
+        })
       } else if (currentLevel == 3) {
-        dispatch(polygonNavAction.updateCoordinate(4, data))
+        dispatch(polygonNavAction.updateCoordinate(4, data)).then(()=>{
+          dispatch(area4Actions.fetchFilteredList(data.id))
+        });
       }
-
-    }    
+    };    
   };
   
   const onMapTap = e => {
@@ -252,17 +259,17 @@ const OceanMapView = (props) => {
 
   
 
-  const loadAreaData = (data) => {
-    let currentLevel = data.currentViewLevel
-    if (currentLevel == 2) {
+  // const loadAreaData = (data) => {
+  //   let currentLevel = data.currentViewLevel
+  //   if (currentLevel == 2) {
      
-      dispatch(area2Actions.fetchFilteredList(data.parentID))
-    }
-    if (currentLevel == 3) {
-      load3Areas()
-    }
+  //     dispatch(area2Actions.fetchFilteredList(data.parentID))
+  //   }
+  //   if (currentLevel == 3) {
+  //     load3Areas()
+  //   }
 
-  }
+  // }
 
  
 
@@ -540,7 +547,7 @@ const OceanMapView = (props) => {
                   // fillColor={"#000, rgba(r,g,b,0.5)"}
                   lineCap={"round"}
                   tappable={true}
-                  onPress={() => polygonTapp(index, i)}
+                  onPress={()=>polygonTapp(index, i)}
                   geodesic={true}
               />
               <Marker

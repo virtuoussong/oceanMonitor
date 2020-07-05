@@ -21,7 +21,7 @@ export default RightSideArea4 = (props) => {
 
     const [locations, setLocations] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
-    const areaList = useSelector(state => state.area4ListRoot);
+    const areaList = useSelector(state => state.area4ListRoot.filteredList);
     const [isDocOn, setDoc] = useState(false);
 
     const dispatch = useDispatch();
@@ -32,25 +32,27 @@ export default RightSideArea4 = (props) => {
     }, [dispatch, areaList]);
 
     let passedID = props.route.params.parentID
-    const listTapped = (item) => {
+    // const listTapped = (item) => {
        
-        dispatch(areaAction4.fetchFilteredList(item.id))
         
-        if (polygonNav.level != 4) {
-            dispatch(coordinateNavAction.updateCoordinate(4, item))
-        }
-    }
-    const polygonNav = useSelector(state => state.focusedPolygonRoot.focusedPolygon)
-    useEffect(()=>{
-        if (polygonNav.level == 4) {
-            let pushData = {
-                id: polygonNav.coordinates4.id,
-                name: polygonNav.coordinates4.name
-            }            
-            listTapped(pushData)
-        }
         
-    }, [dispatch, polygonNav])
+    //     if (polygonNav.level == 3) {
+    //         dispatch(coordinateNavAction.updateCoordinate(4, item)).then(()=>{
+    //             dispatch(areaAction4.fetchFilteredList(item.id))
+    //         })
+    //     }
+    // }
+    // const polygonNav = useSelector(state => state.focusedPolygonRoot.focusedPolygon)
+    // useEffect(()=>{
+    //     if (polygonNav.level == 4) {
+    //         let pushData = {
+    //             id: polygonNav.coordinates4.id,
+    //             name: polygonNav.coordinates4.name
+    //         }            
+    //         listTapped(pushData)
+    //     }
+        
+    // }, [dispatch, polygonNav])
 
     const showDoc = (id) => {
         setDoc(!isDocOn)
@@ -68,7 +70,7 @@ export default RightSideArea4 = (props) => {
             </Modal>
 
             <FlatList 
-                data={areaList.filteredList}
+                data={areaList}
                 renderItem={(item) => (<RightSideCell  
                     name={item.item.name}
                     isDocShown={true}

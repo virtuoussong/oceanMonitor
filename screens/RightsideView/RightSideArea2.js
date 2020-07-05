@@ -32,7 +32,7 @@ export default RightSideArea2 = (props) => {
 
 
     const dispatch = useDispatch();
-    const areaList = useSelector(state => state.area2ListRoot)
+    const areaList = useSelector(state => state.area2ListRoot.filteredList)
 
     // const loadAreas = useCallback(async()=>{
     //     setError(null)
@@ -51,7 +51,7 @@ export default RightSideArea2 = (props) => {
         // loadAreas().then(()=>{
         //     setIsLoading(false)
         // })
-    }, [dispatch, areaList])
+    }, [areaList])
 
 
     const listTapped = (item) => {
@@ -60,13 +60,15 @@ export default RightSideArea2 = (props) => {
             parentName: item.name,
             coordinates: item.coordinates
         })
-        console.log("list2 tapped", item)
+        // console.log("list2 tapped", item)
 
-        dispatch(areaAction3.fetchFilteredList(item.id))
         
-        if (polygonNav.level != 3) {
-            dispatch(coordinateNavAction.updateCoordinate(3, item))
-        }
+        
+        if (polygonNav.level == 2) {
+            dispatch(coordinateNavAction.updateCoordinate(3, item)).then(()=>{
+                dispatch(areaAction3.fetchFilteredList(item.id))
+            })
+        } 
     }
 
     const polygonNav = useSelector(state => state.focusedPolygonRoot.focusedPolygon)
@@ -77,10 +79,14 @@ export default RightSideArea2 = (props) => {
                 name: polygonNav.coordinates3.name,
                 coordinates: polygonNav.coordinates3.coordinates
             }
-            console.log("polygonNav level 2", polygonNav)            
-            listTapped(pushData)
+            // console.log("polygonNav level 2", polygonNav)            
+            props.navigation.navigate("리스트페이지3", {
+                parentID: pushData.id,
+                parentName: pushData.name,
+                coordinates: pushData.coordinates,
+            })
         }        
-    }, [dispatch, polygonNav])
+    }, [polygonNav])
 
 
     if (isLoading && areaList === null) {
@@ -106,12 +112,12 @@ export default RightSideArea2 = (props) => {
             </Modal>
 
             <FlatList 
-                data={areaList.filteredList}
+                data={areaList}
                 renderItem={(item) => (
                     <RightSideCell 
                         onPress={(id) => listTapped(item.item)}  
                         name={item.item.name}
-                        isDocShown={true}
+                        isDocShown={item.item.docID ? false : true}
                         docTapped={()=>showDoc()}
                     />
                 )}

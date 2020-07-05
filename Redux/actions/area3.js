@@ -12,6 +12,9 @@ let initialArea3 = [
     
 ]
 
+import Area2 from '../../Models/Area2';
+import { getAllArea3, insertNewArea3 } from '../database/area3DB'
+
 export const fetchArea3 = (id) => {
     return async (dispatch, getState) => {
         console.log("fetch area2 action", id)
@@ -23,19 +26,27 @@ export const fetchArea3 = (id) => {
     }
 }
 
-export const addArea3 = (id, name, nameCoordinate, coordinates, parentID) => {
+export const addArea3 = (id, name, nameCoordinate, coordinates, parentID, docID) => {
     console.log("ADD_AREA3 triggered in ACTION", id)
     return async (dispatch, getState) => {
-        dispatch({
-            type: ADD_AREA3,
-            areaData: {
-                id, 
-                name, 
-                nameCoordinate, 
-                coordinates,
-                parentID
-            }
-        });
+        try {
+
+            let newArea3 = new Area2(id, name, coordinates, nameCoordinate, parentID, docID)
+
+            await insertNewArea3(JSON.stringify(newArea3), parentID).then((i) => {
+                console.log(i.insertId)
+                newArea3.id = i.insertId
+            })
+
+            dispatch({
+                type: ADD_AREA3,
+                areaData: newArea3
+            });
+
+        } catch (error) {
+            throw error
+        }
+        
     } 
 }
 
@@ -43,10 +54,25 @@ export const fetchFilteredList = (id) => {
     return async (dispatch, getState) => {
         console.log("filter action area3 inited", id)
 
-        dispatch({
-            type: GET_FILTERED_AREA3,
-            parentID: id
-        });
+        try {
+
+            let filteredArray = []
+            await getAllArea3(id).then((i) => {
+                i.rows._array.forEach(element => {
+                    let parsedItem = JSON.parse(element.data)
+                    filteredArray.push(parsedItem)
+                });
+            })
+
+            dispatch({
+                type: GET_FILTERED_AREA3,
+                areaData: filteredArray
+            });
+
+        } catch (error) {
+
+        }
+        
     }
 }
 

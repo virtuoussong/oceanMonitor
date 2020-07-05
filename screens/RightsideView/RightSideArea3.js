@@ -23,7 +23,7 @@ export default RightSideArea3 = (props) => {
     const [isDocOn, setDoc] = useState(false)
 
     const dispatch = useDispatch();
-    const areaList = useSelector(state => state.area3ListRoot)
+    const areaList = useSelector(state => state.area3ListRoot.filteredList)
 
     useEffect(()=>{
         // setLocations(DATA)
@@ -36,12 +36,12 @@ export default RightSideArea3 = (props) => {
             parentName: item.name,
             coordinates:item.coordinates
         })
-        console.log("list3 tapped", item)
+        // console.log("list3 tapped", item)
 
-        dispatch(areaAction4.fetchFilteredList(item.id))
-        
-        if (polygonNav.level != 4) {
-            dispatch(coordinateNavAction.updateCoordinate(4, item))
+        if (polygonNav.level == 3) {
+            dispatch(coordinateNavAction.updateCoordinate(4, item)).then(()=>{
+                dispatch(areaAction4.fetchFilteredList(item.id))
+            })
         }
     }
     const polygonNav = useSelector(state => state.focusedPolygonRoot.focusedPolygon)
@@ -52,12 +52,18 @@ export default RightSideArea3 = (props) => {
                 name: polygonNav.areaData.name,
                 coordinates: polygonNav.areaData.coordinates
             }            
+
             console.log("push RightSideArea3 get pushData  data!!!!", pushData)
 
-            listTapped(pushData)
+            props.navigation.navigate("리스트페이지4", {
+                parentID: pushData.id,
+                parentName: pushData.name,
+                coordinates: pushData.coordinates
+            })
+            // listTapped(pushData)
         }
         
-    }, [dispatch, polygonNav])
+    }, [polygonNav])
 
     const showDoc = (id) => {
         console.log("doc tapped")
@@ -76,7 +82,7 @@ export default RightSideArea3 = (props) => {
             </Modal>
 
             <FlatList 
-                data={areaList.filteredList}
+                data={areaList}
                 renderItem={(item) => (
                     <RightSideCell 
                         onPress={()=> listTapped(item.item)}  

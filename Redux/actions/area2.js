@@ -32,17 +32,24 @@ export const BACK_LEVEL1 = "BACK_LEVEL1";
 //     }
 // ]
 
+import Area2 from '../../Models/Area2';
+import { getAllArea2, insertNewArea2 } from '../database/area2DB'
 
-import { getAllArea2 } from '../database/area2DB'
-
-export const fetchArea2 = (id) => {
+export const fetchArea2 = () => {
     return async (dispatch, getState) => {
         // console.log("area 2 get action inited", id)
         try {
-            const data = await getAllArea2(id)
+            let filteredArray = []
+            // await getAllArea2(id).then((i)=>{
+            //     console.log("filtered area2", i)
+            //     i.rows._array.forEach(element => {
+            //         let parsedItem = JSON.parse(element)
+            //         filteredArray.push(parsedItem)
+            //     });
+            // })
             dispatch({
                 type: GET_AREA2,
-                parentID: id
+                areaData: filteredArray
             });
         } catch (error) {
             throw error;
@@ -51,19 +58,26 @@ export const fetchArea2 = (id) => {
     }
 }
 
-export const addArea2 = (id, name, nameCoordinate, coordinates, parentID) => {
+export const addArea2 = (id, name, nameCoordinate, coordinates, parentID, docID) => {
     // console.log("ADD_AREA triggered in ACTION2 parentID", parentID)
+
     return async (dispatch, getState) => {
-        dispatch({
-            type: ADD_AREA2,
-            areaData: {
-                id, 
-                name, 
-                nameCoordinate, 
-                coordinates,
-                parentID
-            }
-        });
+        try {
+            let newArea2 = new Area2(id, name, coordinates, nameCoordinate, parentID, docID)
+            // console.log("area 2 inserted try", newArea2)
+            await insertNewArea2(JSON.stringify(newArea2), parentID).then((i)=>{
+                newArea2.id = i.insertId
+            })
+            console.log("area 2 inserted", newArea2)
+            dispatch({
+                type: ADD_AREA2,
+                areaData: newArea2
+            });
+
+        } catch (error) {
+
+        }
+        
     } 
 }
 
@@ -71,11 +85,23 @@ export const addArea2 = (id, name, nameCoordinate, coordinates, parentID) => {
 export const fetchFilteredList = (id) => {
     return async (dispatch, getState) => {
         // console.log("filter action area2 inited", id)
+        try {
+            let filteredArray = []
+            await getAllArea2(id).then((i)=>{
+                // console.log("filtered area2", i)
+                i.rows._array.forEach(element => {
+                    let parsedItem = JSON.parse(element.data)
+                    filteredArray.push(parsedItem)
+                });
+            })
+            dispatch({
+                type: GET_FILTERED_AREA2,
+                areaData: filteredArray
+            });
 
-        dispatch({
-            type: GET_FILTERED_AREA2,
-            parentID: id
-        });
+        } catch (error) {
+            throw error
+        }
     }
 }
 

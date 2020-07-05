@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useMemo } from "react";
 import { 
     StyleSheet, 
     Text, 
@@ -17,7 +17,6 @@ import * as polygonNavAction from '../../Redux/actions/coordinateNav';
 
 export default RightSideArea1 = (props) => {
 
-    // const [locations, setLocations] = useState([])
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState();
     let dispatch = useDispatch()
@@ -38,7 +37,7 @@ export default RightSideArea1 = (props) => {
         //     listTapped(data)
         // }
         
-    }, [dispatch, areaList])
+    }, [areaList])
 
 
     const listTapped = (item) => {
@@ -48,39 +47,51 @@ export default RightSideArea1 = (props) => {
             coordinates: item.coordinates,
         })
 
-        console.log("list 1 tapped", item)
-
-        dispatch(areaActions2.fetchFilteredList(item.id))
+        console.log("area 1 should tap", polygonNav.level)
         
-        if (polygonNav.level != 2) {
-            dispatch(polygonNavAction.updateCoordinate(2, item))
-        }
-    }
+        if (polygonNav.level == 1) {
+            console.log("polygonNav.level != 2 list 1 tapped")
+            dispatch(polygonNavAction.updateCoordinate(2, item)).then(()=>{
+                dispatch(areaActions2.fetchFilteredList(item.id))
+            })
+        } 
+        // else if (polygonNav.level == 2) {
+        //     console.log("level 2 filter")
+        //     dispatch(areaActions2.fetchFilteredList(item.id))
+        // }
+
+    };
 
     const polygonNav = useSelector(state => state.focusedPolygonRoot.focusedPolygon)
-    const loadPolyNav = useCallback(async()=>{
-        try {
-            // await dispatch(polygonNavAction.fetchCoordinate())
-        } catch (err) {
-            setError(err)
-        }
-    }, [dispatch])
+    // const loadPolyNav = useCallback(async()=>{
+    //     try {
+    //         // await dispatch(polygonNavAction.fetchCoordinate())
+    //     } catch (err) {
+    //         setError(err)
+    //     }
+    // }, [dispatch])
 
     useEffect(()=>{
-        loadPolyNav().then(()=>{
+        // loadPolyNav().then(()=>{
             if (polygonNav.level == 2) {
 
                 let pushData = {
                   id: polygonNav.coordinates2.id,
                   name: polygonNav.coordinates2.name,
                   coordinates: polygonNav.coordinates2.coordinates
-                }            
-                console.log("push RightSideArea1 data!!!!", pushData)
-                listTapped(pushData)
+                } 
+                
+                props.navigation.navigate("리스트페이지2", {
+                    parentID: pushData.id,
+                    parentName: pushData.name,
+                    coordinates: pushData.coordinates,
+                })
+                // listTapped(pushData)
+                
             }
-        })
+        // })
         
-    }, [dispatch, polygonNav])
+    }, [polygonNav])
 
     if (isLoading) {
         return <View style={styles.centered}>
@@ -88,11 +99,6 @@ export default RightSideArea1 = (props) => {
         </View>
     }
     
-    //   if (!isLoading && areaList === null) {
-    //     return <View style={styles.centered}>
-    //         <Text>No Products Found. Maybe Start Adding Some Shit</Text>
-    //     </View>
-    //   }
 
     return (
         <SafeAreaView style={styles.viewContainer}>
@@ -101,7 +107,7 @@ export default RightSideArea1 = (props) => {
                 renderItem={(item) => (
                     <RightSideCell
                         // style={{flex: 1, backgroundColor: 'red'}}
-                        onPress={(id) => listTapped(item.item)}  
+                        onPress={() => listTapped(item.item)}  
                         name={item.item.name}
                     />
                 )}
@@ -116,25 +122,6 @@ const styles = StyleSheet.create({
         flex: 1,
         alignSelf: "stretch",
         paddingHorizontal: 16,
-        backgroundColor: 'white',
-        
-    },
-    // title: {
-    //     fontSize: 24,
-    //     color: 'black',
-    //     backgroundColor: 'white',
-    //     paddingHorizontal: 16,
-    //     paddingVertical: 8 
-    // }
+        backgroundColor: 'white'
+    }
 });
-
-
-// let DATA =[
-//     {id: 0, name: "여수바다1"}, 
-//     {id: 1, name: "여수바다2"},
-//     {id: 2, name: "여수바다3"},
-//     {id: 3, name: "여수바다4"},
-//     {id: 4, name: "여수바다5"},
-//     {id: 5, name: "여수바다6"},
-//     {id: 6, name: "여수바다7"}
-// ]

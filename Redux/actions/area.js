@@ -37,13 +37,14 @@ let initialArea = [
 
 
 export const fetchArea = () => {
-
+    // deleteAllArea1()
     return async (dispatch, getState) => {
         try {
             let newArray = []
             await getAllArea1().then((i)=>{
                 i.rows._array.forEach(element => {
                     let pasedData = JSON.parse(element.data)
+                    pasedData.id = element.id
                     newArray.push(pasedData)
                 });
             })
@@ -60,12 +61,13 @@ export const fetchArea = () => {
 }
 
 export const addArea = (id, name, coordinates, nameCoordinate) => {
-    const addingAreaData = new Area(id, name, coordinates, nameCoordinate)
-
-
+    let addingAreaData = new Area(id, name, coordinates, nameCoordinate)
     return async (dispatch, getState) => {
         try {
-            await insertNewArea1(JSON.stringify(addingAreaData))
+            await insertNewArea1(JSON.stringify(addingAreaData)).then((i)=>{
+                console.log(i.insertId)
+                addingAreaData.id = i.insertId
+            })
 
             dispatch({
                 type: ADD_AREA,

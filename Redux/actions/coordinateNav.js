@@ -17,7 +17,7 @@ export const fetchCoordinate = () => {
 
 export const updateCoordinate = (level, areaData) => {
 
-    console.log("update polygon focus ACTION",level, areaData)
+    // console.log("update polygon focus ACTION",level, areaData)
     return async (dispatch) => {
         dispatch({
             type: UPDATE_COORDINATE,

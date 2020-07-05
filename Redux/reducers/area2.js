@@ -20,39 +20,48 @@ export default (state = initialState2, action) => {
         
         case GET_AREA2:
 
-            // let data = state.areaList.filter(item => item.parentID === action.parentID)
-            // console.log("reducer filter area 2", data)
-            let data = state.areaList.filter(item => item.parentID == action.parentID)
+        //     // let data = state.areaList.filter(item => item.parentID === action.parentID)
+        //     // console.log("reducer filter area 2", data)
+
+        //     // let data = state.areaList.filter(item => item.parentID == action.parentID)
+        //     // return {
+        //     //     areaList : state.areaList,
+        //     //     filteredList: data
+        //     // };
+        //     console.log("area2 data in reducer", action.areaData)
             return {
-                areaList : state.areaList,
-                filteredList: data
-            };
+                areaList: action.areaData,
+                filteredList : action.areaData
+            }
+
 
         case ADD_AREA2:
             console.log("reducer area2 get area:", action.parentID);
 
-            const addingAreaData = new Area2(
-                action.areaData.id,
-                action.areaData.name,
-                action.areaData.coordinates,
-                action.areaData.nameCoordinate,
-                action.areaData.parentID
-            );
+            // const addingAreaData = new Area2(
+            //     action.areaData.id,
+            //     action.areaData.name,
+            //     action.areaData.coordinates,
+            //     action.areaData.nameCoordinate,
+            //     action.areaData.parentID
+            // );
 
             return {
                 ...state,
-                areaList : state.areaList.concat(addingAreaData)
+                filteredList : state.filteredList.concat(action.areaData)
             };
 
         case GET_FILTERED_AREA2: 
             // console.log("reducer area2 filter inited ID:", state);
             // let parentID = action.parentID
-            let filteredData = state.areaList.filter(item => item.parentID == action.parentID)
-            // console.log("reducer filter area 2", data)
+            // let filteredData = state.areaList.filter(item => item.parentID == action.parentID)
+            console.log("reducer filter area 2")
+            
             return {
                 ...state,
-                // areaList: state.areaList.filter(item => item.parentID == action.parentID),
-                filteredList : filteredData,
+                // areaList: action.areaData,
+                filteredList : action.areaData,
+                // areaList : action.areaData,
                 // parentID : action.parentID
             };
 

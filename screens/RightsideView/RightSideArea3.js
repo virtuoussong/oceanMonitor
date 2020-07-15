@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { 
     StyleSheet, 
     Text, 
@@ -13,6 +13,7 @@ import {
 import { HeaderBackButton } from 'react-navigation-stack'
 import RightSideCell from '../../components/RightSideFlatListCell';
 import { useSelector, useDispatch } from "react-redux";
+import * as areaAction3 from '../../Redux/actions/area3';
 import * as areaAction4 from '../../Redux/actions/area4';
 import * as coordinateNavAction from '../../Redux/actions/coordinateNav';
 import RegionDetail from '../FolderViews/DocumentDetailView';
@@ -20,23 +21,30 @@ export default RightSideArea3 = (props) => {
 
     // const [locations, setLocations] = useState([])
     const [isLoading, setIsLoading] = useState(false);
-    const [isDocOn, setDoc] = useState(false)
-
+    const [isDocOn, setDoc] = useState(false);
+    const [docID, setDocID] = useState();
+    const [parentID, setParentID] = useState();
+    const [id, setID] = useState();
     const dispatch = useDispatch();
     const areaList = useSelector(state => state.area3ListRoot.filteredList)
 
     useEffect(()=>{
         // setLocations(DATA)
-    }, [dispatch, areaList])
+        // console.log("area3", areaList)
+    }, [areaList])
 
-    let passedID = props.route.params.parentID
+    const reload = useCallback(() =>{
+        let passedID = props.route.params.parentID
+        setParentID(passedID)
+        dispatch(areaAction3.fetchFilteredList(passedID))
+    }, [])
+
     const listTapped = (item) => {
         props.navigation.navigate("리스트페이지4", {
             parentID: item.id,
             parentName: item.name,
             coordinates:item.coordinates
         })
-        // console.log("list3 tapped", item)
 
         if (polygonNav.level == 3) {
             dispatch(coordinateNavAction.updateCoordinate(4, item)).then(()=>{
@@ -53,42 +61,47 @@ export default RightSideArea3 = (props) => {
                 coordinates: polygonNav.areaData.coordinates
             }            
 
-            console.log("push RightSideArea3 get pushData  data!!!!", pushData)
-
             props.navigation.navigate("리스트페이지4", {
                 parentID: pushData.id,
                 parentName: pushData.name,
                 coordinates: pushData.coordinates
             })
-            // listTapped(pushData)
         }
         
     }, [polygonNav])
 
-    const showDoc = (id) => {
-        console.log("doc tapped")
+    const showDoc = (docId, id) => {
+        setID(id)
+        setDocID(docId)
+        toggleModal()
+    }
+
+    const toggleModal = () => {
         setDoc(!isDocOn)
     }
 
     return (
         <SafeAreaView style={styles.viewContainer}>
-            <Modal visible={isDocOn} animationType="slide">
-                <View style={{width: '100%', height: 50}}>
-                    <TouchableOpacity style={{height: '100%' ,marginLeft: 'auto', marginRight: 20, justifyContent: 'center'}} onPress={()=>showDoc()}>
-                        <Text>닫기</Text>
-                    </TouchableOpacity>    
-                </View>
-                <RegionDetail hasCloseButton={true} close={()=>showDoc()}/>
+            <Modal visible={isDocOn && isDocOn} animationType="slide">
+                <RegionDetail  
+                    isBarShown={true}  
+                    docID={docID} id={id}  
+                    hasCloseButton={true} 
+                    close={()=>toggleModal()} 
+                    area={3}
+                    reload={()=>reload()}
+                />
             </Modal>
 
             <FlatList 
                 data={areaList}
                 renderItem={(item) => (
                     <RightSideCell 
+                        showIcon={true}
                         onPress={()=> listTapped(item.item)}  
                         name={item.item.name}
-                        isDocShown={true}
-                        docTapped={()=>showDoc()}
+                        isDocShown={item.item.docID ? true : false}
+                        docTapped={()=>showDoc(item.item.docID, item.item.id)}
                     />
                 )}
                 keyExtractor={item => `${item.id}listKey`}

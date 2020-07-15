@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import {StyleSheet, View, Text, TextInput, KeyboardAvoidingView, Image, TouchableOpacity, Modal} from 'react-native';
+import { useNavigation } from '@react-navigation/native'
 import DrawerButton from '../../../../components/DrawerNavButton';
 import TitleInputView from '../DocDetail/TitleInput';
 import AreaDoc from '../../../../Models/AreaDoc.js';
@@ -7,35 +8,50 @@ import area from '../../../../Redux/reducers/area';
 import {RegionInfo} from '../../../../Models/RegionInfo.js';
 import * as ImagePicker from 'expo-image-picker';
 import Camera from '../../../Camera';
+import { newRegionDoc } from '../../../../Redux/database/regionDoc'
+import { insertDocID } from '../../../../Redux/database/area2DB';
+import { getRegionDoc, updateRegionDoc } from '../../../../Redux/database/regionDoc';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
+
 let dummyData = new RegionInfo(
-    "어촌계 1",
-    "20",
-    "10",
-    "11",
-    "2",
-    "3",
-    "4",
-    "5",
-    "15",
-    "5",
-    "3",
-    "이장",
-    "송치만",
-    "010-3445-1234",
-    "032-456-0987",
-    "소장",
-    "송치만",
-    "010-3212-1234",
-    "",
-    "부녀회장",
-    "감양례",
-    "010-2345-1234",
-    "",
-    "2020-3-12",
-    "2012-3-31",
-    "바지락 양식장 묘도 주탑",
-    "양식장: 바지락, 자동차 일부 통행 가능, 횟집 및 식당",
-    ""
+    null,
+    null,
+    null,
+    null,
+    null,
+
+
+    null,
+    null,
+    null,
+    null,
+    null,
+
+
+    null,
+    null,
+    null,
+    null,
+    null,
+
+
+    null,
+    null,
+    null,
+    null,
+    null,
+
+
+    null,
+    null,
+    null,
+    null,
+    null,
+
+
+    null,
+    null,
+    null
 )
 
 export default RegionDetailView = (props) => {
@@ -44,11 +60,53 @@ export default RegionDetailView = (props) => {
     const [isModalOn, setModal] = useState(false);
 
     useEffect(()=>{
-
+        regionData.current = data
     }, [data])
 
-    const openGallery = async () => {
+    const nav = useNavigation()
+    useEffect(()=>{
+        
+        if (props.docID) {
+            loadData(props.docID)
+        }
+        if (props.route != undefined) {
+            setupNavbutton()
+        }
+        
+    }, [])
 
+    const setupNavbutton = () => {
+        if (props.route.params.docID != undefined || props.route.params.docID != null) {
+            loadData(props.route.params.docID)
+        }
+
+        nav.setOptions({
+            headerRight: () => <TouchableOpacity 
+                    style={{marginRight: 16}} 
+                    onPress={saveDocFromNav}>
+                    <Text style={{fontSize: 20}}>저장</Text>
+                </TouchableOpacity>
+        })
+    }
+
+    // const setupNavSave = () => {
+    //     nav.setOptions({
+    //         headerRight: () => <TouchableOpacity style={{marginRight: 16}} onPress={()=>saveDocFromNav()}><Text style={{fontSize: 20}}>저장</Text></TouchableOpacity>
+    //     })
+    // }
+
+    let regionData = React.useRef(null)
+
+    const loadData = async (id) => {
+        await getRegionDoc(id).then((i)=>{
+            let item = i.rows._array[0].data
+            let parsed = JSON.parse(item)  
+            setData(parsed)
+        })
+    }
+
+    const openGallery = async () => {
+        console.log("saving data", data)
         let result = await ImagePicker.launchImageLibraryAsync({
             mediaTypes: ImagePicker.MediaTypeOptions.All,
             allowsEditing: true,
@@ -77,10 +135,66 @@ export default RegionDetailView = (props) => {
         })
     }
 
-    return <View style={[styles.constainer, styles.flexRow, styles.borderAll]}>
-        {isModalOn && <Modal>
-            <Camera toggleCamera={()=>toggleCamera()} save={(i)=>savePhoto(i)}/>
-        </Modal>}
+    const saveDocFromNav = async ()=> {
+        
+        console.log("saving data", regionData.current)
+        let jsonData = JSON.stringify(regionData.current)
+        
+        // console.log("docID save", props.route.params.docID)
+        if (props.route.params.docID != null) {
+            let docIDPassed = props.route.params.docID
+            // console.log("props.route.params.docID save", props.route.params.docID)
+            await updateRegionDoc(jsonData, docIDPassed).then((i)=>{
+                console.log("updated from nav back", i)
+                props.navigation.goBack(null)
+            })
+        } else {
+            let locationID = props.route.params.id
+            await newRegionDoc(jsonData).then((i)=>{
+                insertDocID(i.insertId, locationID).then(()=>{
+                    props.navigation.goBack(null)
+                })
+            })
+        }
+    }
+
+    const saveDoc = async()=> {
+
+        let jsonData = JSON.stringify(data)
+
+        if (props.docID != null) {
+            await updateRegionDoc(jsonData, props.docID).then((i)=>{
+                props.close()
+            })
+        } else {
+            await newRegionDoc(jsonData).then((i)=>{
+                insertDocID(i.insertId, props.id).then(()=>{
+                    props.close()
+                    props.reload()
+                })
+            })
+        }
+    }
+
+    const cancel = () =>{
+        props.close()
+    }
+
+    return <View style={styles.constainer}>
+            {props.hasCloseButton && <View style={{width: '100%', height: 55, flexDirection: 'row'}}>
+                <TouchableOpacity style={{marginRight: 'auto', marginTop: 24, marginLeft: 20}} onPress={()=>cancel()}>
+                    <Text style={{fontSize: 20}}>취소</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity style={{marginLeft: 'auto', marginTop: 24, marginRight: 20}} onPress={()=>saveDoc()}>
+                    {props.docID ? <Text style={{fontSize: 20}}>수정</Text> : <Text style={{fontSize: 20}}>저장</Text>}
+                </TouchableOpacity>
+            </View>}
+            <Modal visible={isModalOn}>
+                <Camera toggleCamera={()=>toggleCamera()} save={(i)=>savePhoto(i)}/>
+            </Modal>
+        <KeyboardAwareScrollView style={{width: '100%', height: '100%'}} contentContainerStyle={{flexGrow: 1}}>
+            <View style={[styles.constainer, styles.flexRow, styles.borderAll]}>
         
         <View style={[styles.constainer, styles.borderRight, styles.flexRow, {height: '100%'}]}>
             {data.imageLink ? <TouchableOpacity onPress={()=>openGallery()} style={[{flex:1, height: '100%'}, styles.borderRight]}>
@@ -101,20 +215,20 @@ export default RegionDetailView = (props) => {
 
 
         <View style={[styles.constainer]}>
-            <View style={[{flex: 1, width: '100%'}, styles.center,styles.borderBottom]}>
+            <View style={[{flex: 1, width: '100%'}, styles.center, styles.borderBottom, styles.headerBlue]}>
                 <Text>지역 일반 정보</Text>
             </View>
             <View style={[{flex:1, flexDirection: 'row'}, styles.borderBottom]}>
-                <View style={[styles.borderRight, {flex: 1, justifyContent: 'center', paddingLeft: 20}]}><Text>▶행정구역</Text></View>
+                <View style={[styles.borderRight, styles.headerLightBlue, {flex: 1, justifyContent: 'center', paddingLeft: 20}]}><Text>▶행정구역</Text></View>
                 <View style={[{flex:1}, styles.center]}><TextInput style={{flex:1, width: '100%', textAlign: "center"}} onChange={(i)=>setData({
                     ...data,
                     areaName: i.nativeEvent.text
                 })} value={data.areaName}/></View>
             </View>
-            <View style={[{flex: 1, width: '100%', justifyContent: 'center', paddingLeft: 20}, styles.borderBottom]}><Text>▶일반현황</Text></View>
+            <View style={[{flex: 1, width: '100%', justifyContent: 'center', paddingLeft: 20}, styles.borderBottom, styles.headerLightBlue2,]}><Text>▶일반현황</Text></View>
             <View style={[{flex: 3, width: '100%'}, styles.flexRow, styles.borderBottom]}>
                 <View style={[{flex: 1}, styles.borderRight, styles.center]}>
-                    <View style={[{flex:2,  width: '100%'}, styles.center, styles.borderBottom]}><Text style={{textAlign: 'center'}}>주민수</Text></View>
+                    <View style={[{flex:2,  width: '100%'}, styles.center, styles.borderBottom, styles.headerYellowColor]}><Text style={{textAlign: 'center'}}>주민수</Text></View>
                     <View style={[{flex:1,  width: '100%'}, styles.center,]}>
                         <TextInput style={{flex:1, width: '100%', textAlign: "center"}} 
                             onChange={(i)=>setData({
@@ -126,7 +240,7 @@ export default RegionDetailView = (props) => {
                     </View>
                 </View>
                 <View style={[{flex: 1}, styles.borderRight, styles.center]}>
-                    <View style={[{flex:2,  width: '100%'}, styles.center, styles.borderBottom]}><Text style={{textAlign: 'center'}}>가구수</Text></View>
+                    <View style={[{flex:2,  width: '100%'}, styles.center, styles.borderBottom, styles.headerYellowColor]}><Text style={{textAlign: 'center'}}>가구수</Text></View>
                     <View style={[{flex:1,  width: '100%'}, styles.center,]}>
                         <TextInput style={{flex:1, width: '100%', textAlign: "center"}} 
                             onChange={(i)=>setData({
@@ -138,15 +252,7 @@ export default RegionDetailView = (props) => {
                     </View>
                 </View>
                 <View style={[{flex: 1}, styles.borderRight, styles.center]}>
-                    <View style={[{flex:2,  width: '100%'}, styles.center, styles.borderBottom]}><Text style={{textAlign: 'center'}}>{"어촌계\n반수"}</Text></View>
-                    <View style={[{flex:1,  width: '100%'}, styles.center,]}>
-                        <Text>77호</Text>
-                    </View>
-                </View>
-                <View style={[{flex: 1}, styles.borderRight, styles.center]}>
-                    <View style={[{flex:2,  width: '100%'}, styles.center, styles.borderBottom]}>
-                        <Text style={{textAlign: 'center'}}>{"어촌계\n인원"}</Text>
-                    </View>
+                    <View style={[{flex:2,  width: '100%'}, styles.center, styles.borderBottom, styles.headerYellowColor]}><Text style={{textAlign: 'center'}}>{"어촌계\n반수"}</Text></View>
                     <View style={[{flex:1,  width: '100%'}, styles.center,]}>
                         <TextInput style={{flex:1, width: '100%', textAlign: "center"}} 
                             onChange={(i)=>setData({
@@ -157,9 +263,23 @@ export default RegionDetailView = (props) => {
                         />
                     </View>
                 </View>
+                <View style={[{flex: 1}, styles.borderRight, styles.center]}>
+                    <View style={[{flex:2,  width: '100%'}, styles.center, styles.borderBottom, styles.headerYellowColor]}>
+                        <Text style={{textAlign: 'center'}}>{"어촌계\n인원"}</Text>
+                    </View>
+                    <View style={[{flex:1,  width: '100%'}, styles.center,]}>
+                        <TextInput style={{flex:1, width: '100%', textAlign: "center"}} 
+                            onChange={(i)=>setData({
+                            ...data,
+                            personcount: i.nativeEvent.text
+                            })} 
+                            value={data.personcount}
+                        />
+                    </View>
+                </View>
                 <View style={[{flex: 2}, styles.borderRight, styles.center]}>
-                    <View style={[{flex:1,  width: '100%'}, styles.center, styles.borderBottom]}><Text>어선척수</Text></View>
-                    <View style={[{flex:1,  width: '100%', flexDirection: 'row'}, styles.center, styles.borderBottom]}>
+                    <View style={[{flex:1,  width: '100%'}, styles.center, styles.borderBottom, styles.headerYellowColor]}><Text>어선척수</Text></View>
+                    <View style={[{flex:1,  width: '100%', flexDirection: 'row'}, styles.center, styles.borderBottom, styles.headerYellowColor]}>
                         <View style={[{flex:1 , height: '100%'}, styles.center, styles.borderRight]}>
                             <Text>일반</Text> 
                         </View>
@@ -189,9 +309,9 @@ export default RegionDetailView = (props) => {
                     </View>
                 </View>
                 <View style={[{flex: 1}, styles.borderRight, styles.center]}>
-                            <View style={[{flex:2,  width: '100%'}, styles.center, styles.borderBottom]}>
-                                <Text>{"숙박\n시설"}</Text>
-                            </View>
+                    <View style={[{flex:2,  width: '100%'}, styles.center, styles.borderBottom, styles.headerYellowColor]}>
+                        <Text>{"숙박\n시설"}</Text>
+                    </View>
                     <View style={[{flex:1,  width: '100%'}, styles.center,]}>
                         <TextInput style={{flex:1, width: '100%', textAlign: "center"}} 
                             onChange={(i)=>setData({
@@ -203,7 +323,7 @@ export default RegionDetailView = (props) => {
                     </View>
                 </View>
                 <View style={[{flex: 1}, styles.borderRight, styles.center]}>
-                    <View style={[{flex:2,  width: '100%'}, styles.center, styles.borderBottom]}>
+                    <View style={[{flex:2,  width: '100%'}, styles.center, styles.borderBottom, styles.headerYellowColor]}>
                         <Text>{"접안\n시설"}</Text>
                     </View>
                     <View style={[{flex:1,  width: '100%'}, styles.center,]}>
@@ -217,10 +337,10 @@ export default RegionDetailView = (props) => {
                     </View>
                 </View>
                 <View style={[{flex: 2}, styles.borderRight, styles.center]}>
-                    <View style={[{flex:1,  width: '100%'}, styles.center, styles.borderBottom]}>
+                    <View style={[{flex:1,  width: '100%'}, styles.center, styles.borderBottom, styles.headerYellowColor]}>
                         <Text>도서</Text>
                     </View>
-                    <View style={[{flex:1,  width: '100%', flexDirection: 'row'}, styles.center, styles.borderBottom]}>
+                    <View style={[{flex:1,  width: '100%', flexDirection: 'row'}, styles.center, styles.borderBottom, styles.headerYellowColor]}>
                         <View style={[{flex:1 , height: '100%'}, styles.center, styles.borderRight]}>
                             <Text>유인</Text> 
                         </View>
@@ -250,10 +370,10 @@ export default RegionDetailView = (props) => {
                     </View>
                 </View>
             </View> 
-            <View style={[{flex: 1, width: '100%', justifyContent: 'center', paddingLeft: 20}, styles.borderBottom]}>
+            <View style={[{flex: 1, width: '100%', justifyContent: 'center', paddingLeft: 20}, styles.borderBottom, styles.headerYellowColor]}>
                 <Text>▶해안방제 책임 행정기관 및 주민대표</Text>
             </View>
-            <View style={[{flex: 1, flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}, styles.borderBottom]}>
+            <View style={[{flex: 1, flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}, styles.borderBottom, styles.headerLightBlue]}>
                 <View style={[{flex: 1, height: '100%'}, styles.center, styles.borderRight]}><Text>구분</Text></View>
                 <View style={[{flex: 1, height: '100%'}, styles.center, styles.borderRight]}><Text>성명</Text></View>
                 <View style={[{flex: 1.5, height: '100%'}, styles.center, styles.borderRight]}><Text>핸드폰</Text></View>
@@ -373,7 +493,7 @@ export default RegionDetailView = (props) => {
                     />
                 </View>
             </View>
-            <View style={[{flex: 1, flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}, styles.borderBottom]}>
+            <View style={[{flex: 1, flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}, styles.borderBottom, styles.headerYellowColor]}>
                 <View style={[{flex: 1, height: '100%'}, styles.center, styles.borderRight]}><Text>조사기간</Text></View>
                 <View style={[{flex: 1, height: '100%'}, styles.center, styles.borderRight]}><Text>방제조치 우선순위</Text></View>
             </View>
@@ -418,7 +538,7 @@ export default RegionDetailView = (props) => {
                     />
                 </View>
             </View>
-            <View style={[{flex: 1, width: '100%', justifyContent: 'center', alignItems: 'center'}, styles.borderBottom]}>
+            <View style={[{flex: 1, width: '100%', justifyContent: 'center', alignItems: 'center'}, styles.borderBottom, styles.headerYellowColor]}>
                 <Text>해양환경 민감 개소 및 특징</Text>
             </View>
             <View style={[{flex: 3, width: '100%', justifyContent: 'top', padding: 10}, styles.borderBottom]}>
@@ -432,10 +552,25 @@ export default RegionDetailView = (props) => {
             </View>
         </View>
     </View>
+        </KeyboardAwareScrollView>
+        </View>
+        
+        
 }
 
 const styles = StyleSheet.create({
-
+    headerBlue: {
+        backgroundColor: '#4F81BD'
+    },
+    headerLightBlue: {
+        backgroundColor: '#CFD7E7'
+    },
+    headerLightBlue2: {
+        backgroundColor: '#E9ECF3'
+    },
+    headerYellowColor: {
+        backgroundColor: '#FFFFCC'
+    },
     constainer: {
         flex: 1,
         justifyContent: 'center',

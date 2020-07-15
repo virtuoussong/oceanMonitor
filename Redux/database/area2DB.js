@@ -61,3 +61,21 @@ export const insertNewArea2 = (data, parentID) => {
 
 };
 
+export const insertDocID = (docID, rowID) => {
+    const promise = new Promise((resolve, reject) => {
+        db.transaction( tx => {
+            tx.executeSql(
+                `UPDATE area2 SET docID = ${docID} WHERE id = ${rowID}`,
+                [],
+                (_, result) => {
+                    resolve(result);
+                },
+                (_, err)=> {
+                    reject(err);
+                }
+            );
+        });
+    })
+    return promise
+}
+

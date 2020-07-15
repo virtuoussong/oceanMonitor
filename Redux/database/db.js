@@ -94,41 +94,41 @@ export const initArea1Table = () => {
 //     return promise
 // };
 
-export const initRegionDocTable = () => {
-    const promise = new Promise((resolve, reject) => {
-        db.transaction( tx => {
-            tx.executeSql(
-                'CREATE TABLE IF NOT EXISTS regionDoc (id INTEGER PRIMARY KEY NOT NULL, data TEXT NOT NULL);',
-                [],
-                () => {
-                    resolve();
-                },
-                (_, err)=> {
-                    reject(err);
-                }
-            );
-        });
-    })
-    return promise
-};
+// export const initRegionDocTable = () => {
+//     const promise = new Promise((resolve, reject) => {
+//         db.transaction( tx => {
+//             tx.executeSql(
+//                 'CREATE TABLE IF NOT EXISTS regionDoc (id INTEGER PRIMARY KEY NOT NULL, data TEXT NOT NULL);',
+//                 [],
+//                 () => {
+//                     resolve();
+//                 },
+//                 (_, err)=> {
+//                     reject(err);
+//                 }
+//             );
+//         });
+//     })
+//     return promise
+// };
 
-export const initLocationDocTable = () => {
-    const promise = new Promise((resolve, reject) => {
-        db.transaction( tx => {
-            tx.executeSql(
-                'CREATE TABLE IF NOT EXISTS locationDoc (id INTEGER PRIMARY KEY NOT NULL, data TEXT NOT NULL);',
-                [],
-                () => {
-                    resolve();
-                },
-                (_, err)=> {
-                    reject(err);
-                }
-            );
-        });
-    })
-    return promise
-};
+// export const initLocationDocTable = () => {
+//     const promise = new Promise((resolve, reject) => {
+//         db.transaction( tx => {
+//             tx.executeSql(
+//                 'CREATE TABLE IF NOT EXISTS locationDoc (id INTEGER PRIMARY KEY NOT NULL, data TEXT NOT NULL);',
+//                 [],
+//                 () => {
+//                     resolve();
+//                 },
+//                 (_, err)=> {
+//                     reject(err);
+//                 }
+//             );
+//         });
+//     })
+//     return promise
+// };
 
 
 //USER

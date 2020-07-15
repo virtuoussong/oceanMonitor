@@ -1,7 +1,9 @@
-import React from 'react';
-import {StyleSheet, View, FlatList, Text, Dimensions, TouchableOpacity} from 'react-native';
+import React, {useState, useEffect} from 'react';
+import {StyleSheet, View, FlatList, Text, Dimensions, TouchableOpacity, ActivityIndicator} from 'react-native';
 import DrawerButton from '../../components/DrawerNavButton';
 import FolderCell from '../../components/FolderCell';
+import {  getAllArea1 } from '../../Redux/database/db';
+import { useNavigation } from '@react-navigation/native'
 
 
 let dataSet = [
@@ -24,16 +26,58 @@ let dataSet = [
 ]
 
 export default DocumentListView = (props) => {
+    const [data, setData] = useState()
+    const [isLoading, setIsLoading] = useState(false)
+
+    useEffect(()=>{
+        setIsLoading(true)
+        loadData()
+        setupNavbutton()
+    }, [])
+
+    const loadData = async () => {    
+        await getAllArea1().then((i)=>{
+            let newArray = []
+            i.rows._array.forEach(element => {
+                let pasedData = JSON.parse(element.data)
+                pasedData.id = element.id
+                newArray.push(pasedData)
+            });
+            setData(newArray)
+            setIsLoading(false)
+        })
+    }
+
+    const nav = useNavigation()
+    const setupNavbutton = () => {
+       
+        nav.setOptions({
+            headerLeft: () => <DrawerButton 
+            style={styles.leftButton} 
+            toggleDrawer={toggleDrawer}
+        />
+        })
+    }
+
     const toggleDrawer = () => {
         props.toggleDrawer()
         console.log(dataSet)
     }
 
-    const folderTap = (id) => {
+    const folderTap = (id, docID) => {
         // 구역 2단계
         // window.location.href = '구역 2단계';
-        props.onPress()
+        console.log("1st", docID)
+        props.navigation.navigate("구역 2단계", {
+            id: id
+        })
     }
+
+    if (isLoading) {
+        return <View style={styles.container}>
+            <ActivityIndicator size={'large'} color={"red"} />
+        </View>
+      }
 
     return <View style={styles.container}>
         <FlatList 
@@ -43,7 +87,7 @@ export default DocumentListView = (props) => {
             // numColumns={dataSet.length / 3}
             showsVerticalScrollIndicator={false}
             // showsHorizontalScrollIndicator={false}
-            data={dataSet}
+            data={data}
             renderItem={({item}) => 
                 // <View style={styles.itemStyle}>
                 //     <TouchableOpacity style={{flex:1}} onPress={()=>folderTap(item.id)}>
@@ -61,14 +105,15 @@ export default DocumentListView = (props) => {
             keyExtractor={(i)=> i.id}
             numColumns={3}
         />
-        <DrawerButton 
+        {/* <DrawerButton 
             style={styles.leftButton} 
             toggleDrawer={toggleDrawer}
-        />
+        /> */}
     </View>
 }
 
 const styles = StyleSheet.create({
+    
     container: {
         flex: 1,
         justifyContent: "center",
@@ -82,8 +127,8 @@ const styles = StyleSheet.create({
         // height: 2000
     },
     leftButton: {
-        position: 'absolute',
-        top: 6,
+        // position: 'absolute',
+        top: -3,
         left: 10
     },
     itemStyle : {

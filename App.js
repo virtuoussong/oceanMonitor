@@ -19,6 +19,7 @@ import coordinateReducer from './Redux/reducers/coordinateNav.js'
 import FirstAreaListView from './screens/FolderViews/DocumentViewListView';
 import SecondAreaListView from './screens/FolderViews/SecondAreaListView';
 import ThirdAreaListView from './screens/FolderViews/ThirdAreaListView';
+import FourthAreaListView from './screens/FolderViews/FourthAreaList';
 import DocumentDetailView from './screens/FolderViews/DocumentDetailView';
 import AreaDetailView from './screens/FolderViews/AreaDetailView';
 import RegionDetailView from './screens/DocDetail/components/RegionDetail/RegionDetailView';
@@ -31,12 +32,13 @@ import { createDrawerNavigator } from '@react-navigation/drawer';
 import { NavigationContainer } from '@react-navigation/native';
 
 
-import { init, initArea1Table, initRegionDocTable, initLocationDocTable } from './Redux/database/db';
+import { init, initArea1Table } from './Redux/database/db';
 
 import {initArea2Table} from './Redux/database/area2DB';
 import {initArea3Table} from './Redux/database/area3DB';
 import {initArea4Table} from './Redux/database/area4DB';
-
+import { initRegionDocTable } from './Redux/database/regionDoc';
+import { initLocationDocTable } from './Redux/database/locationDoc';
 
 init().then(()=>{
   // console.log("initialized database")
@@ -103,26 +105,36 @@ const Stack = createStackNavigator();
 function Document({ navigation }) {
 
   let firstListView = props => (<FirstAreaListView 
+    {...props}
     toggleDrawer={() => navigation.toggleDrawer()} 
     style={{flex: 1}}
     onPress={() => navigation.navigate("구역 2단계")}
   />);
 
-  let secondListView = () => (<SecondAreaListView 
+  let secondListView = props => (<SecondAreaListView 
+    {...props}
     toggleDrawer={() => navigation.toggleDrawer()} 
     onPress={() => navigation.navigate("구역 3단계")}
     viewAreaDetail={() => navigation.navigate("지역 정보")}
   />)
 
-  let thirdListView = () => (<ThirdAreaListView 
+  let thirdListView = props => (<ThirdAreaListView 
+    {...props}
     toggleDrawer={() => navigation.toggleDrawer()} 
-    onPress={() => navigation.navigate("문서 페이지")}
+    onPress={() => navigation.navigate("구역 4단계")}
     viewAreaDetail={() => navigation.navigate("지역 정보")}
   />)
 
-  let documentDetailView =()=>(
+  let fourthListView = props => (<FourthAreaListView
+    {...props}
+    // toggleDrawer={() => navigation.toggleDrawer()} 
+    viewAreaDetail={() => navigation.navigate("지역 정보")}
+  />)
+
+  let documentDetailView = props =>(
     <DocumentDetailView 
-          toggleDrawer={() => navigation.toggleDrawer()} 
+      {...props}
+      toggleDrawer={() => navigation.toggleDrawer()} 
     />
   )
 
@@ -132,9 +144,10 @@ function Document({ navigation }) {
   //   />
   // )
 
-  let areaDetailView =()=> (
+  let areaDetailView = props => (
     <RegionDetailView 
-      toggleDrawer={() => navigation.toggleDrawer()} 
+      {...props}
+      // toggleDrawer={() => navigation.toggleDrawer()} 
     />
   )
   
@@ -152,7 +165,13 @@ function Document({ navigation }) {
 
       <Stack.Screen 
         name="구역 3단계" 
-        component={thirdListView}/>
+        component={thirdListView}
+      />
+
+      <Stack.Screen 
+        name="구역 4단계" 
+        component={fourthListView}
+      />
 
       <Stack.Screen 
         name="문서 페이지" 

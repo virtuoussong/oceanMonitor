@@ -6,22 +6,22 @@ import AreaDoc from '../../../../Models/AreaDoc';
 // import area from '../../Redux/reducers/area';
 import Camera from '../../../Camera';
 import * as ImagePicker from 'expo-image-picker';
-
-
+import CalendarPicker from '../../../../components/Calendar';
+import DateTimePickerModal from 'react-native-modal-datetime-picker';
 let areaDataDoc2 = new AreaDoc(
-    1234, 
-    "여수 2-1 구역", 
-    ['송치만'], 
-    "2020-6-1", 
-    "12:30", 
-    "12m/12m", 
-    "맑음", 
-    "1m", 
-    "1m/h", 
-    "20c", 
-    "15c", 
-    "12m", 
-    "1km",
+    "", 
+    "", 
+    [], 
+    "", 
+    "", 
+    "", 
+    "", 
+    "", 
+    "", 
+    "", 
+    "", 
+    "", 
+    "",
     ""
 )
 
@@ -29,8 +29,17 @@ export default BasicInfoDoc = (props) => {
 
     const [areaData, editAreaData] = useState(areaDataDoc2)
     const [isModalOn, setModal] = useState(false);
-    useEffect(()=>{
+    const [isCalendarOn, setCalendarOn] = useState(false)
 
+    useEffect(()=>{
+        if (props.data) {
+            editAreaData(props.data)
+        }
+    }, [props.data])
+
+    useEffect(()=>{
+        console.log(props)
+        props.refData.current = areaData
     }, [areaData])
 
     const pictureTapped = async () => {
@@ -67,26 +76,43 @@ export default BasicInfoDoc = (props) => {
         })
     }
 
+    const toggleCalendar = () =>{
+        setCalendarOn(!isCalendarOn)
+    }
+
+    const handleDatePicked =(i)=> {
+        console.log(i)
+        editAreaData({...areaData, date: i})
+    }
+
     return <View style={styles.container}>
         <Modal visible={isModalOn}>
             <Camera toggleCamera={()=>toggleCamera()} save={(i)=>savePhoto(i)}/>
         </Modal>
-        <TitleInputView/>
+        <Modal visible={isCalendarOn} transparent={true} animationType="slide">
+            <CalendarPicker close={()=>toggleCalendar()} setDate={(i)=>handleDatePicked(i)}/>
+        </Modal>
+
+        {/* <DateTimePickerModal
+            isVisible={isCalendarOn}
+            mode="date"
+            onConfirm={handleConfirm}
+            onCancel={hideDatePicker}
+        /> */}
+        {/* <TitleInputView/> */}
         <View style={styles.divisionWrapper}>
             {/* 섹션 1 */}
             <View style={[{flex: 1}, styles.rightBorderLine]}>
                 <View style={[styles.flexRow, styles.borderBottom, {flex: 1}]}>
-                    <View style={[{flex: 1}, styles.borderRight, styles.centerView]}>
+                    <View style={[{flex: 1}, styles.borderRight, styles.centerView, styles.headerYellow]}>
                         <Text>{"조사\n일시"}</Text>
                     </View>
-                    <View style={[{flex: 2}, styles.centerView]}>
-                        <TextInput value={areaData.date} name={"date"} 
-                            onChange={(i)=>editAreaData({...areaData, date: i.nativeEvent.text})}
-                        />
-                    </View>
+                    <TouchableOpacity style={[{flex: 2}, styles.centerView]} onPress={toggleCalendar}>
+                        <Text>{areaData.date}</Text>
+                    </TouchableOpacity>
                 </View>
                 <View style={[styles.flexRow, styles.borderBottom, {flex: 1}]}>
-                    <View style={[{flex: 1}, styles.borderRight, styles.centerView]}>
+                    <View style={[{flex: 1}, styles.borderRight, styles.centerView, styles.headerYellow]}>
                         <Text>{"조사\n시간"}</Text>
                     </View>
                     <View style={[{flex: 2}, styles.centerView]}>
@@ -94,7 +120,7 @@ export default BasicInfoDoc = (props) => {
                     </View>
                 </View>
                 <View style={[styles.flexRow, styles.borderBottom, {flex: 1}]}>
-                    <View style={[{flex: 1}, styles.borderRight, styles.centerView]}>
+                    <View style={[{flex: 1}, styles.borderRight, styles.centerView, styles.headerYellow]}>
                         <Text>{"고조\n저조"}</Text>
                     </View>
                     <View style={[{flex: 2}, styles.centerView]}>
@@ -102,7 +128,7 @@ export default BasicInfoDoc = (props) => {
                     </View>
                 </View>
                 <View style={[styles.flexRow, styles.borderBottom, {flex: 1}]}>
-                    <View style={[{flex: 1}, styles.borderRight, styles.centerView]}>
+                    <View style={[{flex: 1}, styles.borderRight, styles.centerView, styles.headerYellow]}>
                         <Text>{"천기"}</Text>
                     </View>
                     <View style={[{flex: 2}, styles.centerView]}>
@@ -110,7 +136,7 @@ export default BasicInfoDoc = (props) => {
                     </View>
                 </View>
                 <View style={[styles.flexRow, styles.borderBottom, {flex: 1}]}>
-                    <View style={[{flex: 1}, styles.borderRight, styles.centerView]}>
+                    <View style={[{flex: 1}, styles.borderRight, styles.centerView, styles.headerYellow]}>
                         <Text>{"파고\n(m)"}</Text>
                     </View>
                     <View style={[{flex: 2}, styles.centerView]}>
@@ -118,7 +144,7 @@ export default BasicInfoDoc = (props) => {
                     </View>
                 </View>
                 <View style={[styles.flexRow, styles.borderBottom, {flex: 1}]}>
-                    <View style={[{flex: 1}, styles.borderRight, styles.centerView]}>
+                    <View style={[{flex: 1}, styles.borderRight, styles.centerView, styles.headerYellow]}>
                         <Text>{"풍속\n(m/s)"}</Text>
                     </View>
                     <View style={[{flex: 2}, styles.centerView]}>
@@ -126,7 +152,7 @@ export default BasicInfoDoc = (props) => {
                     </View>
                 </View>
                 <View style={[styles.flexRow, styles.borderBottom, {flex: 1}]}>
-                    <View style={[{flex: 1}, styles.borderRight, styles.centerView]}>
+                    <View style={[{flex: 1}, styles.borderRight, styles.centerView, styles.headerYellow]}>
                         <Text>{"기온\n(℃)"}</Text>
                     </View>
                     <View style={[{flex: 2}, styles.centerView]}>
@@ -134,7 +160,7 @@ export default BasicInfoDoc = (props) => {
                     </View>
                 </View>
                 <View style={[styles.flexRow, styles.borderBottom, {flex: 1}]}>
-                    <View style={[{flex: 1}, styles.borderRight, styles.centerView]}>
+                    <View style={[{flex: 1}, styles.borderRight, styles.centerView, styles.headerYellow]}>
                         <Text>{"수온\n(℃)"}</Text>
                     </View>
                     <View style={[{flex: 2}, styles.centerView]}>
@@ -142,10 +168,10 @@ export default BasicInfoDoc = (props) => {
                     </View>
                 </View>
                 <View style={[styles.flexRow, styles.borderBottom, {flex: 2}]}>
-                    <View style={[styles.borderRight, {flex: 1}, styles.centerView]}><Text>{"해\n안\n선"}</Text></View>
+                    <View style={[styles.borderRight, {flex: 1}, styles.centerView, styles.headerYellow]}><Text>{"해\n안\n선"}</Text></View>
                     <View style={[{flex: 5}]}>
                         <View style={[styles.flexRow, styles.borderBottom, {flex: 1}]}>
-                            <View style={[{flex: 1}, styles.borderRight, styles.centerView]}>
+                            <View style={[{flex: 1}, styles.borderRight, styles.centerView, styles.headerYellow]}>
                                 <Text>{"길\n이\n(m)"}</Text>
                             </View>
                             <View style={[{flex: 4}, styles.centerView]}>
@@ -154,7 +180,7 @@ export default BasicInfoDoc = (props) => {
                         </View>
 
                         <View style={[styles.flexRow, styles.borderBottom, {flex: 1}]}>
-                            <View style={[{flex: 1}, styles.borderRight, styles.centerView]}>
+                            <View style={[{flex: 1}, styles.borderRight, styles.centerView, styles.headerYellow]}>
                                 <Text>{"폭\n(m)"}</Text>
                             </View>
                             <View style={[{flex: 4}, styles.centerView]}>
@@ -193,7 +219,9 @@ export default BasicInfoDoc = (props) => {
 }
 
 const styles = StyleSheet.create({
-
+    headerYellow: {
+        backgroundColor: '#FFFFCC'
+    },
     centerView: {
         alignItems: 'center',
         justifyContent: 'center'

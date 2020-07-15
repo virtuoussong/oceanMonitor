@@ -38,7 +38,8 @@ export const addArea4 = (id, name, nameCoordinate, coordinates, parentID, docID)
             let newArea4 = new Area2(id, name, coordinates, nameCoordinate, parentID, docID)
             await insertNewArea4(JSON.stringify(newArea4), parentID).then((i)=>{
                 console.log("inserted 4", i)
-                newArea4.id = i.insertID
+                newArea4.id = i.insertId
+                newArea4.docID = i.docID
             })
 
             dispatch({
@@ -62,6 +63,8 @@ export const fetchFilteredList = (id) => {
             await getAllArea4(id).then((i) => {
                 i.rows._array.forEach(element => {
                     let parsedItem = JSON.parse(element.data)
+                    parsedItem.id = element.id
+                    parsedItem.docID = element.docID
                     filteredArray.push(parsedItem)
                 });
             })

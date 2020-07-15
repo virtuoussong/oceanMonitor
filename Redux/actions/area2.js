@@ -64,9 +64,10 @@ export const addArea2 = (id, name, nameCoordinate, coordinates, parentID, docID)
     return async (dispatch, getState) => {
         try {
             let newArea2 = new Area2(id, name, coordinates, nameCoordinate, parentID, docID)
-            // console.log("area 2 inserted try", newArea2)
+            // console.log("area 2 inserted try", JSON.stringify(newArea2))
             await insertNewArea2(JSON.stringify(newArea2), parentID).then((i)=>{
                 newArea2.id = i.insertId
+
             })
             console.log("area 2 inserted", newArea2)
             dispatch({
@@ -91,9 +92,12 @@ export const fetchFilteredList = (id) => {
                 // console.log("filtered area2", i)
                 i.rows._array.forEach(element => {
                     let parsedItem = JSON.parse(element.data)
+                    parsedItem.id = element.id
+                    parsedItem.docID = element.docID
                     filteredArray.push(parsedItem)
                 });
             })
+            
             dispatch({
                 type: GET_FILTERED_AREA2,
                 areaData: filteredArray

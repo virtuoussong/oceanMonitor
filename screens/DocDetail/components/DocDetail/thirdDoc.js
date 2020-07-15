@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import {StyleSheet, View, Text, TouchableOpacity, TextInput} from 'react-native';
+import {StyleSheet, View, Text, TouchableOpacity, TextInput, Modal} from 'react-native';
 import TitleInputView from './TitleInput';
 import CheckBox from 'react-native-check-box';
+import CalendarPicker from '../../../../components/Calendar';
 // import CheckBox from '../../../../components/CheckBox';
 import {FourthPage, Access, Storage, Environment, Agent, Tool, Trash} from '../../../../Models/FourthPage';
 
@@ -127,9 +128,16 @@ let fourthDummyData = new FourthPage(
 
 export default ThirdDoc = (props) => {
     const [data, setData] = useState(fourthDummyData)
+    const [isCalendarOn, setCalendarOn] = useState(false)
 
     useEffect(()=>{
+        if (props.data) {
+            setData(props.data)
+        }
+    }, [props.data])
 
+    useEffect(()=>{
+        props.refData.current = data
     }, [data])
 
     const updateData = (section, field, i) => {
@@ -142,15 +150,27 @@ export default ThirdDoc = (props) => {
             }
         })
     }
+
+    const toggleCalendar = () =>{
+        setCalendarOn(!isCalendarOn)
+    }
+
+    const handleDatePicked =(i)=> {
+        console.log(i)
+        updateData("agent", "date", i)
+    }
  
     return (
     <View style={s.container}>
-        <TitleInputView/>
+        
+        <Modal visible={isCalendarOn} transparent={true} animationType="slide">
+            <CalendarPicker close={()=>toggleCalendar()} setDate={(i)=>handleDatePicked(i)}/>
+        </Modal>
 
         <View style={[s.secondSection, s.borderBottom]}>
             {/* 접근 여건 */}
             <View style={[s.secondSectionColumns, s.borderRight]}>
-                <View style={[s.seconSectionTitle, s.borderBottom]}><Text style={s.sectionTitleText}>접근여건</Text></View>
+                <View style={[s.seconSectionTitle, s.borderBottom, s.headerYellow]}><Text style={s.sectionTitleText}>접근여건</Text></View>
                 <View style={[s.borderBottom, {flex:3.065, flexDirection: 'row'}]}>
                     <View style={[{flex: 1, justifyContent: 'center', alignItems: 'center'}, s.borderRight]}>
                         <Text>{"육\n상"}</Text>
@@ -320,7 +340,7 @@ export default ThirdDoc = (props) => {
             </View>
             {/* 방제기자제 수령 및 고봔 여건 */}
             <View style={[s.secondSectionColumns, s.borderRight]}>
-                <View style={[s.seconSectionTitle, s.borderBottom]}><Text >방제기자재 수령 및 보관 여건</Text></View>
+                <View style={[s.seconSectionTitle, s.borderBottom, s.headerYellow]}><Text >방제기자재 수령 및 보관 여건</Text></View>
                 <View style={[s.textWithCheckBoxContainer, s.borderBottom]}>
                     <Text style={s.yesnoTextBox}>공터 활용 가능</Text>
                     <CheckBox 
@@ -452,7 +472,7 @@ export default ThirdDoc = (props) => {
             </View>
             {/* 페기물 보관 및 반출 여건 */}
             <View style={[s.secondSectionColumns, s.borderRight]}>
-                <View style={[s.seconSectionTitle, s.borderBottom]}><Text >페기물 보관 및 반출 여건</Text></View>
+                <View style={[s.seconSectionTitle, s.borderBottom, s.headerYellow]}><Text >페기물 보관 및 반출 여건</Text></View>
                 <View style={[s.textWithCheckBoxContainer, s.borderBottom]}>
                     <Text style={s.yesnoTextBox}>활용가능공터존재</Text>
                     <CheckBox 
@@ -606,7 +626,7 @@ export default ThirdDoc = (props) => {
             </View>
             {/* 해양 환경 민간 개소 */}
             <View style={[s.secondSectionColumns]}>
-                <View style={[s.seconSectionTitle, s.borderBottom]}><Text >해양 환경 민감개소</Text></View>
+                <View style={[s.seconSectionTitle, s.borderBottom, s.headerYellow]}><Text >해양 환경 민감개소</Text></View>
                 <View style={[s.textWithCheckBoxContainer, s.borderBottom]}>
                     <Text style={s.yesnoTextBox}>농수로인접</Text>
                     <CheckBox 
@@ -764,15 +784,18 @@ export default ThirdDoc = (props) => {
                             justifyContent: 'center', 
                             alignItems: 'center', 
                             width: '100%'}, 
-                            s.borderBottom, ]}>
+                            s.borderBottom, , s.headerYellow]}>
                                 <Text>작업 일자</Text>
                     </View>
-                    <TextInput 
+                    {/* <TextInput 
                         style={{flex:1, width: '100%', textAlign: 'center'}} 
                         placeholder={"날짜"} 
                         value={data.agent.date} 
                         onChange={(i)=>updateData("agent", "date", i.nativeEvent.text)}
-                    />
+                    /> */}
+                    <TouchableOpacity style={{flex:1, width: '100%', justifyContent: 'center', alignItems: 'center', textAlign: 'center'}}  onPress={toggleCalendar}>
+                        <Text>{data.agent.date}</Text>
+                    </TouchableOpacity>
                 </View>
                 <View style={[s.s3s1, s.borderRight]}>
                     <View 
@@ -780,7 +803,7 @@ export default ThirdDoc = (props) => {
                             justifyContent: 'center', 
                             alignItems: 'center', 
                             width: '100%'}, 
-                            s.borderBottom, ]}>
+                            s.borderBottom, s.headerYellow]}>
                                 <Text>작업 누계</Text>
                     </View>
                     <TextInput 
@@ -796,7 +819,7 @@ export default ThirdDoc = (props) => {
                             justifyContent: 'center', 
                             alignItems: 'center', 
                             width: '100%'}, 
-                            s.borderBottom, ]}>
+                            s.borderBottom, s.headerYellow]}>
                                 <Text>작업 시간</Text>
                     </View>
                     <TextInput 
@@ -812,7 +835,7 @@ export default ThirdDoc = (props) => {
                             justifyContent: 'center', 
                             alignItems: 'center', 
                             width: '100%'}, 
-                            s.borderBottom, ]}>
+                            s.borderBottom, s.headerYellow]}>
                                 <Text>감독자</Text>
                     </View>
                     <TextInput 
@@ -828,7 +851,7 @@ export default ThirdDoc = (props) => {
                             justifyContent: 'center', 
                             alignItems: 'center', 
                             width: '100%'}, 
-                            s.borderBottom, ]}>
+                            s.borderBottom, s.headerYellow]}>
                                 <Text>진도율</Text>
                     </View>
                     <TextInput 
@@ -839,12 +862,12 @@ export default ThirdDoc = (props) => {
                     />
                 </View>
                 <View style={[{flex: 6}, s.borderRight]}>
-                    <View style={[{flex: 1, width: '100%', justifyContent: 'center', alignItems: 'center'}, s.borderBottom]}>
+                    <View style={[{flex: 1, width: '100%', justifyContent: 'center', alignItems: 'center'}, s.borderBottom, s.headerYellow]}>
                         <Text>동원 인력</Text>
                     </View>
                     <View style={[{flex: 2, flexDirection: 'row'}]}>
                         <View style={[{flex: 1, justifyContent: 'center', alignItems: 'center'}, s.borderRight]}>
-                            <View style={[{flex: 1, justifyContent: 'center', alignItems: 'center', width: '100%'}, s.borderBottom]}>
+                            <View style={[{flex: 1, justifyContent: 'center', alignItems: 'center', width: '100%'}, s.borderBottom, s.headerYellow]}>
                                 <Text>계</Text>
                             </View>
                             
@@ -858,7 +881,7 @@ export default ThirdDoc = (props) => {
                         </View>
 
                         <View style={[{flex: 1, justifyContent: 'center', alignItems: 'center'}, s.borderRight]}>
-                            <View style={[{flex: 1, justifyContent: 'center', alignItems: 'center', width: '100%'}, s.borderBottom]}>
+                            <View style={[{flex: 1, justifyContent: 'center', alignItems: 'center', width: '100%'}, s.borderBottom, s.headerYellow]}>
                                 <Text>공단</Text>
                             </View>
                             <TextInput 
@@ -870,7 +893,7 @@ export default ThirdDoc = (props) => {
                         </View>
 
                         <View style={[{flex: 1, justifyContent: 'center', alignItems: 'center'}, s.borderRight]}>
-                            <View style={[{flex: 1, justifyContent: 'center', alignItems: 'center', width: '100%'}, s.borderBottom]}>
+                            <View style={[{flex: 1, justifyContent: 'center', alignItems: 'center', width: '100%'}, s.borderBottom, s.headerYellow]}>
                                 <Text>{"해경"}</Text>
                             </View>
                             <TextInput 
@@ -882,7 +905,7 @@ export default ThirdDoc = (props) => {
                         </View>
 
                         <View style={[{flex: 1, justifyContent: 'center', alignItems: 'center'}, s.borderRight]}>
-                            <View style={[{flex: 1, justifyContent: 'center', alignItems: 'center', width: '100%'}, s.borderBottom]}>
+                            <View style={[{flex: 1, justifyContent: 'center', alignItems: 'center', width: '100%'}, s.borderBottom, s.headerYellow]}>
                                 <Text>주민</Text>
                             </View>
                             <TextInput 
@@ -894,7 +917,7 @@ export default ThirdDoc = (props) => {
                         </View>
 
                         <View style={[{flex: 1, justifyContent: 'center', alignItems: 'center'}, s.borderRight]}>
-                            <View style={[{flex: 1, justifyContent: 'center', alignItems: 'center', width: '100%'}, s.borderBottom]}>
+                            <View style={[{flex: 1, justifyContent: 'center', alignItems: 'center', width: '100%'}, s.borderBottom, s.headerYellow]}>
                             <Text style={{textAlign:"center"}}>{"자원\n봉사자"}</Text>
                             </View>
                             <TextInput 
@@ -905,7 +928,7 @@ export default ThirdDoc = (props) => {
                             />
                         </View>
                         <View style={[{flex: 1, justifyContent: 'center', alignItems: 'center'}, s.borderRight]}>
-                            <View style={[{flex: 1, justifyContent: 'center', alignItems: 'center', width: '100%'}, s.borderBottom]}>
+                            <View style={[{flex: 1, justifyContent: 'center', alignItems: 'center', width: '100%'}, s.borderBottom, s.headerYellow]}>
                                 <TextInput 
                                     placeholder={"직접\n입력"}
                                     style={{flex:1, width: '100%', textAlign: 'center'}}
@@ -921,7 +944,7 @@ export default ThirdDoc = (props) => {
                         </View>
 
                         <View style={[{flex: 1, justifyContent: 'center', alignItems: 'center'}, s.borderRight]}>
-                            <View style={[{flex: 1, justifyContent: 'center', alignItems: 'center', width: '100%'}, s.borderBottom]}>
+                            <View style={[{flex: 1, justifyContent: 'center', alignItems: 'center', width: '100%'}, s.borderBottom, s.headerYellow]}>
                                 <TextInput 
                                     placeholder={"직접입력"}
                                     style={{flex:1, width: '100%', textAlign: 'center'}}
@@ -937,7 +960,7 @@ export default ThirdDoc = (props) => {
                         </View>
 
                         <View style={[{flex: 1, justifyContent: 'center', alignItems: 'center'}, s.borderRight]}>
-                            <View style={[{flex: 1, justifyContent: 'center', alignItems: 'center', width: '100%'}, s.borderBottom]}>
+                            <View style={[{flex: 1, justifyContent: 'center', alignItems: 'center', width: '100%'}, s.borderBottom, s.headerYellow]}>
                                 <TextInput 
                                     placeholder={"직접입력"}
                                     style={{flex:1, width: '100%', textAlign: 'center'}}
@@ -953,7 +976,7 @@ export default ThirdDoc = (props) => {
                         </View>
 
                         <View style={[{flex: 1, justifyContent: 'center', alignItems: 'center'}]}>
-                        <View style={[{flex: 1, justifyContent: 'center', alignItems: 'center', width: '100%'}, s.borderBottom]}>
+                        <View style={[{flex: 1, justifyContent: 'center', alignItems: 'center', width: '100%'}, s.borderBottom, s.headerYellow]}>
                             <TextInput 
                                 placeholder={"직접입력"}
                                 style={{flex:1, width: '100%', textAlign: 'center'}}
@@ -970,12 +993,12 @@ export default ThirdDoc = (props) => {
                     </View>
                 </View>
                 <View style={[{flex: 2.5}]}>
-                    <View style={[{flex: 1, width: '100%', justifyContent: 'center', alignItems: 'center'}, s.borderBottom]}>
+                    <View style={[{flex: 1, width: '100%', justifyContent: 'center', alignItems: 'center'}, s.borderBottom, s.headerYellow]}>
                         <Text>폐기물</Text>
                     </View>
                     <View style={[{flex: 2, flexDirection: 'row'}]}>
                         <View style={[{flex: 1, justifyContent: 'center', alignItems: 'center'}, s.borderRight]}>
-                            <View style={[{flex: 1, justifyContent: 'center', alignItems: 'center', width: '100%'}, s.borderBottom]}>
+                            <View style={[{flex: 1, justifyContent: 'center', alignItems: 'center', width: '100%'}, s.borderBottom, s.headerYellow]}>
                                 <Text>액상</Text>
                             </View>
                             <TextInput 
@@ -986,7 +1009,7 @@ export default ThirdDoc = (props) => {
                         </View>
 
                         <View style={[{flex: 1, justifyContent: 'center', alignItems: 'center'}, s.borderRight]}>
-                            <View style={[{flex: 1, justifyContent: 'center', alignItems: 'center', width: '100%'}, s.borderBottom]}>
+                            <View style={[{flex: 1, justifyContent: 'center', alignItems: 'center', width: '100%'}, s.borderBottom, s.headerYellow]}>
                                 <Text>지정</Text>
                             </View>
                             <TextInput 
@@ -997,7 +1020,7 @@ export default ThirdDoc = (props) => {
                         </View>
 
                         <View style={[{flex: 1, justifyContent: 'center', alignItems: 'center'}, s.borderRight]}>
-                            <View style={[{flex: 1, justifyContent: 'center', alignItems: 'center', width: '100%'}, s.borderBottom]}>
+                            <View style={[{flex: 1, justifyContent: 'center', alignItems: 'center', width: '100%'}, s.borderBottom, s.headerYellow]}>
                                 <Text>일반</Text>
                             </View>
                             <TextInput 
@@ -1008,7 +1031,7 @@ export default ThirdDoc = (props) => {
                         </View>
 
                         <View style={[{flex: 1, justifyContent: 'center', alignItems: 'center'}, s.borderRight]}>
-                            <View style={[{flex: 1, justifyContent: 'center', alignItems: 'center', width: '100%'}, s.borderBottom]}>
+                            <View style={[{flex: 1, justifyContent: 'center', alignItems: 'center', width: '100%'}, s.borderBottom, s.headerYellow]}>
                                 <Text>기타</Text>
                             </View>
                             <TextInput 
@@ -1022,10 +1045,10 @@ export default ThirdDoc = (props) => {
             </View>
             <View style={[s.lastSection]}>
                 <View style={[{flex: 3}, s.borderRight]}>
-                    <View style={[{flex:1}, s.borderBottom, s.flexWrapper]}><Text>선박</Text></View>
+                    <View style={[{flex:1}, s.borderBottom, s.flexWrapper, s.headerYellow]}><Text>선박</Text></View>
                     <View style={[{flex:2, flexDirection: 'row'}]}>
                         <View style={[{flex:1}, s.borderRight]}>
-                            <View style={[{flex:1}, s.borderBottom, s.flexWrapper]}><Text>이선</Text></View>
+                            <View style={[{flex:1}, s.borderBottom, s.flexWrapper, s.headerYellow]}><Text>이선</Text></View>
                             <TextInput 
                                 style={{flex:1, width: '100%', textAlign: 'center'}}
                                 value={data.tool.iseon} 
@@ -1033,7 +1056,7 @@ export default ThirdDoc = (props) => {
                             />
                         </View>
                         <View style={[{flex:1}, s.borderRight]}>
-                            <View style={[{flex:1}, s.borderBottom, s.flexWrapper]}><Text>선외기</Text></View>
+                            <View style={[{flex:1}, s.borderBottom, s.flexWrapper, s.headerYellow]}><Text>선외기</Text></View>
                             <TextInput 
                                 style={{flex:1, width: '100%', textAlign: 'center'}}
                                 value={data.tool.outBoard} 
@@ -1041,7 +1064,7 @@ export default ThirdDoc = (props) => {
                             />
                         </View>
                         <View style={[{flex:1}]}>
-                            <View style={[{flex:1}, s.borderBottom, s.flexWrapper]}><Text>기타</Text></View>
+                            <View style={[{flex:1}, s.borderBottom, s.flexWrapper, s.headerYellow]}><Text>기타</Text></View>
                             <TextInput 
                                 style={{flex:1, width: '100%', textAlign: 'center'}}
                                 value={data.tool.etc} 
@@ -1051,10 +1074,10 @@ export default ThirdDoc = (props) => {
                     </View>
                 </View>
                 <View style={[{flex: 4}, s.borderRight]}>
-                    <View style={[{flex:1}, s.borderBottom, s.flexWrapper]}><Text>유흡착재</Text></View>
+                    <View style={[{flex:1}, s.borderBottom, s.flexWrapper, s.headerYellow]}><Text>유흡착재</Text></View>
                     <View style={[{flex:2, flexDirection: 'row'}]}>
                         <View style={[{flex:1}, s.borderRight]}>
-                            <View style={[{flex:1}, s.borderBottom, s.flexWrapper]}><Text>패드형</Text></View>
+                            <View style={[{flex:1}, s.borderBottom, s.flexWrapper, s.headerYellow]}><Text>패드형</Text></View>
                             <TextInput 
                                 style={{flex:1, width: '100%', textAlign: 'center'}}
                                 value={data.tool.pad} 
@@ -1062,7 +1085,7 @@ export default ThirdDoc = (props) => {
                             />
                         </View>
                         <View style={[{flex:1}, s.borderRight]}>
-                            <View style={[{flex:1}, s.borderBottom, s.flexWrapper]}><Text>펜스형</Text></View>
+                            <View style={[{flex:1}, s.borderBottom, s.flexWrapper, s.headerYellow]}><Text>펜스형</Text></View>
                             <TextInput 
                                 style={{flex:1, width: '100%', textAlign: 'center'}}
                                 value={data.tool.fense} 
@@ -1070,7 +1093,7 @@ export default ThirdDoc = (props) => {
                             />
                         </View>
                         <View style={[{flex:1}, s.borderRight]}>
-                            <View style={[{flex:1}, s.borderBottom, s.flexWrapper]}><Text>중질유</Text></View>
+                            <View style={[{flex:1}, s.borderBottom, s.flexWrapper, s.headerYellow]}><Text>중질유</Text></View>
                             <TextInput 
                                 style={{flex:1, width: '100%', textAlign: 'center'}}
                                 value={data.tool.crude} 
@@ -1078,7 +1101,7 @@ export default ThirdDoc = (props) => {
                             />
                         </View>
                         <View style={[{flex:1}]}>
-                            <View style={[{flex:1}, s.borderBottom, s.flexWrapper]}><Text>기타</Text></View>
+                            <View style={[{flex:1}, s.borderBottom, s.flexWrapper, s.headerYellow]}><Text>기타</Text></View>
                             <TextInput 
                                 style={{flex:1, width: '100%', textAlign: 'center'}}
                                 value={data.tool.etcOil} 
@@ -1090,7 +1113,7 @@ export default ThirdDoc = (props) => {
                 <View style={[{flex: 1}, s.borderRight]}>
                     
                     <View style={[{flex:1}]}>
-                        <View style={[{flex:2}, s.borderBottom, s.flexWrapper]}><Text>{"유처\n리제"}</Text></View>
+                        <View style={[{flex:2}, s.borderBottom, s.flexWrapper, s.headerYellow]}><Text>{"유처\n리제"}</Text></View>
                         <TextInput 
                             style={{flex:1, width: '100%', textAlign: 'center'}}
                             value={data.tool.highPressure} 
@@ -1100,10 +1123,10 @@ export default ThirdDoc = (props) => {
                     
                 </View>
                 <View style={[{flex: 2}, s.borderRight]}>
-                    <View style={[{flex:1}, s.borderBottom, s.flexWrapper]}><Text>세척기</Text></View>
+                    <View style={[{flex:1}, s.borderBottom, s.flexWrapper, s.headerYellow]}><Text>세척기</Text></View>
                     <View style={[{flex:2, flexDirection: 'row'}]}>
                         <View style={[{flex:1}, s.borderRight]}>
-                            <View style={[{flex:1}, s.borderBottom, s.flexWrapper]}><Text>{"고압\n저압"}</Text></View>
+                            <View style={[{flex:1}, s.borderBottom, s.flexWrapper, s.headerYellow]}><Text>{"고압\n저압"}</Text></View>
                             <TextInput 
                                 style={{flex:1, width: '100%', textAlign: 'center'}}
                                 value={data.tool.highPressure} 
@@ -1111,7 +1134,7 @@ export default ThirdDoc = (props) => {
                             />
                         </View>
                         <View style={[{flex:1}]}>
-                            <View style={[{flex:1}, s.borderBottom, s.flexWrapper]}><Text style={{textAlign:'center'}}>{"자갈\n세척기"}</Text></View>
+                            <View style={[{flex:1}, s.borderBottom, s.flexWrapper, s.headerYellow]}><Text style={{textAlign:'center'}}>{"자갈\n세척기"}</Text></View>
                             <TextInput 
                                 style={{flex:1, width: '100%', textAlign: 'center'}}
                                 value={data.tool.pabbleCleaner} 
@@ -1121,10 +1144,10 @@ export default ThirdDoc = (props) => {
                     </View>
                 </View>
                 <View style={[{flex: 3}, s.borderRight]}>
-                    <View style={[{flex:1}, s.borderBottom, s.flexWrapper]}><Text>차량</Text></View>
+                    <View style={[{flex:1}, s.borderBottom, s.flexWrapper, s.headerYellow]}><Text>차량</Text></View>
                     <View style={[{flex:2, flexDirection: 'row'}]}>
                         <View style={[{flex:1}, s.borderRight]}>
-                            <View style={[{flex:1}, s.borderBottom, s.flexWrapper]}><Text>{"크레인"}</Text></View>
+                            <View style={[{flex:1}, s.borderBottom, s.flexWrapper, s.headerYellow]}><Text>{"크레인"}</Text></View>
                             <TextInput 
                                 style={{flex:1, width: '100%', textAlign: 'center'}}
                                 value={data.tool.crain} 
@@ -1132,7 +1155,7 @@ export default ThirdDoc = (props) => {
                             />
                         </View>
                         <View style={[{flex:1}, s.borderRight]}>
-                            <View style={[{flex:1}, s.borderBottom, s.flexWrapper]}><Text>{"지게차"}</Text></View>
+                            <View style={[{flex:1}, s.borderBottom, s.flexWrapper, s.headerYellow]}><Text>{"지게차"}</Text></View>
                             <TextInput 
                                 style={{flex:1, width: '100%', textAlign: 'center'}}
                                 value={data.tool.fork} 
@@ -1140,7 +1163,7 @@ export default ThirdDoc = (props) => {
                             />
                         </View>
                         <View style={[{flex:1}]}>
-                            <View style={[{flex:1}, s.borderBottom, s.flexWrapper]}><Text>{"카고"}</Text></View>
+                            <View style={[{flex:1}, s.borderBottom, s.flexWrapper, s.headerYellow]}><Text>{"카고"}</Text></View>
                             <TextInput 
                                 style={{flex:1, width: '100%', textAlign: 'center'}}
                                 value={data.tool.cargo} 
@@ -1150,10 +1173,10 @@ export default ThirdDoc = (props) => {
                     </View>
                 </View>
                 <View style={[{flex: 4}, s.borderRight]}>
-                    <View style={[{flex:1}, s.borderBottom, s.flexWrapper]}><Text>장갑</Text></View>
+                    <View style={[{flex:1}, s.borderBottom, s.flexWrapper, s.headerYellow]}><Text>장갑</Text></View>
                     <View style={[{flex:2, flexDirection: 'row'}]}>
                         <View style={[{flex:1}, s.borderRight]}>
-                            <View style={[{flex:1}, s.borderBottom, s.flexWrapper]}><Text>{"면"}</Text></View>
+                            <View style={[{flex:1}, s.borderBottom, s.flexWrapper, s.headerYellow]}><Text>{"면"}</Text></View>
                             <TextInput 
                                 style={{flex:1, width: '100%', textAlign: 'center'}}
                                 value={data.tool.cattonGlove} 
@@ -1161,7 +1184,7 @@ export default ThirdDoc = (props) => {
                             />
                         </View>
                         <View style={[{flex:1}, s.borderRight]}>
-                            <View style={[{flex:1}, s.borderBottom, s.flexWrapper]}><Text>{"완코팅"}</Text></View>
+                            <View style={[{flex:1}, s.borderBottom, s.flexWrapper, s.headerYellow]}><Text>{"완코팅"}</Text></View>
                             <TextInput 
                                 style={{flex:1, width: '100%', textAlign: 'center'}}
                                 value={data.tool.coatedGlove} 
@@ -1169,7 +1192,7 @@ export default ThirdDoc = (props) => {
                             />
                         </View>
                         <View style={[{flex:1}, s.borderRight]}>
-                            <View style={[{flex:1}, s.borderBottom, s.flexWrapper]}><Text>{"반코팅"}</Text></View>
+                            <View style={[{flex:1}, s.borderBottom, s.flexWrapper, s.headerYellow]}><Text>{"반코팅"}</Text></View>
                             <TextInput 
                                 style={{flex:1, width: '100%', textAlign: 'center'}}
                                 value={data.tool.halfCoatGlove} 
@@ -1177,7 +1200,7 @@ export default ThirdDoc = (props) => {
                             />
                         </View>
                         <View style={[{flex:1}]}>
-                            <View style={[{flex:1}, s.borderBottom, s.flexWrapper]}><Text>{"케미컬"}</Text></View>
+                            <View style={[{flex:1}, s.borderBottom, s.flexWrapper, s.headerYellow]}><Text>{"케미컬"}</Text></View>
                             <TextInput 
                                 style={{flex:1, width: '100%', textAlign: 'center'}}
                                 value={data.tool.chemicalGlove} 
@@ -1187,10 +1210,10 @@ export default ThirdDoc = (props) => {
                     </View>
                 </View>
                 <View style={[{flex: 2}, s.borderRight]}>
-                    <View style={[{flex:1}, s.borderBottom, s.flexWrapper]}><Text>마대</Text></View>
+                    <View style={[{flex:1}, s.borderBottom, s.flexWrapper, s.headerYellow]}><Text>마대</Text></View>
                     <View style={[{flex:2, flexDirection: 'row'}]}>
                         <View style={[{flex:1}, s.borderRight]}>
-                            <View style={[{flex:1}, s.borderBottom, s.flexWrapper]}><Text>{"이중\n마대"}</Text></View>
+                            <View style={[{flex:1}, s.borderBottom, s.flexWrapper, s.headerYellow]}><Text>{"이중\n마대"}</Text></View>
                             <TextInput 
                                 style={{flex:1, width: '100%', textAlign: 'center'}}
                                 value={data.tool.twoLayerBag} 
@@ -1198,7 +1221,7 @@ export default ThirdDoc = (props) => {
                             />
                         </View>
                         <View style={[{flex:1}]}>
-                            <View style={[{flex:1}, s.borderBottom, s.flexWrapper]}><Text>{"톤백"}</Text></View>
+                            <View style={[{flex:1}, s.borderBottom, s.flexWrapper, s.headerYellow]}><Text>{"톤백"}</Text></View>
                             <TextInput 
                                 style={{flex:1, width: '100%', textAlign: 'center'}}
                                 value={data.tool.tonBag} 
@@ -1208,10 +1231,10 @@ export default ThirdDoc = (props) => {
                     </View>
                 </View>
                 <View style={[{flex: 4}, s.borderRight]}>
-                    <View style={[{flex:1}, s.borderBottom, s.flexWrapper]}><Text>개인장구류</Text></View>
+                    <View style={[{flex:1}, s.borderBottom, s.flexWrapper, s.headerYellow]}><Text>개인장구류</Text></View>
                     <View style={[{flex:2, flexDirection: 'row'}]}>
                         <View style={[{flex:1}, s.borderRight]}>
-                            <View style={[{flex:1}, s.borderBottom, s.flexWrapper]}><Text>{"방제복"}</Text></View>
+                            <View style={[{flex:1}, s.borderBottom, s.flexWrapper, s.headerYellow]}><Text>{"방제복"}</Text></View>
                             <TextInput 
                                 style={{flex:1, width: '100%', textAlign: 'center'}}
                                 value={data.tool.protectiveClothe} 
@@ -1219,7 +1242,7 @@ export default ThirdDoc = (props) => {
                             />
                         </View>
                         <View style={[{flex:1}, s.borderRight]}>
-                            <View style={[{flex:1}, s.borderBottom, s.flexWrapper]}><Text>{"장화"}</Text></View>
+                            <View style={[{flex:1}, s.borderBottom, s.flexWrapper, s.headerYellow]}><Text>{"장화"}</Text></View>
                             <TextInput 
                                 style={{flex:1, width: '100%', textAlign: 'center'}}
                                 value={data.tool.boots} 
@@ -1227,7 +1250,7 @@ export default ThirdDoc = (props) => {
                             />
                         </View>
                         <View style={[{flex:1}]}>
-                            <View style={[{flex:1}, s.borderBottom, s.flexWrapper]}><Text>{"마스크"}</Text></View>
+                            <View style={[{flex:1}, s.borderBottom, s.flexWrapper, s.headerYellow]}><Text>{"마스크"}</Text></View>
                             <TextInput 
                                 style={{flex:1, width: '100%', textAlign: 'center'}}
                                 value={data.tool.mask} 
@@ -1239,7 +1262,7 @@ export default ThirdDoc = (props) => {
                 <View style={[{flex: 4}, s.borderRight]}>
                     <View style={[{flex:1, flexDirection: 'row'}]}>
                         <View style={[{flex:1}, s.borderRight]}>
-                            <View style={[{flex:2}, s.borderBottom, s.flexWrapper]}><Text>{"걸래"}</Text></View>
+                            <View style={[{flex:2}, s.borderBottom, s.flexWrapper, s.headerYellow]}><Text>{"걸래"}</Text></View>
                             <TextInput 
                                 style={{flex:1, width: '100%', textAlign: 'center'}}
                                 value={data.tool.mob} 
@@ -1247,7 +1270,7 @@ export default ThirdDoc = (props) => {
                             />
                         </View>
                         <View style={[{flex:1}, s.borderRight]}>
-                            <View style={[{flex:2}, s.borderBottom, s.flexWrapper]}><Text>{"캔버스"}</Text></View>
+                            <View style={[{flex:2}, s.borderBottom, s.flexWrapper, s.headerYellow]}><Text>{"캔버스"}</Text></View>
                             <TextInput 
                                 style={{flex:1, width: '100%', textAlign: 'center'}}
                                 value={data.tool.canvas} 
@@ -1255,7 +1278,7 @@ export default ThirdDoc = (props) => {
                             />
                         </View>
                         <View style={[{flex:1}, s.borderRight]}>
-                            <View style={[{flex:2}, s.borderBottom, s.flexWrapper]}>
+                            <View style={[{flex:2}, s.borderBottom, s.flexWrapper, s.headerYellow]}>
                             <TextInput 
                                 style={{flex:1, width: '100%', textAlign: 'center'}}
                                 value={data.tool.field1} 
@@ -1269,7 +1292,7 @@ export default ThirdDoc = (props) => {
                             />
                         </View>
                         <View style={[{flex:1}]}>
-                            <View style={[{flex:2}, s.borderBottom, s.flexWrapper]}>
+                            <View style={[{flex:2}, s.borderBottom, s.flexWrapper, s.headerYellow]}>
                                 <TextInput 
                                     style={{flex:1, width: '100%', textAlign: 'center'}}
                                     value={data.tool.field2} 
@@ -1292,6 +1315,9 @@ export default ThirdDoc = (props) => {
 }
 
 const s = StyleSheet.create({
+    headerYellow: {
+        backgroundColor: '#FFFFCC'
+    },
     flexWrapper: {
         justifyContent: 'center',
         alignItems: 'center',

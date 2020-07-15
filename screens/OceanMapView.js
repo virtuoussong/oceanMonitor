@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
-import {ActivityIndicator, StyleSheet, Text, View, TouchableOpacity, Animated, Image, Easing, Modal } from "react-native";
+import {ActivityIndicator, StyleSheet, Text, View, TouchableOpacity, Animated, Image, Easing, Modal, Linking } from "react-native";
 import MapView, {PROVIDER_GOOGLE, Polygon, Marker, Polyline, Circle, fitToCoordinates } from "react-native-maps";
 import LocationNameModal from '../screens/LocationNameModel';
 import RightSideView from '../screens/RightSideView';
@@ -212,6 +212,7 @@ const OceanMapView = (props) => {
   }, [dispatch, polygonNav])
 
   const polygonTapp = (index, data) => {
+
 
     let currentLevel = polygonNav.level
 
@@ -491,8 +492,29 @@ const OceanMapView = (props) => {
     }
   }
 
-  const captureScreen=()=>{
+  const openLink = async ()=>{
+    console.log("open web")
+    let url = "http://m.khoa.go.kr"
+    const supported = await Linking.canOpenURL(url);
 
+    if (supported) {
+      // Opening the link with some app, if the URL scheme is "http" the web link should be opened
+      // by some browser in the mobile
+      await Linking.openURL(url);
+    } else {
+      Alert.alert(`Don't know how to open this URL: ${url}`);
+    }
+  }
+
+  const [styleIndex, setStyleIndex] = useState(0)
+  const mapTypeArray = ['standard', 'terrain', 'satellite', 'mutedStandard', 'hybrid']
+  const changeMapStyle =()=> {
+    if (styleIndex == 4) {
+      setStyleIndex(0)
+    } else {
+      let index = styleIndex
+      setStyleIndex(index +=1)
+    }
   }
 
 
@@ -531,7 +553,7 @@ const OceanMapView = (props) => {
           longitudeDelta: 0.5421
         }}
         provider={"google"}
-        mapType={"standard"}
+        mapType={mapTypeArray[styleIndex]}
         onPress={onMapTap}
       >
  
@@ -539,7 +561,20 @@ const OceanMapView = (props) => {
           !isLoading && viewingList && viewingList.map((i, index) => {
             // console.log("i.coordinateforname", i)
             return <React.Fragment key={`${index}polygonKey`}>
+              {!isAddingPolygon ? 
               <Polygon
+              key={`${index}polygon`}
+              coordinates={i.coordinates}
+              strokeWidth={3}
+              strokeColor={"yellow"}
+              // fillColor={"#000, rgba(r,g,b,0.5)"}
+              lineCap={"round"}
+              tappable={true}
+              
+              onPress={()=>polygonTapp(index, i)}
+              geodesic={true}
+          /> : 
+          <Polygon
                   key={`${index}polygon`}
                   coordinates={i.coordinates}
                   strokeWidth={3}
@@ -547,9 +582,12 @@ const OceanMapView = (props) => {
                   // fillColor={"#000, rgba(r,g,b,0.5)"}
                   lineCap={"round"}
                   tappable={true}
-                  onPress={()=>polygonTapp(index, i)}
+                  
+                  // onPress={()=>polygonTapp(index, i)}
                   geodesic={true}
               />
+            }
+              
               <Marker
              
                 key={`${index}marker`}
@@ -730,6 +768,9 @@ const OceanMapView = (props) => {
       <DrawerNavButton style={styles.leftButton} toggleDrawer={()=>toggleDrawer()}/>
 
       <View style={[{position: 'absolute', width: 100, top: 'auto', bottom: 'auto',left: 50}]}>
+        <TouchableOpacity onPress={changeMapStyle} style={[{backgroundColor: `${isMeasuringLength ? "lightblue" : "white"}`, width: 50, height: 50, marginBottom: 2}, styles.centerItem]}>
+          <Text style={{fontSize: 15, fontWeight: 'bold'}}>{"지도\n타입"}</Text>
+        </TouchableOpacity>
         <TouchableOpacity onPress={startDistanceMeasurement} style={[{backgroundColor: `${isMeasuringLength ? "lightblue" : "white"}`, width: 50, height: 50, marginBottom: 2}, styles.centerItem]}>
           <Text style={{fontSize: 15, fontWeight: 'bold'}}>{"거리\n재기"}</Text>
         </TouchableOpacity>
@@ -739,8 +780,8 @@ const OceanMapView = (props) => {
         <TouchableOpacity onPress={startRadiusMeasurement} style={[{backgroundColor: `${isMeasuringCircle ? "lightblue" : "white"}`, width: 50, height: 50, marginBottom: 2}, styles.centerItem]}>
           <Text style={{fontSize: 15, fontWeight: 'bold'}}>{"반경\n재기"}</Text>
         </TouchableOpacity>
-        <TouchableOpacity onPress={captureScreen} style={[{backgroundColor: 'white', width: 50, height: 50, marginBottom: 2}, styles.centerItem]}>
-          <Text style={{fontSize: 15, fontWeight: 'bold'}}>{"화면\n캡쳐"}</Text>
+        <TouchableOpacity onPress={openLink} style={[{backgroundColor: 'white', width: 50, height: 50, marginBottom: 2}, styles.centerItem]}>
+          <Text style={{fontSize: 15, fontWeight: 'bold'}}>{"국립\n해양"}</Text>
         </TouchableOpacity>
       </View>
 

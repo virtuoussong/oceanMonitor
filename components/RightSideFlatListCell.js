@@ -14,16 +14,33 @@ export default RightSideCell = (props) => {
         props.docTapped()
     }
 
-    return (
-        <View style={{width: '100%', flexDirection: 'row'}}>
+    if (props.showIcon) {
+
+        return (
+            <View style={{width: '100%', height: 50, flexDirection: 'row'}}>
+                <TouchableOpacity onPress={props.onPress} >
+                    <Text style={styles.title}>{props.name}</Text>
+                </TouchableOpacity>
+                
+                {props.isDocShown ? <TouchableOpacity onPress={()=>docTapped()} style={{marginLeft: 'auto', marginTop: 10, marginRight: 8,width: 24, height: 24}}>
+                    <Image  resizeMode={'contain'} style={{width: 24, height: 24}} source={require("../assets/doc.png")}/>
+                </TouchableOpacity> 
+                : 
+                <TouchableOpacity onPress={()=>docTapped()} style={{marginLeft: 'auto', marginTop: 10, marginRight: 8,width: 24, height: 24}}>
+                    <Image  resizeMode={'contain'} style={{width: 24, height: 24}} source={require("../assets/plusIcon.png")}/>
+                </TouchableOpacity>}
+            </View>
+        )
+    } else {
+        return <View style={{width: '100%', height: 50, flexDirection: 'row'}}>
             <TouchableOpacity onPress={props.onPress} >
                 <Text style={styles.title}>{props.name}</Text>
             </TouchableOpacity>
-            {props.isDocShown &&  <TouchableOpacity onPress={()=>docTapped()} style={{position: 'absolute',top: -8, right: 20, width: 24, height: 24}}>
-                <Image  resizeMode={'contain'} style={{width: 24}} source={require("../assets/plusIcon.png")}/>
-            </TouchableOpacity>}
         </View>
-    )
+    }
+
+    
+    
 }
 
 const styles = StyleSheet.create({

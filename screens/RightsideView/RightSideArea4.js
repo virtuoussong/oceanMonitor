@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { 
     StyleSheet, 
     Text, 
@@ -23,6 +23,8 @@ export default RightSideArea4 = (props) => {
     const [isLoading, setIsLoading] = useState(false);
     const areaList = useSelector(state => state.area4ListRoot.filteredList);
     const [isDocOn, setDoc] = useState(false);
+    const [docID, setDocID] = useState()
+    const [id, setID] = useState()
 
     const dispatch = useDispatch();
 
@@ -54,27 +56,47 @@ export default RightSideArea4 = (props) => {
         
     // }, [dispatch, polygonNav])
 
-    const showDoc = (id) => {
+    const reload = useCallback(() =>{
+        console.log("reload")
+        let passedID = props.route.params.parentID
+        // setParentID(passedID)
+        console.log("passed parent id", passedID)
+        dispatch(areaAction4.fetchFilteredList(passedID))
+    }, [])
+
+    const showDoc = (docId, id) => {
+        setID(id)
+        setDocID(docId)
+        toggleModal()
+    }
+
+   
+
+    const toggleModal = () => {
         setDoc(!isDocOn)
     }
 
     return (
         <SafeAreaView style={styles.viewContainer}>
             <Modal visible={isDocOn} animationType="slide">
-                <View style={{width: '100%', height: 50}}>
-                    <TouchableOpacity style={{height: '100%' ,marginLeft: 'auto', marginRight: 20, justifyContent: 'center'}} onPress={()=>showDoc()}>
-                        <Text>닫기</Text>
-                    </TouchableOpacity>    
-                </View>
-                <RegionDetail hasCloseButton={true} close={()=>showDoc()}/>
+                <RegionDetail 
+                    isBarShown={true}  
+                    docID={docID} 
+                    id={id} 
+                    hasCloseButton={true} 
+                    close={()=>toggleModal()} 
+                    area={4} 
+                    reload={()=>reload()}
+                />
             </Modal>
 
             <FlatList 
                 data={areaList}
                 renderItem={(item) => (<RightSideCell  
+                    showIcon={true}
                     name={item.item.name}
-                    isDocShown={true}
-                    docTapped={()=>showDoc()}
+                    isDocShown={item.item.docID ? true : false}
+                    docTapped={()=>showDoc(item.item.docID, item.item.id)}
                 />)}
                 keyExtractor={item => `${item.id}listKey`}
             />

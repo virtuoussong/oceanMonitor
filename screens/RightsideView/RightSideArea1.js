@@ -23,19 +23,7 @@ export default RightSideArea1 = (props) => {
 
     const areaList = useSelector(state => state.areaListRoot.areaList)
 
-    // const parentIDFromReducer = useSelector(state => state.area2ListRoot.parentID)
     useEffect(()=>{
-        // if (parentIDFromReducer != null) {
-        //     let index = areaList.findIndex(item => item.id == parentIDFromReducer)
-        //     let areaName = areaList[index].name
-        //     console.log("index from Rightsideview", areaName)
-
-        //     let data = {
-        //         id : parentIDFromReducer,
-        //         name : areaName
-        //     }
-        //     listTapped(data)
-        // }
         
     }, [areaList])
 
@@ -55,11 +43,6 @@ export default RightSideArea1 = (props) => {
                 dispatch(areaActions2.fetchFilteredList(item.id))
             })
         } 
-        // else if (polygonNav.level == 2) {
-        //     console.log("level 2 filter")
-        //     dispatch(areaActions2.fetchFilteredList(item.id))
-        // }
-
     };
 
     const polygonNav = useSelector(state => state.focusedPolygonRoot.focusedPolygon)
@@ -106,6 +89,7 @@ export default RightSideArea1 = (props) => {
                 data={areaList}
                 renderItem={(item) => (
                     <RightSideCell
+                        showIcon={false}
                         // style={{flex: 1, backgroundColor: 'red'}}
                         onPress={() => listTapped(item.item)}  
                         name={item.item.name}

@@ -13,7 +13,7 @@ import { HeaderBackButton } from 'react-navigation-stack'
 import RightSideCell from '../../components/RightSideFlatListCell';
 import RegionDetail from '../DocDetail/components/RegionDetail/RegionDetailView';
 import { useSelector, useDispatch } from "react-redux";
-import * as areaActions from '../../Redux/actions/area2';
+import * as areaActions2 from '../../Redux/actions/area2';
 import * as areaAction3 from '../../Redux/actions/area3';
 import * as coordinateNavAction from '../../Redux/actions/coordinateNav';
 
@@ -23,6 +23,8 @@ export default RightSideArea2 = (props) => {
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState();
     const [isDocOn, setDoc] = useState(false)
+    const [locationId, setlocationId] = useState()
+    const [docID, setDocID] = useState();
     // useEffect(()=>{
     //     // setLocations(DATA)
     // }, [locations])
@@ -39,18 +41,15 @@ export default RightSideArea2 = (props) => {
     //     // console.log("passed parent ID", passedID)
     //     try {
     //     //   await dispatch(areaActions.fetchArea2())
-    //     //   await dispatch(areaActions.fetchFilteredList(passedID))
+    //       await dispatch(areaActions.fetchFilteredList(passedID))
 
     //     } catch (err) {
     //       setError(err)
     //     }
-    // }, [dispatch, setIsLoading])
+    // }, [])
     
     useEffect(()=>{
-        // setIsLoading(true);
-        // loadAreas().then(()=>{
-        //     setIsLoading(false)
-        // })
+        console.log("area2 list", areaList)
     }, [areaList])
 
 
@@ -60,10 +59,7 @@ export default RightSideArea2 = (props) => {
             parentName: item.name,
             coordinates: item.coordinates
         })
-        // console.log("list2 tapped", item)
 
-        
-        
         if (polygonNav.level == 2) {
             dispatch(coordinateNavAction.updateCoordinate(3, item)).then(()=>{
                 dispatch(areaAction3.fetchFilteredList(item.id))
@@ -88,6 +84,24 @@ export default RightSideArea2 = (props) => {
         }        
     }, [polygonNav])
 
+    const reload = useCallback(()=>{
+        let parentId = props.route.params.parentID
+        dispatch(areaActions2.fetchFilteredList(parentId))
+    })
+
+    const showDoc = (item) => {
+        console.log(item)
+        if (item) {
+            setlocationId(item.id)
+            setDocID(item.docID)
+        }
+        toggleModal()
+    }
+
+    const toggleModal=()=>{
+        setDoc(!isDocOn)
+    }
+
 
     if (isLoading && areaList === null) {
     return <View style={styles.centered}>
@@ -95,30 +109,30 @@ export default RightSideArea2 = (props) => {
     </View>
     }
 
-    const showDoc = (id) => {
-        setDoc(!isDocOn)
-    }
-    
     return (
         <SafeAreaView style={styles.viewContainer}>
 
             <Modal visible={isDocOn} animationType="slide">
-                <View style={{width: '100%', height: 50}}>
-                    <TouchableOpacity style={{height: '100%' ,marginLeft: 'auto', marginRight: 20, justifyContent: 'center'}} onPress={()=>showDoc()}>
-                        <Text>닫기</Text>
-                    </TouchableOpacity>    
-                </View>
-                <RegionDetail hasCloseButton={true} close={()=>showDoc()}/>
+                <RegionDetail 
+                    id={locationId} 
+                    docID={docID} 
+                    hasCloseButton={true} 
+                    close={()=>toggleModal()} 
+                    save={()=>showDoc()}
+                    reload={()=>reload()}
+                />
             </Modal>
 
             <FlatList 
                 data={areaList}
                 renderItem={(item) => (
                     <RightSideCell 
-                        onPress={(id) => listTapped(item.item)}  
+                        // style={{height: 80, backgroundColor : 'red'}}
+                        showIcon={true}
+                        onPress={() => listTapped(item.item)}  
                         name={item.item.name}
-                        isDocShown={item.item.docID ? false : true}
-                        docTapped={()=>showDoc()}
+                        isDocShown={item.item.docID != null ? true : false}
+                        docTapped={()=>showDoc(item.item)}
                     />
                 )}
                 keyExtractor={item => `${item.id}listKey`}
@@ -145,7 +159,7 @@ RightSideArea2.navigationOptions = (navData, props) => {
 
     return {
         headerTitle: areaTitle,
-        headerLeft: () => (<HeaderBackButton onPress={()=>backPressed()} headerBackTitle={"hi"}/>),
+        headerLeft: () => (<HeaderBackButton onPress={()=>backPressed()} headerBackTitle={"뒤로"}/>),
         headerBackTitle: "hi",
         headerBackTitleVisible: false
     }

@@ -4,7 +4,7 @@ import { StyleSheet, Text, View, TextInput, TouchableOpacity } from "react-nativ
 export default LocationNameModal = (props) => {
     const [textValue, onChangeText] = useState('')
     const completPressed = () => {
-        if (textValue.length > 1) {
+        if (textValue.length > 0 && textValue.length < 10) {
             props.addCompletion(textValue)
         } else {
             console.log("add more text")
@@ -17,7 +17,7 @@ export default LocationNameModal = (props) => {
                     style={style.textInputStyle}
                     onChangeText={text => onChangeText(text)}
                     value={textValue}
-                    placeholder={"지역 이름 입력"}
+                    placeholder={"지역 이름 입력 (9자 이하)"}
                 />
                 <View style={style.inputButtonWrap}>
                     <TouchableOpacity 

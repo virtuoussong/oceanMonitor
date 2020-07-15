@@ -90,7 +90,13 @@ export default FirstDoc = (props) => {
     const [isCameraOn, setCamera] = useState(false)
 
     useEffect(()=>{
-    
+      if (props.data) {
+        setData(props.data)
+      }
+    }, [props.data])
+
+    useEffect(()=>{
+      props.refData.current = data
     },[data, isPickerOn])
 
     const selectInput = (section, field) => {
@@ -195,7 +201,7 @@ export default FirstDoc = (props) => {
           <PickerView data={dataForSelect} onSelect={(i)=>selectedData(i)} hide={()=>togglePicker()}/>
       </Modal>
 
-      <TitleInputView />
+      {/* <TitleInputView /> */}
       <PageTitle title={"구간별 해안 형태"} />
       <View style={styles.divisionWrapper}>
         {/* 섹션 1 */}

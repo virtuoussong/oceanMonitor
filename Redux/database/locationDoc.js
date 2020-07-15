@@ -2,12 +2,11 @@ import * as SQLite from 'expo-sqlite';
 
 const db = SQLite.openDatabase('oceanMap.db');
 
-export const initArea3Table = () => {
+export const initLocationDocTable = () => {
     const promise = new Promise((resolve, reject) => {
         db.transaction( tx => {
             tx.executeSql(
-                // 'DROP TABLE area3',
-                'CREATE TABLE IF NOT EXISTS area3 (id INTEGER PRIMARY KEY NOT NULL, data TEXT NOT NULL, parentID TEXT NOT NULL, docID TEXT);',
+                'CREATE TABLE IF NOT EXISTS locationDoc (id INTEGER PRIMARY KEY NOT NULL, data TEXT NOT NULL);',
                 [],
                 () => {
                     resolve();
@@ -21,34 +20,13 @@ export const initArea3Table = () => {
     return promise
 };
 
-export const getAllArea3 = (parentID) => {
-    // console.log("db area2 id", parentID)
-    const promise = new Promise((resolve, reject) => {
+export const getLocationDoc = (id) => {
+
+    const promise = new Promise((resolve) => {
         db.transaction( tx => {
             tx.executeSql(
-                "SELECT * FROM area3 WHERE parentID = ?",
-                [parentID],
-                (_, result) => {
-                    resolve(result);
-                },
-                (_, err)=> {
-                    reject(err);
-                }
-            );
-        });
-    })
-    return promise
-
-} 
-
-
-export const insertNewArea3 = (data, parentID) => {
-
-    const promise = new Promise((resolve, reject) => {
-        db.transaction( tx => {
-            tx.executeSql(
-                'INSERT INTO area3 (data, parentID) VALUES (?, ?)',
-                [data, parentID],
+                'SELECT * FROM locationDoc WHERE id = ?',
+                [id],
                 (_, result) => {
                     resolve(result);
                 },
@@ -62,12 +40,13 @@ export const insertNewArea3 = (data, parentID) => {
 
 };
 
-export const insertDocID = (docID, rowID) => {
-    const promise = new Promise((resolve, reject) => {
+export const newLocationDoc = (data) => {
+
+    const promise = new Promise((resolve) => {
         db.transaction( tx => {
             tx.executeSql(
-                `UPDATE area3 SET docID = ${docID} WHERE id = ${rowID}`,
-                [],
+                'INSERT INTO locationDoc (data) VALUES (?)',
+                [data],
                 (_, result) => {
                     resolve(result);
                 },
@@ -78,5 +57,25 @@ export const insertDocID = (docID, rowID) => {
         });
     })
     return promise
-}
 
+};
+
+export const updateLocationDoc = (data, docID) => {
+
+    const promise = new Promise((resolve, reject) => {
+        db.transaction( tx => {
+            tx.executeSql(
+                `UPDATE locationDoc SET data = ? WHERE id = ?`,
+                [data, docID],
+                (_, result) => {
+                    resolve(result);
+                },
+                (_, err)=> {
+                    reject(err);
+                }
+            );
+        });
+    })
+    return promise
+
+};

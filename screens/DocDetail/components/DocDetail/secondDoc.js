@@ -58,11 +58,20 @@ export default SecondDoc = (props) => {
     });
     const [isCameraOn, setCamera] = useState(false)
 
-  
+    useEffect(()=>{
+        if (props.data) {
+            console.log("dara 2", props.data)
+            setData(props.data)
+        }
+    }, [props.data])
 
     useEffect(()=>{
-    
-    },[data, isPickerOn])
+        // props.refData.current = data
+    },[isPickerOn])
+
+    useEffect(()=>{
+        props.refData.current = data
+    },[data])
 
     const selectInput = (section, field) => {
         setTargetDate({
@@ -163,7 +172,7 @@ export default SecondDoc = (props) => {
             <PickerView data={dataForSelect} onSelect={(i)=>selectedData(i)} hide={()=>togglePicker()}/>
         </Modal>
 
-        <TitleInputView/>
+        {/* <TitleInputView/> */}
         <PageTitle title={`${props.isLower ? "표면상 오염상태 하" :"표면상 오염상태 상"}`}/>
         <View style={styles.divisionWrapper}>
             {/* first section*/}
@@ -230,7 +239,7 @@ export default SecondDoc = (props) => {
                             <Text style={{textAlign:'center'}}>{data.firstSection.thickness}</Text>
                         </View>
                     </View>
-                    <View style={[styles.midSizeCell, styles.rightBorderLine]}>
+                    <View style={[styles.midSizeCell]}>
                         <TouchableOpacity onPress={()=>selectInput('firstSection', 'oilType')} style={[styles.smallCell, styles.firstSectionColor, styles.borderBottom]}>
                             <Text style={[styles.regularFont, styles.smallCellWithImage]}>기름 상태</Text>
                             <Image style={styles.triangleInSmallCell} source={WhiteTriangle}/>

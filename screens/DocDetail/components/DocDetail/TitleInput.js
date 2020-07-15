@@ -1,30 +1,102 @@
-import React from 'react';
-import {StyleSheet, View, Text, TextInput, KeyboardAvoidingView} from 'react-native';
-
+import React, {useState, useEffect} from 'react';
+import {StyleSheet, View, Text, TextInput, KeyboardAvoidingView, Modal} from 'react-native';
+import { TitleModel } from '../../../../Models/TitleModel';
+import PickerView from '../PickerView';
+import { TouchableOpacity } from 'react-native-gesture-handler';
+import {fetchUsers} from '../../../../Redux/database/db'
+let titleData = new TitleModel(null, null, null,null, null)
 
 export default TitleInput = (props) => {
 
+    const [data, setData] = useState(titleData)
+    const [targetKey, setTargetKey] = useState(null)
+    const [isPickerOn, setPickerView] = useState(false)
+    const [dataForSelect, setDataForSelect] = useState(null)
+
+    useEffect(()=>{
+        if (props.data) {
+            console.log("name received", props.data)
+            setData(props.data)
+        }
+    }, [props.data])
+
+    useEffect(()=>{
+        props.refData.current = data
+    }, [data])
+
+    const pickName = async(targetKey) => {
+        console.log("pick name")
+        setTargetKey(targetKey)
+        await fetchUsers().then((i)=>{
+            let data = i.rows._array
+            let namesArray = []
+            data.forEach(element => {
+                namesArray.push(element.name)
+            });
+            setDataForSelect(namesArray)
+            toggleModal()
+        })
+    }
+
+    const selectedData =(i)=>{
+
+        console.log("name", i)
+        setData({
+            ...data,
+            [targetKey] : i
+        })
+
+        toggleModal()
+    }
+
+    const toggleModal =()=> {
+        setPickerView(!isPickerOn)
+    }
+
     return <KeyboardAvoidingView style={styles.keyboardContainer} behavior="position" enabled   keyboardVerticalOffset={100}>
+        <Modal
+            animationType="slide"
+            transparent={true}
+            visible={isPickerOn}
+        >
+            <PickerView data={dataForSelect} onSelect={(i)=>selectedData(i)} hide={()=>toggleModal()}/>
+        </Modal>
         <View style={styles.firstRow}>
-            <Text style={styles.areaName}>구역명</Text>
-            <TextInput placeholder={"text"} style={styles.nameInputField}/>
-            <Text style={styles.inspectors}>조사자</Text>
-            <View style={styles.inspectorBox}>
-                <View style={[styles.agenBoxRow , {borderBottomWidth: 1, borderBottomColor: 'black'}]}>
-                    <View style={[styles.agentTextBox, {borderRightColor: 'black', borderRightWidth: 1}]}>
-                        <Text style={styles.agentNames}>김수영</Text>
-                    </View>
-                    <View style={styles.agentTextBox}>
-                        <Text style={styles.agentNames}>박상현</Text>
-                    </View>
+            <View style={[{flex: 1}, styles.headerYellow]}>
+                <Text style={styles.areaName}>구역명</Text>
+            </View>
+            <View style={{flex: 4}}>
+                <TextInput 
+                    placeholder={"text"} 
+                    style={styles.nameInputField}
+                    value={data.name}
+                    onChange={(i)=>setData({
+                        ...data,
+                        name: i.nativeEvent.text
+                    })}
+                />
+            </View>
+            <View style={[{flex: 1}, , styles.headerYellow]}>
+                <Text style={styles.inspectors}>조사자</Text>
+            </View>
+            
+            
+            <View style={[{flex: 4}, styles.inspectorBox]}>
+                <View style={[styles.agentBoxRow , {borderBottomWidth: 1, borderBottomColor: 'black'}]}>
+                    <TouchableOpacity onPress={()=>pickName('agent1')} style={[styles.agentTextBox, {borderRightColor: 'black', borderRightWidth: 1}]}>
+                        <Text style={styles.agentNames}>{data.agent1}</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={()=>pickName('agent2')} style={styles.agentTextBox}>
+                        <Text style={styles.agentNames}>{data.agent2}</Text>
+                    </TouchableOpacity>
                 </View>
-                <View style={styles.agenBoxRow}>
-                    <View style={[styles.agentTextBox, {borderRightColor: 'black', borderRightWidth: 1}]}>
-                        <Text style={styles.agentNames}>문학</Text>
-                    </View>
-                    <View style={styles.agentTextBox}>
-                        <Text style={styles.agentNames}>배상수</Text>
-                    </View>
+                <View style={styles.agentBoxRow}>
+                    <TouchableOpacity onPress={()=>pickName('agent3')} style={[styles.agentTextBox, {borderRightColor: 'black', borderRightWidth: 1}]}>
+                        <Text style={styles.agentNames}>{data.agent3}</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={()=>pickName('agent4')} style={styles.agentTextBox}>
+                        <Text style={styles.agentNames}>{data.agent4}</Text>
+                    </TouchableOpacity>
                 </View>
             </View>
         </View> 
@@ -33,6 +105,9 @@ export default TitleInput = (props) => {
 }
 
 const styles = StyleSheet.create({
+    headerYellow: {
+        backgroundColor: '#FFFFCC'
+    },
     keyboardContainer: {
         width: "100%",
         height: "10%"
@@ -74,7 +149,7 @@ const styles = StyleSheet.create({
         borderRightColor: 'black'
     },
     nameInputField: {
-        borderBottomWidth: 1,
+        borderBottomWidth: 0,
         borderBottomColor: 'black',
         
         borderLeftWidth: 1,
@@ -83,7 +158,7 @@ const styles = StyleSheet.create({
         borderRightWidth: 1,
         borderRightColor: 'black',
 
-        width: "50%",
+        width: "100%",
         backgroundColor: 'white',
         height: '100%',
         padding: 20,
@@ -96,29 +171,32 @@ const styles = StyleSheet.create({
     inspectorBox: {
         borderLeftWidth: 1,
         borderLeftColor: 'black',
-        flex: 1,
         justifyContent: 'center',
         textAlign: 'center'
+        
     },
-    agenBoxRow: {
+    agentBoxRow: {
         flex:1, 
-        // width: '100%',
-
         flexDirection: 'row', 
         alignItems: 'center', 
         justifyContent: 'center',
+        // backgroundColor: 'red'
     },
     agentTextBox: {
-        flex: 1,
+        flex:1,
         alignItems: 'center',
         justifyContent: 'center',
         textAlign: 'center',
+        width: 200,
+        height: 30
     },
     agentNames: {
         // flex: 1,
         // height: '100%',
         // padding: 8,
         // width: '100%',
+        // width: '100%',
+        // height: '100%',
         fontSize: 16,
         lineHeight: 32,
         textAlign: 'center',

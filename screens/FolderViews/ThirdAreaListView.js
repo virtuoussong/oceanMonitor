@@ -1,7 +1,8 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import {StyleSheet, View, FlatList, Text, Dimensions, TouchableOpacity} from 'react-native';
 import DrawerButton from '../../components/DrawerNavButton';
 import FolderCell from '../../components/FolderCell';
+import { getAllArea3 } from '../../Redux/database/area3DB'
 let dataSet = [
     {id: 1, name: "구역 1"},
     {id: 2, name: "구역 2"},
@@ -22,31 +23,70 @@ let dataSet = [
 ]
 
 export default ThirdAreaListView = (props) => {
-    const toggleDrawer = () => {
-        props.toggleDrawer()
+    const [data, setData] = useState()
+
+    useEffect(() => {
+        let passedID = props.route.params.id
+        loadData(passedID)
+    }, [])
+
+    const loadData = async (id) => {
+        await getAllArea3(id).then((i)=>{
+            // console.log("filtered area2", i)
+            let filteredArray = []
+            i.rows._array.forEach(element => {
+                let parsedItem = JSON.parse(element.data)
+                parsedItem.id = element.id
+                parsedItem.docID = element.docID
+                filteredArray.push(parsedItem)
+            });
+
+            setData(filteredArray)
+        })
     }
 
+
+    // const toggleDrawer = () => {
+    //     props.toggleDrawer()
+    // }
+
     const folderTap = (id) => {
-        props.onPress()
+        props.navigation.navigate("구역 4단계", {
+            id: id,
+        })
+    }
+
+    const docTapped = (docId, id) => {
+        console.log("docID", id)
+        props.navigation.navigate("문서 페이지", {
+            docID : docId,
+            id: id,
+            area: 3
+        })
     }
 
     return <View style={styles.container}>
         <FlatList 
             showsVerticalScrollIndicator={false}
 
-            data={dataSet}
+            data={data}
             renderItem={({item}) => 
                 <FolderCell 
+                    showIcon={true}
+                    isDocShown={item.docID != null ? true : false }
+
                     folderName={item.name} 
+
                     onPress={() => folderTap(item.id)}
+                    onDocTap={() => docTapped(item.docID, item.id)}
                 />
             }
             keyExtractor={(i)=> i.id}
-            numColumns={3}
+            numColumns={1}
         />
-        <DrawerButton 
+        {/* <DrawerButton 
             toggleDrawer={toggleDrawer}
-        />
+        /> */}
     </View>
 }
 

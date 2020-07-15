@@ -1,6 +1,9 @@
-import React, { useState } from 'react';
-import {StyleSheet, View, FlatList, Text, Dimensions, TouchableOpacity, ScrollView} from 'react-native';
+import React, { useState, useEffect } from 'react';
+import {StyleSheet, View, FlatList, Text, Dimensions, TouchableOpacity, ScrollView, TextInput, findNodeHandle} from 'react-native';
 import TitleInputView from './TitleInput';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
+
+// import { TextInput } from 'react-native-gesture-handler';
 
 let dataSet = [
     {id: 1, name: "구역 1"},
@@ -21,13 +24,37 @@ let dataSet = [
     {id: 16, name: "구역 8"},
 ]
 
+import {FifthPage} from '../../../../Models/fifthPage.js'
+
+let fifthPageData = new FifthPage("", "");
+
 export default FourthdDoc = (props) => {
 
-    const [data, dataSet] = useState()
+    const [data, dataSet] = useState(fifthPageData)
+    const [height, setHeight] = useState(0)
+    useEffect(()=>{
+        if (props.data) {
+            dataSet(props.data)
+        }
+    }, [props.data])
 
-    return <View style={[styles.container, styles.borderRight]}>
-                <TitleInputView/>
-                <View style={[styles.secondSection, styles.borderBottom, styles.firstSectionColor]}>
+    useEffect(()=>{
+        props.refData.current = data
+    }, [data])
+
+    const inputFocus = (refName) => {
+        setTimeout(()=> {
+            
+        }, 50)
+    }
+
+    // let scrollViewRef = React.createRef()
+    let majorRef = React.createRef()
+
+    return  <View style={[styles.container, styles.borderRight]}>
+        <KeyboardAwareScrollView style={{flex: 1, width: '100%'}} contentContainerStyle={{flexGrow: 1}} ref={(ref) => { scrollViewRef = ref }}>
+            {/* <TitleInputView/> */}
+            <View style={[styles.secondSection, styles.borderBottom, styles.firstSectionColor]}>
                     <Text style={styles.secondTitle}>방제작업 설계</Text>
                 </View>
                 <View style={[styles.thirdSection]}>
@@ -35,16 +62,52 @@ export default FourthdDoc = (props) => {
                         <View style={[styles.celltitle, styles.borderBottom, styles.firstSectionColor]}>
                             <Text style={styles.cellTitleText}>주요 시방서</Text>
                         </View>
-                        <View style={{flex: 1}}></View>
+                        <View style={{flex: 1}}>
+                            <TextInput 
+                                // style={{width: '100%',minHeight: '30%' ,maxHeight: '100%',textAlignVertical: 'top', padding: 12}}
+                                value={data.major}
+                                multiline={true}
+                                onChange={(i)=> dataSet({
+                                    ...data,
+                                    major: i.nativeEvent.text
+                                })}
+
+                                onContentSizeChange={(event) => setHeight(event.nativeEvent.contentSize.height + 20)}
+
+                                style={[{
+                                    minHeight: '30%',
+                                    height: height,
+                                    maxHeight: '100%',
+                                    padding: 10,
+                                    textAlignVertical: 'top',
+                                    backgroundColor: 'red'
+                                }]}
+                                ref={majorRef}
+                                onFocus={()=>inputFocus('major')}
+                            />
+                        </View>
                     </View>
                     <View style={styles.smallCell}>
                         <View style={[styles.celltitle, styles.borderBottom, styles.firstSectionColor]}>
                             <Text style={styles.cellTitleText}>고려 변수</Text>
                         </View>
-                        <View style={{flex: 1}}></View>
+                        <View style={{flex: 1}}>
+                        <TextInput 
+                                style={{width: '100%', height: '100%', textAlignVertical: 'top', padding: 12}}
+                                value={data.variance}
+                                multiline={true}
+                                onChange={(i)=>dataSet({
+                                    ...data,
+                                    variance: i.nativeEvent.text
+                                })}
+                            />
+                        </View>
                     </View>
                 </View>
-    </View>
+
+        </KeyboardAwareScrollView>
+                
+        </View>    
 }
 
 const styles = StyleSheet.create({

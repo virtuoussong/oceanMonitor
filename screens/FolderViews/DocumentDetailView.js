@@ -186,7 +186,7 @@ export default DocumentDetailView = (props) => {
                     snapToAlignment={"center"}
                     pagingEnabled={true}
                 >
-                    <BasicInfoDoc refData={firstDocRef} data={data.first}/>
+                    <BasicInfoDoc refData={firstDocRef} data={data.first} isBarShown={props.isBarShown}/>
                     <FirstDoc refData={secondDocRef} data={data.second} />
                     <SecondtDoc refData={thirdDocRef} data={data.third} />
                     <SecondtDoc refData={fourthDocRef} data={data.forth} isLower={true}/>

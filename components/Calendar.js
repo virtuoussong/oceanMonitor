@@ -26,20 +26,15 @@ const CalendarPickerView = (props) => {
         console.log(thisYear)
         let yearsCreated = []
         for (let i = 0; i < 100; i++) {
-            let addedYear = parseInt(thisYear, 10)  + i
+            let addedYear = parseInt(thisYear - 3, 10)  + i
             yearsCreated.push(addedYear)
         }
         setYearArray(yearsCreated)
         setMonthsArray(arrayForMonths)
         
         let thisMonth = data.getMonth() + 1
-        arrayForMonths.forEach((index, item) =>{
-            if (item == thisMonth) {
-                console.log("month index", index)
-                setSelectedMonth(index-1)
-            }
-        })
-        setSelectedYear(0)
+        setSelectedMonth(thisMonth)
+        setSelectedYear(data.getFullYear())
         
     }
 
@@ -62,7 +57,7 @@ const CalendarPickerView = (props) => {
         let thisMonth = date.getMonth() + 1
 
         console.log(thisYear, thisMonth, selectedYear, selectedMonth)
-        if (thisYear == yearArray[selectedYear] && thisMonth == selectedMonth) {
+        if (thisYear == selectedYear && thisMonth == selectedMonth) {
             arryForDays.forEach((item)=>{
                 if (item == new Date().getDate()) {
                     setSelectedDay(item)
@@ -77,7 +72,7 @@ const CalendarPickerView = (props) => {
     }, [daysArray])
 
     const yearSelected = (i) => {
-        console.log("year", i)
+        console.log("selected year from picker", i)
         setSelectedYear(i)
     }
 
@@ -96,7 +91,7 @@ const CalendarPickerView = (props) => {
     }
 
     const datesSelected = () => {
-        let date = `${yearArray[selectedYear]}-${selectedMonth}-${selectedDay}`
+        let date = `${selectedYear}-${selectedMonth}-${selectedDay}`
         props.setDate(date)
         props.close()
     }

@@ -12,6 +12,8 @@ import { newRegionDoc } from '../../../../Redux/database/regionDoc'
 import { insertDocID } from '../../../../Redux/database/area2DB';
 import { getRegionDoc, updateRegionDoc } from '../../../../Redux/database/regionDoc';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
+import CalendarPicker from '../../../../components/Calendar';
+import { Video } from 'expo-av';
 
 let dummyData = new RegionInfo(
     null,
@@ -58,6 +60,7 @@ export default RegionDetailView = (props) => {
 
     const [data, setData] = useState(dummyData);
     const [isModalOn, setModal] = useState(false);
+    const [isCalendarOn, setCalendarOn] = useState(false)
 
     useEffect(()=>{
         regionData.current = data
@@ -106,12 +109,19 @@ export default RegionDetailView = (props) => {
     }
 
     const openGallery = async () => {
-        console.log("saving data", data)
+        let permissionResult = await ImagePicker.requestCameraRollPermissionsAsync();
+
+        if (permissionResult.granted === false) {
+            alert("Permission to access camera roll is required!");
+            return;
+        }
+
         let result = await ImagePicker.launchImageLibraryAsync({
             mediaTypes: ImagePicker.MediaTypeOptions.All,
             allowsEditing: true,
             aspect: [4, 3],
             quality: 1,
+            animationType: 'none'
         });
         
         
@@ -124,8 +134,30 @@ export default RegionDetailView = (props) => {
 
     }
 
-    const toggleCamera = () => {
-        setModal(!isModalOn)
+    const toggleCamera = async() => {
+        // setModal(!isModalOn)
+        let permissionResult = await ImagePicker.requestCameraRollPermissionsAsync();
+
+        if (permissionResult.granted === false) {
+        alert("Permission to access camera roll is required!");
+        return;
+        }
+
+        let result = await ImagePicker.launchCameraAsync({
+            mediaTypes: ImagePicker.MediaTypeOptions.All,
+            allowsEditing: true,
+            aspect: [4, 3],
+            quality: 1,
+        });
+    
+    
+        if (!result.cancelled) {
+            // savePhoto(result.uri)
+            setData({
+                ...data,
+                imageLink: result.uri
+            })
+        }
     }
 
     const savePhoto=(i)=> {
@@ -176,11 +208,33 @@ export default RegionDetailView = (props) => {
         }
     }
 
+    const updateData = (key, i) => {
+        console.log(key, i)
+        setData({
+            ...data,
+            [key]: i
+        })
+    }
+
     const cancel = () =>{
         props.close()
     }
 
+    const toggleCalendar = (i) =>{
+        setCalendarOn(!isCalendarOn)
+        setKey(i)
+    }
+    const [key, setKey] = useState()
+    const handleDatePicked =(i)=> {
+        console.log(i)
+        updateData(key, i)
+    }
+
     return <View style={styles.constainer}>
+            <Modal visible={isCalendarOn} transparent={true} animationType="slide"> 
+                <CalendarPicker close={()=>toggleCalendar()} setDate={(i)=>handleDatePicked(i)}/>
+            </Modal>
+
             {props.hasCloseButton && <View style={{width: '100%', height: 55, flexDirection: 'row'}}>
                 <TouchableOpacity style={{marginRight: 'auto', marginTop: 24, marginLeft: 20}} onPress={()=>cancel()}>
                     <Text style={{fontSize: 20}}>취소</Text>
@@ -197,9 +251,47 @@ export default RegionDetailView = (props) => {
             <View style={[styles.constainer, styles.flexRow, styles.borderAll]}>
         
         <View style={[styles.constainer, styles.borderRight, styles.flexRow, {height: '100%'}]}>
-            {data.imageLink ? <TouchableOpacity onPress={()=>openGallery()} style={[{flex:1, height: '100%'}, styles.borderRight]}>
-                    <Image source={{uri: data.imageLink}} style={[{flex:1}]}/> 
-                </TouchableOpacity>
+            {data.imageLink !== null ? 
+            // <TouchableOpacity onPress={()=>openGallery()} style={[{flex:1, height: '100%'}, styles.borderRight]}>
+            //     <Image source={{uri: data.imageLink}} style={[{flex:1}]}/> 
+            // </TouchableOpacity>
+                <View style={{flex: 1}}>
+                    {data.imageLink.endsWith(('mp4', 'mov')) ? 
+                        <View style={{flex: 1}}>
+                            <Video 
+                                rate={1.0}
+                                volume={1.0}
+                                isMuted={true}
+                                resizeMode="cover"
+                                shouldPlay={false}
+                                isLooping
+                                style={{flex: 1}} 
+                                source={{uri: data.imageLink}}
+                                useNativeControls={true}
+                            />
+                            <View style={{flexDirection: 'row', width: 100, height: 40, position: 'absolute', bottom: 30, right: 16}}>
+                                <TouchableOpacity onPress={()=>toggleCamera()} style={{flex:1, justifyContent:'center', alignItems:'center'}}>
+                                    <Image style={[{width: 40, height: 40}]} source={require('../../../../assets/cameraIcon.png')}/>
+                                </TouchableOpacity>
+                                <TouchableOpacity onPress={()=>openGallery()} style={{flex:1, justifyContent:'center', alignItems:'center'}}>
+                                    <Image style={[{width: 40, height: 40}]} source={require('../../../../assets/pictureIcon.png')}/>
+                                </TouchableOpacity>
+                            </View>
+                        </View> 
+                        : 
+                        <View style={{flex:1}}>
+                            <Image style={{flex:1}} source={{uri: data.imageLink}}/>
+                            <View style={{flexDirection: 'row', width: 100, height: 40, position: 'absolute', bottom: 30, right: 16}}>
+                                <TouchableOpacity onPress={()=>toggleCamera()} style={{flex:1, justifyContent:'center', alignItems:'center'}}>
+                                    <Image style={[{width: 40, height: 40}]} source={require('../../../../assets/cameraIcon.png')}/>
+                                </TouchableOpacity>
+                                <TouchableOpacity onPress={()=>openGallery()} style={{flex:1, justifyContent:'center', alignItems:'center'}}>
+                                    <Image style={[{width: 40, height: 40}]} source={require('../../../../assets/pictureIcon.png')}/>
+                                </TouchableOpacity>
+                            </View>
+                        </View>
+                    }
+                </View>
             :
             <React.Fragment>
                 <TouchableOpacity onPress={()=>toggleCamera()} style={[styles.constainer, {flex: 1}]}>
@@ -503,21 +595,15 @@ export default RegionDetailView = (props) => {
                         <View style={[{flex:1, height: '100%'}, styles.center, styles.borderRight]}>
                             <Text>양력</Text>
                         </View>
-                        <View style={{flex:3}}>
-                            <TextInput style={{flex:1, width: '100%', textAlign: "center"}} 
-                                onChange={(i)=>setData({
-                                ...data,
-                                recordDataSun: i.nativeEvent.text
-                                })} 
-                                value={data.recordDataSun}
-                            />
-                        </View>
+                        <TouchableOpacity style={{flex:3, alignItems: "center", justifyContent: 'center'}} onPress={()=>toggleCalendar("recordDataSun")}>
+                            <Text>{data.recordDataSun}</Text>
+                        </TouchableOpacity>
                     </View>
                     <View style={[{flex: 1, width: '100%', flexDirection: 'row'}, styles.center]}>
                         <View style={[{flex:1, height: '100%'}, styles.center, styles.borderRight]}>
                             <Text>음력</Text>
                         </View>
-                        <View style={{flex:3}}>
+                        {/* <View style={{flex:3}}>
                             <TextInput style={{flex:1, width: '100%', textAlign: "center"}} 
                                 onChange={(i)=>setData({
                                 ...data,
@@ -525,7 +611,10 @@ export default RegionDetailView = (props) => {
                                 })} 
                                 value={data.recordDataMoon}
                             />
-                        </View>
+                        </View> */}
+                        <TouchableOpacity style={{flex:3, alignItems: "center", justifyContent: 'center'}} onPress={()=>toggleCalendar("recordDataMoon")}>
+                            <Text>{data.recordDataMoon}</Text>
+                        </TouchableOpacity>
                     </View>
                 </View>
                 <View style={[{flex: 1, height: '100%', padding: 10}, styles.center, styles.borderRight]}>

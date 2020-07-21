@@ -1,6 +1,6 @@
 import 'react-native-gesture-handler';
-import React from 'react';
-import { StyleSheet, Text, View, Button } from 'react-native';
+import React, {useState, useEffect} from 'react';
+import { StyleSheet, Text, View, Button, Image } from 'react-native';
 import OceanMapView from './screens/OceanMapView';
 
 //redux
@@ -26,6 +26,9 @@ import RegionDetailView from './screens/DocDetail/components/RegionDetail/Region
 
 //User List View
 import UserListView from './screens/UserListView';
+
+//location setting
+import DefaultLocationSetting from './screens/DefaultMapLocation';
 
 import { createStackNavigator } from '@react-navigation/stack';
 import { createDrawerNavigator } from '@react-navigation/drawer';
@@ -200,19 +203,40 @@ function Users({ navigation }) {
   );
 }
 
+function LocationSetting({ navigation }) {
+  return (
+    <DefaultLocationSetting
+      toggleDrawer={() => navigation.toggleDrawer()}
+    />
+  )
+}
+
 const Drawer = createDrawerNavigator();
 
 
 export default function App() {
+  // const [isLoaded, setLoad] = useState(false)
+
+  // if (isLoaded == false) {
+  //   return <View style={{flex: 1}}>
+  //     <Image  onLoad={loadDone} />
+  //   </View>
+  // }
+
+  // const loadDone = () => {
+
+  // }
+
   return (
     <Provider store={store}>
-       <NavigationContainer>
+      <NavigationContainer>
         <Drawer.Navigator initialRouteName="지도">
           <Drawer.Screen name="지도" component={MapScreen} />
           <Drawer.Screen name="파일" component={Document}/>
           <Drawer.Screen name="작성자 목록" component={Users}/>
+          <Drawer.Screen name="기본 지역 설정" component={LocationSetting}/>
         </Drawer.Navigator>
-    </NavigationContainer>
+      </NavigationContainer>
     </Provider>
   );
 }

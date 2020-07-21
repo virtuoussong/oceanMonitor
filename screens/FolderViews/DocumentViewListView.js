@@ -128,7 +128,7 @@ const styles = StyleSheet.create({
     },
     leftButton: {
         // position: 'absolute',
-        top: -3,
+        top: -1,
         left: 10
     },
     itemStyle : {

@@ -9,6 +9,7 @@ import {SectionType} from "../../../../Models/FirstPage";
 // import {Permissions, ImagePicker} from 'expo';
 import * as ImagePicker from 'expo-image-picker';
 import Camera from '../../../Camera';
+import { Video } from 'expo-av';
 
 import {
     SecondPage,
@@ -20,31 +21,31 @@ import {
 
 let dataSetForPage2 = new SecondPage (
     new BeachStatus(
-        SectionType.MIDDLE,
-        "100",
-        "10",
-        "10",
+        SectionType.TOP,
+        null,
+        null,
+        "0",
         ThicknessType.PO,
         OilStatus.FR,
-        ""
+        null
     ),
     new BeachStatus(
         SectionType.MIDDLE,
-        "100",
-        "10",
-        "10",
+        null,
+        null,
+        "0",
         ThicknessType.PO,
         OilStatus.FR,
-        ""
+        null
     ),
     new BeachStatus(
         SectionType.MIDDLE_BOTTOM,
-        "100",
-        "10",
-        "10",
+        null,
+        null,
+        "0",
         ThicknessType.PO,
         OilStatus.FR,
-        ""
+        null
     )
 );
 
@@ -124,6 +125,13 @@ export default SecondDoc = (props) => {
       };
 
     const openGallery = async () => {
+        let permissionResult = await ImagePicker.requestCameraRollPermissionsAsync();
+
+        if (permissionResult.granted === false) {
+            alert("Permission to access camera roll is required!");
+            return;
+        }
+
         let result = await ImagePicker.launchImageLibraryAsync({
             mediaTypes: ImagePicker.MediaTypeOptions.All,
             allowsEditing: true,
@@ -137,12 +145,38 @@ export default SecondDoc = (props) => {
     }
 
 
-    const takePhoto=(section, field)=>{
-        setCamera(!isCameraOn)
-        setTargetDate({
-            section: section,
-            field: field
-        })
+    const takePhoto = async (section, field) => {
+        // setCamera(!isCameraOn)
+        // setTargetDate({
+        //     section: section,
+        //     field: field
+        // })
+
+        let permissionResult = await ImagePicker.requestCameraRollPermissionsAsync();
+
+        if (permissionResult.granted === false) {
+        alert("Permission to access camera roll is required!");
+        return;
+        }
+
+        let result = await ImagePicker.launchCameraAsync({
+            mediaTypes: ImagePicker.MediaTypeOptions.All,
+            allowsEditing: true,
+            aspect: [4, 3],
+            quality: 1,
+        });
+    
+    
+        if (!result.cancelled) {
+            // savePhoto(result.uri)
+            setData({
+                ...data,
+                [section]: {
+                    ...data[section],
+                    [field]: result.uri
+                }
+            })
+        }
     }
 
     const savePhoto=(i)=> {
@@ -251,19 +285,52 @@ export default SecondDoc = (props) => {
                 </View>
                 <View style={[styles.imageSection]}>
                     {data.firstSection.imageLink ? 
-                        <TouchableOpacity onPress={()=>pickPhoto('firstSection', "imageLink")} style={{flex:1}}>
-                            <Image  style={{flex:1}} source={{uri: data.firstSection.imageLink}}/>
-                        </TouchableOpacity> : 
-                        <View style={{flex: 1, flexDirection:'row'}}>
-                            <TouchableOpacity style={styles.imageSection} onPress={()=>takePhoto('firstSection', 'imageLink')}>
-                                <Image source={require('../../../../assets/cameraIcon.png')}/>
-                            </TouchableOpacity>
-                            <TouchableOpacity style={styles.imageSection} onPress={()=>pickPhoto('firstSection', "imageLink")}>
-                                <Image 
-                                    source={require('../../../../assets/pictureIcon.png')}
-                                />
-                            </TouchableOpacity>
-                        </View>
+                        <View style={{flex: 1}}>
+                        {data.firstSection.imageLink.endsWith(('mp4', 'mov')) ? 
+                          <View style={{flex: 1}}>
+                            <Video 
+                                rate={1.0}
+                                volume={1.0}
+                                isMuted={true}
+                                resizeMode="cover"
+                                shouldPlay={false}
+                                isLooping
+                                style={{flex: 1}} 
+                                source={{uri: data.firstSection.imageLink}}
+                                useNativeControls={true}
+                            />
+                            <View style={{flexDirection: 'row', width: 100, height: 40, position: 'absolute', bottom: 30, right: 16}}>
+                              <TouchableOpacity onPress={()=>takePhoto('firstSection', "imageLink")} style={{flex:1, justifyContent:'center', alignItems:'center'}}>
+                                <Image style={[{width: 40, height: 40}]} source={require('../../../../assets/cameraIcon.png')}/>
+                              </TouchableOpacity>
+                              <TouchableOpacity onPress={()=>pickPhoto('firstSection', 'imageLink')} style={{flex:1, justifyContent:'center', alignItems:'center'}}>
+                                  <Image style={[{width: 40, height: 40}]} source={require('../../../../assets/pictureIcon.png')}/>
+                              </TouchableOpacity>
+                            </View>
+                          </View> 
+                          : 
+                          <View style={{flex:1}}>
+                            <Image style={{flex:1}} source={{uri: data.firstSection.imageLink}}/>
+                            <View style={{flexDirection: 'row', width: 100, height: 40, position: 'absolute', bottom: 30, right: 16}}>
+                              <TouchableOpacity onPress={()=>takePhoto('firstSection', "imageLink")} style={{flex:1, justifyContent:'center', alignItems:'center'}}>
+                                <Image style={[{width: 40, height: 40}]} source={require('../../../../assets/cameraIcon.png')}/>
+                              </TouchableOpacity>
+                              <TouchableOpacity onPress={()=>pickPhoto('firstSection', 'imageLink')} style={{flex:1, justifyContent:'center', alignItems:'center'}}>
+                                  <Image style={[{width: 40, height: 40}]} source={require('../../../../assets/pictureIcon.png')}/>
+                              </TouchableOpacity>
+                            </View>
+                          </View>
+                        }
+                      </View>
+                      :
+                      <View style={[{flex:1, flexDirection: 'row', justifyContent:'center', alignItems:'center'}]}>
+                        <TouchableOpacity onPress={()=>takePhoto('firstSection', "imageLink")} style={{flex:1, justifyContent:'center', alignItems:'center'}}>
+                            <Image source={require('../../../../assets/cameraIcon.png')}/>
+                        </TouchableOpacity>
+                        <TouchableOpacity onPress={()=>pickPhoto('firstSection', 'imageLink')} style={{flex:1, justifyContent:'center', alignItems:'center'}}>
+                            <Image source={require('../../../../assets/pictureIcon.png')}/>
+                        </TouchableOpacity>
+                      </View>
                     }
                 </View>
             </View>
@@ -343,17 +410,50 @@ export default SecondDoc = (props) => {
                 </View>
                 <View style={[styles.imageSection]}>
                     {data.secondSection.imageLink ? 
-                        <TouchableOpacity onPress={()=>pickPhoto('secondSection', "imageLink")} style={{flex:1}}>
-                            <Image  style={{flex:1}} source={{uri: data.secondSection.imageLink}}/>
-                        </TouchableOpacity> : 
-                        <View style={{flex: 1, flexDirection:'row'}}>
-                            <TouchableOpacity style={styles.imageSection} onPress={()=>takePhoto('secondSection', 'imageLink')}>
+                        <View style={{flex: 1}}>
+                            {data.secondSection.imageLink.endsWith(('mp4', 'mov')) ? 
+                            <View style={{flex: 1}}>
+                                <Video 
+                                    rate={1.0}
+                                    volume={1.0}
+                                    isMuted={true}
+                                    resizeMode="cover"
+                                    shouldPlay={false}
+                                    isLooping
+                                    style={{flex: 1}} 
+                                    source={{uri: data.secondSection.imageLink}}
+                                    useNativeControls={true}
+                                />
+                                <View style={{flexDirection: 'row', width: 100, height: 40, position: 'absolute', bottom: 30, right: 16}}>
+                                <TouchableOpacity onPress={()=>takePhoto('secondSection', "imageLink")} style={{flex:1, justifyContent:'center', alignItems:'center'}}>
+                                    <Image style={[{width: 40, height: 40}]} source={require('../../../../assets/cameraIcon.png')}/>
+                                </TouchableOpacity>
+                                <TouchableOpacity onPress={()=>pickPhoto('secondSection', 'imageLink')} style={{flex:1, justifyContent:'center', alignItems:'center'}}>
+                                    <Image style={[{width: 40, height: 40}]} source={require('../../../../assets/pictureIcon.png')}/>
+                                </TouchableOpacity>
+                                </View>
+                            </View> 
+                            : 
+                            <View style={{flex:1}}>
+                                <Image style={{flex:1}} source={{uri: data.secondSection.imageLink}}/>
+                                <View style={{flexDirection: 'row', width: 100, height: 40, position: 'absolute', bottom: 30, right: 16}}>
+                                <TouchableOpacity onPress={()=>takePhoto('secondSection', "imageLink")} style={{flex:1, justifyContent:'center', alignItems:'center'}}>
+                                    <Image style={[{width: 40, height: 40}]} source={require('../../../../assets/cameraIcon.png')}/>
+                                </TouchableOpacity>
+                                <TouchableOpacity onPress={()=>pickPhoto('secondSection', 'imageLink')} style={{flex:1, justifyContent:'center', alignItems:'center'}}>
+                                    <Image style={[{width: 40, height: 40}]} source={require('../../../../assets/pictureIcon.png')}/>
+                                </TouchableOpacity>
+                                </View>
+                            </View>
+                            }
+                        </View>
+                        :
+                        <View style={[{flex:1, flexDirection: 'row', justifyContent:'center', alignItems:'center'}]}>
+                            <TouchableOpacity onPress={()=>takePhoto('secondSection', "imageLink")} style={{flex:1, justifyContent:'center', alignItems:'center'}}>
                                 <Image source={require('../../../../assets/cameraIcon.png')}/>
                             </TouchableOpacity>
-                            <TouchableOpacity style={styles.imageSection} onPress={()=>pickPhoto('secondSection', "imageLink")}>
-                                <Image 
-                                    source={require('../../../../assets/pictureIcon.png')}
-                                />
+                            <TouchableOpacity onPress={()=>pickPhoto('secondSection', 'imageLink')} style={{flex:1, justifyContent:'center', alignItems:'center'}}>
+                                <Image source={require('../../../../assets/pictureIcon.png')}/>
                             </TouchableOpacity>
                         </View>
                     }
@@ -433,17 +533,50 @@ export default SecondDoc = (props) => {
                 </View>
                 <View style={[styles.imageSection]}>
                     {data.thirdSection.imageLink ? 
-                        <TouchableOpacity onPress={()=>pickPhoto('thirdSection', "imageLink")} style={{flex:1}}>
-                            <Image  style={{flex:1}} source={{uri: data.thirdSection.imageLink}}/>
-                        </TouchableOpacity> : 
-                        <View style={{flex: 1, flexDirection:'row'}}>
-                            <TouchableOpacity style={styles.imageSection} onPress={()=>takePhoto('thirdSection', 'imageLink')}>
+                        <View style={{flex: 1}}>
+                            {data.thirdSection.imageLink.endsWith(('mp4', 'mov')) ? 
+                            <View style={{flex: 1}}>
+                                <Video 
+                                    rate={1.0}
+                                    volume={1.0}
+                                    isMuted={true}
+                                    resizeMode="cover"
+                                    shouldPlay={false}
+                                    isLooping
+                                    style={{flex: 1}} 
+                                    source={{uri: data.thirdSection.imageLink}}
+                                    useNativeControls={true}
+                                />
+                                <View style={{flexDirection: 'row', width: 100, height: 40, position: 'absolute', bottom: 30, right: 16}}>
+                                <TouchableOpacity onPress={()=>takePhoto('thirdSection', "imageLink")} style={{flex:1, justifyContent:'center', alignItems:'center'}}>
+                                    <Image style={[{width: 40, height: 40}]} source={require('../../../../assets/cameraIcon.png')}/>
+                                </TouchableOpacity>
+                                <TouchableOpacity onPress={()=>pickPhoto('thirdSection', 'imageLink')} style={{flex:1, justifyContent:'center', alignItems:'center'}}>
+                                    <Image style={[{width: 40, height: 40}]} source={require('../../../../assets/pictureIcon.png')}/>
+                                </TouchableOpacity>
+                                </View>
+                            </View> 
+                            : 
+                            <View style={{flex:1}}>
+                                <Image style={{flex:1}} source={{uri: data.thirdSection.imageLink}}/>
+                                <View style={{flexDirection: 'row', width: 100, height: 40, position: 'absolute', bottom: 30, right: 16}}>
+                                <TouchableOpacity onPress={()=>takePhoto('thirdSection', "imageLink")} style={{flex:1, justifyContent:'center', alignItems:'center'}}>
+                                    <Image style={[{width: 40, height: 40}]} source={require('../../../../assets/cameraIcon.png')}/>
+                                </TouchableOpacity>
+                                <TouchableOpacity onPress={()=>pickPhoto('thirdSection', 'imageLink')} style={{flex:1, justifyContent:'center', alignItems:'center'}}>
+                                    <Image style={[{width: 40, height: 40}]} source={require('../../../../assets/pictureIcon.png')}/>
+                                </TouchableOpacity>
+                                </View>
+                            </View>
+                            }
+                        </View>
+                        :
+                        <View style={[{flex:1, flexDirection: 'row', justifyContent:'center', alignItems:'center'}]}>
+                            <TouchableOpacity onPress={()=>takePhoto('thirdSection', "imageLink")} style={{flex:1, justifyContent:'center', alignItems:'center'}}>
                                 <Image source={require('../../../../assets/cameraIcon.png')}/>
                             </TouchableOpacity>
-                            <TouchableOpacity style={styles.imageSection} onPress={()=>pickPhoto('thirdSection', "imageLink")}>
-                                <Image 
-                                    source={require('../../../../assets/pictureIcon.png')}
-                                />
+                            <TouchableOpacity onPress={()=>pickPhoto('thirdSection', 'imageLink')} style={{flex:1, justifyContent:'center', alignItems:'center'}}>
+                                <Image source={require('../../../../assets/pictureIcon.png')}/>
                             </TouchableOpacity>
                         </View>
                     }

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
-import {ActivityIndicator, StyleSheet, Text, View, TouchableOpacity, Animated, Image, Easing, Modal, Linking } from "react-native";
+import {ActivityIndicator, StyleSheet, Text, View, TouchableOpacity, Animated, Image, Easing, Modal, Linking , AsyncStorage} from "react-native";
 import MapView, {PROVIDER_GOOGLE, Polygon, Marker, Polyline, Circle, fitToCoordinates } from "react-native-maps";
 import LocationNameModal from '../screens/LocationNameModel';
 import RightSideView from '../screens/RightSideView';
@@ -16,10 +16,17 @@ import * as polygonNavAction from '../Redux/actions/coordinateNav.js';
 import UUIDGenerator from 'react-native-uuid-generator'
 
 import { useSelector, useDispatch } from "react-redux";
+import InitialRegion from '../Models/InitialRegion';
 
 const OceanMapView = (props) => {
+  const [initialLocation, setInitial] = useState({
+    latitude: 35.82991503548142,
+    longitude: 127.66985032707453,
+    latitudeDelta: 6.158240791210218,
+    longitudeDelta: 10.137516260147095
+  })
+
   const [newPolygon, setNewPolygon] = useState([]);
-  // const [polygonsState, setPolygonAdd] = useState(polygonArray);
   const [isAddingPolygon, setAddPolygon] = useState(false);
   const [addButtonText, setAddButton] = useState("지역 추가");
   const [viewLevel, setViewLevel] = useState({currentViewLevel: 1});
@@ -39,28 +46,42 @@ const OceanMapView = (props) => {
   const [error, setError] = useState();
   const [isLoading, setIsLoading] = useState(false);
 
+  // useEffect(()=>{
+  //   getInitialLocation()
+  // }, [])
 
+  const getInitialLocation = async() => {
+    try {
+      await AsyncStorage.getItem('initialLocation', (err, result)=>{
+          let parsed = JSON.parse(result)
+          console.log("parsed", parsed)
+          let region = new InitialRegion(
+              parsed.latitude,
+              parsed.longitude,
+              parsed.latitudeDelta,
+              parsed.longitudeDelta
+          )
+          setInitial(region)
+      })
+    } catch (error) {
 
+    }
+  }
 
-  // useEffect(() => {
-  //   setPolygonAdd(polygonArray)
-  //   // setAddPolygon(false)
-  // }, [
-  //   circleCoordinates, circleValue, isMeasuringCircle, measuredArea, totalDistance, setPolygonAdd, setNewPolygon, setAddPolygon, setAddButton, setViewLevel, setRgithSideDrawer, setArrowRotate, setModalVisible, startMeasureDistance, setDistanceDots
-  // ])
+  // useEffect(()=>{
+
+  // }, [])
 
   useEffect(() => {
-    // setPolygonAdd(polygonArray)
-    // setAddPolygon(false)
+    
   }, [
     newPolygon, 
-    // polygonsState, 
     addButtonText, 
     rightSideDrawer, isRightDrawerOpen, arrowRotate, 
     modalVisible, 
     isMeasuringLength, totalDistance, 
     isMeasuringArea, measuredArea,  
-    isMeasuringCircle, circleValue,   
+    isMeasuringCircle, circleValue, initialLocation 
   ])
   
   const dispatch = useDispatch();
@@ -76,6 +97,7 @@ const OceanMapView = (props) => {
   }, [dispatch, setIsLoading])
 
   useEffect(()=>{
+    getInitialLocation()
     setIsLoading(true);
     loadAreas().then(()=>{
       setIsLoading(false)
@@ -84,51 +106,24 @@ const OceanMapView = (props) => {
 
   //Area 2
   const area2List = useSelector(state => state.area2ListRoot.filteredList)
-  // const load2Areas = useCallback(async()=>{
-  //   setError(null)
-  //   try {
-  //     await dispatch(area2Actions.fetchArea2())
-  //   } catch (err) {
-  //     setError(err)
-  //   }
-  // }, [dispatch, setIsLoading])
+  
 
   useEffect(()=>{
-    // setIsLoading(true);
-    // load2Areas().then(()=>{
-    //   setIsLoading(false)
-    //   // console.log("area2ListReducer", area2List)
-    // })
+   
   }, [area2List])
 
   //Area 3
   const area3List = useSelector(state => state.area3ListRoot.filteredList)
-  // const load3Areas = useCallback(async()=>{
-  //   setError(null)
-  //   try {
-  //     await dispatch(area3Actions.fetchArea3())
-  //   } catch (err) {
-  //     setError(err)
-  //   }
-  // }, [dispatch, setIsLoading])
+  
   
   useEffect(()=>{
-    // setIsLoading(true);
-    // load3Areas().then(()=>{
-    //   setIsLoading(false)
-    //   // console.log("area2ListReducer", area2List)
-    // })
+   
   }, [area3List])
 
   const area4List = useSelector(state => state.area4ListRoot.filteredList)
   useEffect(()=>{
     
   }, [area4List])
-
-  // const backtoLevel1 = useSelector(state => state.area2ListRoot.idForLevel1)
-  // const backToLevel1Load = useCallback(async()=>{
-  //   console.log("back t0 level 1")
-  // }, [dispatch, backtoLevel1])
 
   const polygonNav = useSelector(state => state.focusedPolygonRoot.focusedPolygon)
   const loadPolyNav = useCallback(async()=>{
@@ -145,7 +140,6 @@ const OceanMapView = (props) => {
         return
       }
 
-      // console.log("poly changed", polygonNav)
       if (polygonNav.level == 1) {
         let region = {
           latitude: 34.7834049,
@@ -155,44 +149,16 @@ const OceanMapView = (props) => {
         }
         mapRef.current.animateToRegion(region, 3)
       } else {
-        // let coordinates = polygonNav.areaData.coordinates
-        // console.log("new coordinates", polygonNav)
+        
         let coordinates;
         if (polygonNav.level == 2) {
-          // console.log("nav coordinates level 2", polygonNav)
-          // console.log("area 2 view")
-          // let list2Item2 = area2List.filter(item => item.id == polygonNav.areaData.id)
           
-          // if (list2Item2.length > 0) {
-          //   // console.log("list2Item back", list2Item2)
-          //   let list1Item = areaList.filter(item => item.id = list2Item2[0].parentID)
-          //   // console.log("list1Item back", list1Item)
-          //   coordinates = list1Item[0].coordinates
-          // } 
-
-          // if (list2Item2.length == 0) {
-          //   coordinates = polygonNav.areaData.coordinates
-          // }
           coordinates = polygonNav.coordinates2.coordinates
         } else if (polygonNav.level == 3) {
-          // console.log("nav coordinates level 3", polygonNav)
-
-          // let list3Item3 = area3List.filter(item => item.id == polygonNav.areaData.id)
-          // // console.log("list3Item count", list3Item3)
-          // if (list3Item3.length > 0) {
-          //   let list2Item3 = area2List.filter(item => item.id = list3Item3[0].parentID)
-          //   coordinates = list2Item3[0].coordinates
-          //   // console.log("level 3 back coordinates", list2Item3)
-          // } 
-
-          // if (list3Item3.length == 0) {
-          //   // console.log("level 3", polygonNav.areaData.coordinates)
-          //   coordinates = polygonNav.areaData.coordinates
-          // }
+       
           coordinates = polygonNav.coordinates3.coordinates
 
         } else if (polygonNav.level == 4) {
-          // console.log("nav coordinates level 4", polygonNav)
 
           coordinates = polygonNav.coordinates4.coordinates
         } 
@@ -218,7 +184,6 @@ const OceanMapView = (props) => {
 
     if (currentLevel < 4) {
       if (currentLevel == 1) {
-        console.log("data", data.id)
         dispatch(polygonNavAction.updateCoordinate(2, data)).then(()=>{
           dispatch(area2Actions.fetchFilteredList(data.id))
         })
@@ -256,23 +221,6 @@ const OceanMapView = (props) => {
     }
   };
 
- 
-
-  
-
-  // const loadAreaData = (data) => {
-  //   let currentLevel = data.currentViewLevel
-  //   if (currentLevel == 2) {
-     
-  //     dispatch(area2Actions.fetchFilteredList(data.parentID))
-  //   }
-  //   if (currentLevel == 3) {
-  //     load3Areas()
-  //   }
-
-  // }
-
- 
 
 
   const addPolygon = () => {
@@ -456,7 +404,6 @@ const OceanMapView = (props) => {
   }
 
   const toggleDrawer = () => {
-    // console.log("toggle drawer menu")
     props.toggleDrawer()
   }
 
@@ -498,8 +445,6 @@ const OceanMapView = (props) => {
     const supported = await Linking.canOpenURL(url);
 
     if (supported) {
-      // Opening the link with some app, if the URL scheme is "http" the web link should be opened
-      // by some browser in the mobile
       await Linking.openURL(url);
     } else {
       Alert.alert(`Don't know how to open this URL: ${url}`);
@@ -547,10 +492,10 @@ const OceanMapView = (props) => {
         ref={mapRef}
         style={styles.mapStyle}
         initialRegion={{
-          latitude: 34.7834049,
-          longitude: 127.79654869999999,
-          latitudeDelta: 0.5922,
-          longitudeDelta: 0.5421
+          latitude: initialLocation.latitude,
+          longitude: initialLocation.longitude,
+          latitudeDelta: initialLocation.latitudeDelta,
+          longitudeDelta: initialLocation.longitudeDelta
         }}
         provider={"google"}
         mapType={mapTypeArray[styleIndex]}

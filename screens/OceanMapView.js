@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
-import {ActivityIndicator, StyleSheet, Text, View, TouchableOpacity, Animated, Image, Easing, Modal, Linking , AsyncStorage} from "react-native";
+import {ActivityIndicator, StyleSheet, Text, View, TouchableOpacity, Animated, Image, Easing, Modal, Linking , AsyncStorage, Alert} from "react-native";
 import MapView, {PROVIDER_GOOGLE, Polygon, Marker, Polyline, Circle, fitToCoordinates } from "react-native-maps";
 import LocationNameModal from '../screens/LocationNameModel';
 import RightSideView from '../screens/RightSideView';
@@ -12,7 +12,7 @@ import * as area3Actions from '../Redux/actions/area3.js';
 import * as area4Actions from '../Redux/actions/area4.js';
 
 import * as polygonNavAction from '../Redux/actions/coordinateNav.js';
-
+import * as regionMarkDB from '../Redux/database/regionMarks';
 import UUIDGenerator from 'react-native-uuid-generator'
 
 import { useSelector, useDispatch } from "react-redux";
@@ -45,7 +45,10 @@ const OceanMapView = (props) => {
   const [circleValue, setCircleCoordinate] = useState();
   const [error, setError] = useState();
   const [isLoading, setIsLoading] = useState(false);
-
+  const [isViewingRegionMark, setViewRegionMark] = useState(false);
+  const [regionMarkArray, setRegionMarkArray] = useState([]);
+  const [isAddingRegionMark, setIsAddingRegionMark] = useState(false);
+  const [newRegionMark, setNewRionMark] = useState();
   // useEffect(()=>{
   //   getInitialLocation()
   // }, [])
@@ -68,9 +71,36 @@ const OceanMapView = (props) => {
     }
   }
 
-  // useEffect(()=>{
+  useEffect(()=>{
+    loadRegionMarks()
+  }, [])
 
-  // }, [])
+  const loadRegionMarks = async() => {
+    try {
+      const data = await regionMarkDB.getRegionMarks()
+      if (data.rows._array !== null) {
+        console.log("region marks fetched", data.rows._array)
+        let array = data.rows._array
+        let passingArray = []
+        array.forEach((item)=>{
+          let coordinateParsed = JSON.parse(item.coordinate)
+          let itemData = {
+            id: item.id,
+            name: item.name,
+            coordinate: coordinateParsed
+          }
+          passingArray.push(itemData)
+        })
+        setRegionMarkArray(passingArray)
+      }
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  useEffect(()=>{
+
+  }, [regionMarkArray])
 
   useEffect(() => {
     
@@ -217,31 +247,56 @@ const OceanMapView = (props) => {
       } else {
         setCircleCoordinates(array => [...array, newDots])
       }
-      
+    }
+
+    if (isAddingRegionMark) {
+      setNewRionMark(newDots)
     }
   };
 
 
 
   const addPolygon = () => {
-    if (!isAddingPolygon) {
-      setAddButton("완료")
-      setAddPolygon(true)
-    } else {
-      if (newPolygon.length > 2) {
-        toggleModal()
+    if (isViewingRegionMark) {
+      if (!isAddingRegionMark) {
+        setIsAddingRegionMark(true)
+        setAddButton("완료")
       } else {
-        console.log("add more dots")
+        if (newRegionMark) {
+          toggleModal()
+        }
+      }
+
+    } else {
+      if (!isAddingPolygon) {
+        setAddButton("완료")
+        setAddPolygon(true)
+      } else {
+        if (newPolygon.length > 2) {
+          toggleModal()
+        } else {
+          console.log("add more dots")
+        }
       }
     }
   };
 
-  const saveNameAdded = (text) => {
+  const saveNameAdded = async (text) => {
     toggleModal()
     setAddButton("지역 추가")
-    setAddPolygon(false)
-    addPolygonToMap(text)
-    setNewPolygon([])
+    if (isAddingRegionMark) {
+      let coordinate = JSON.stringify(newRegionMark)
+      await regionMarkDB.insertNewMark(coordinate, text).then(()=>{
+        loadRegionMarks()
+      })
+      setIsAddingRegionMark(false)
+      setNewRionMark()
+    } else {
+      addPolygonToMap(text)
+      setAddPolygon(false)
+      setNewPolygon([])
+    }
+    
   }
 
   const addPolygonToMap = (text) => {
@@ -362,6 +417,7 @@ const OceanMapView = (props) => {
   }
 
   const cancelAddPolygon = () => {
+    setIsAddingRegionMark(false)
     setAddPolygon(false)
     setNewPolygon([])
     setAddButton("지역 추가")
@@ -463,6 +519,33 @@ const OceanMapView = (props) => {
   }
 
 
+  const viewRegionMark = () => {
+    setViewRegionMark(!isViewingRegionMark)
+  }
+
+  const deleteRegionName = (id, name) => {
+    console.log("long press marker")
+    Alert.alert(
+      "지역 테그 삭제",
+      `${name} 테그를 삭제 하시겠습니까?`,
+      [
+        {
+          text: "취소",
+          onPress: () => console.log("Cancel Pressed"),
+          style: "cancel"
+        },
+        { text: "삭제", onPress: () => regionMarkDeleteAction(id) }
+      ],
+      { cancelable: false }
+    );
+  }
+
+  const regionMarkDeleteAction = async(id) => {
+    await regionMarkDB.deleteMark(id).then(()=>{
+      loadRegionMarks()
+    })
+  } 
+
   if (isLoading) {
     return <View style={styles.centered}>
         <ActivityIndicator size={'large'} color={"red"} />
@@ -503,23 +586,22 @@ const OceanMapView = (props) => {
       >
  
         {
-          !isLoading && viewingList && viewingList.map((i, index) => {
-            // console.log("i.coordinateforname", i)
+          !isLoading && !isAddingRegionMark && viewingList && viewingList.map((i, index) => {
             return <React.Fragment key={`${index}polygonKey`}>
               {!isAddingPolygon ? 
-              <Polygon
-              key={`${index}polygon`}
-              coordinates={i.coordinates}
-              strokeWidth={3}
-              strokeColor={"yellow"}
-              // fillColor={"#000, rgba(r,g,b,0.5)"}
-              lineCap={"round"}
-              tappable={true}
-              
-              onPress={()=>polygonTapp(index, i)}
-              geodesic={true}
-          /> : 
-          <Polygon
+                <Polygon
+                  key={`${index}polygon`}
+                  coordinates={i.coordinates}
+                  strokeWidth={3}
+                  strokeColor={"yellow"}
+                  // fillColor={"#000, rgba(r,g,b,0.5)"}
+                  lineCap={"round"}
+                  tappable={true}
+                  
+                  onPress={()=>polygonTapp(index, i)}
+                  geodesic={true}
+                /> : 
+                <Polygon
                   key={`${index}polygon`}
                   coordinates={i.coordinates}
                   strokeWidth={3}
@@ -530,11 +612,9 @@ const OceanMapView = (props) => {
                   
                   // onPress={()=>polygonTapp(index, i)}
                   geodesic={true}
-              />
+                />
             }
-              
               <Marker
-             
                 key={`${index}marker`}
                 coordinate={i.nameCoordinate}
                 anchor={{ x: 0.5, y: 0.5 }}
@@ -707,12 +787,43 @@ const OceanMapView = (props) => {
             </Marker>
           )
         }
+        {
+          isViewingRegionMark && regionMarkArray.length > 0 && regionMarkArray.map((item)=>{
+            return <Marker draggable coordinate={item.coordinate} onDragStart={()=>deleteRegionName(item.id, item.name)}>
+              <TouchableOpacity 
+                // onLongPress={()=>deleteRegionName(item.id, item.name)}
+                style={{borderRadius: 7, backgroundColor: 'dodgerblue'}}
+              >
+                <Text style={
+                  { fontSize: 16, 
+                    color: 'white', 
+                    paddingHorizontal: 16,
+                    paddingVertical: 8,
+                  }
+                }>
+                  {item.name}
+                </Text>
+              </TouchableOpacity>
+              
+            </Marker>
+          })
+        }
+        {
+          isViewingRegionMark && isAddingRegionMark && (
+            <Marker coordinate={newRegionMark}>
+              <View style={{backgroundColor: 'yellow', width:30, height: 30, borderRadius: 15}}/>
+            </Marker>
+          )
+        }
 
       </MapView>
       
       <DrawerNavButton style={styles.leftButton} toggleDrawer={()=>toggleDrawer()}/>
 
       <View style={[{position: 'absolute', width: 100, top: 'auto', bottom: 'auto',left: 50}]}>
+        <TouchableOpacity onPress={viewRegionMark} style={[{backgroundColor: `${isViewingRegionMark ? "lightblue" : "white"}`, width: 50, height: 50, marginBottom: 2}, styles.centerItem]}>
+          <Text style={{fontSize: 15, fontWeight: 'bold'}}>{"지역\n마크"}</Text>
+        </TouchableOpacity>
         <TouchableOpacity onPress={changeMapStyle} style={[{backgroundColor: `${isMeasuringLength ? "lightblue" : "white"}`, width: 50, height: 50, marginBottom: 2}, styles.centerItem]}>
           <Text style={{fontSize: 15, fontWeight: 'bold'}}>{"지도\n타입"}</Text>
         </TouchableOpacity>
@@ -737,7 +848,7 @@ const OceanMapView = (props) => {
           </Text>
         </TouchableOpacity>
         {
-          isAddingPolygon && <TouchableOpacity style={styles.polygonAddButtons} onPress={cancelAddPolygon}><Text>취소</Text></TouchableOpacity>
+          isAddingPolygon || isAddingRegionMark && <TouchableOpacity style={styles.polygonAddButtons} onPress={cancelAddPolygon}><Text>취소</Text></TouchableOpacity>
         }
         {
           isAddingPolygon ? 
@@ -763,7 +874,6 @@ const OceanMapView = (props) => {
         animationType="slide"
         transparent={true}
         visible={modalVisible}
-
       >
           <LocationNameModal toggle={toggleModal} addCompletion={(text)=>saveNameAdded(text)}/>
       </Modal>

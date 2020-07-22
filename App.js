@@ -42,11 +42,17 @@ import {initArea3Table} from './Redux/database/area3DB';
 import {initArea4Table} from './Redux/database/area4DB';
 import { initRegionDocTable } from './Redux/database/regionDoc';
 import { initLocationDocTable } from './Redux/database/locationDoc';
-
+import {initRegionMarkTable} from './Redux/database/regionMarks';
 init().then(()=>{
   // console.log("initialized database")
 }).catch(err => {
   console.log("initialize db failed", err)
+});
+
+initRegionMarkTable().then(()=>{
+  console.log("initialized region mark database")
+}).catch(err => {
+  console.log("initialize  region mark db failed", err)
 });
 
 initArea1Table().then(()=>{

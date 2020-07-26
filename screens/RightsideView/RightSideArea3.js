@@ -7,7 +7,7 @@ import {
     View, 
     ActivityIndicator,
     TextInput, TouchableOpacity, Animated, Image, Easing,
-    Modal 
+    Modal, TouchableHighlight 
 } from "react-native";
 
 import { HeaderBackButton } from 'react-navigation-stack'
@@ -17,6 +17,9 @@ import * as areaAction3 from '../../Redux/actions/area3';
 import * as areaAction4 from '../../Redux/actions/area4';
 import * as coordinateNavAction from '../../Redux/actions/coordinateNav';
 import RegionDetail from '../FolderViews/DocumentDetailView';
+import { SwipeListView } from 'react-native-swipe-list-view'
+
+
 export default RightSideArea3 = (props) => {
 
     // const [locations, setLocations] = useState([])
@@ -80,6 +83,20 @@ export default RightSideArea3 = (props) => {
         setDoc(!isDocOn)
     }
 
+    const deleteItem = (data) => {
+        console.log(data.item.id)
+        dispatch(areaAction3.deleteArea3(data.item))
+        //4 - area3 delete
+        //5 - area3 doc delete
+        //6 - area4 delete
+        //7 - area5 doc delete
+    }
+
+    // const onRowDidOpen = rowKey => {
+    //     console.log('This row opened', rowKey);
+        
+    // };
+
     return (
         <SafeAreaView style={styles.viewContainer}>
             <Modal visible={isDocOn && isDocOn} animationType="slide">
@@ -93,7 +110,7 @@ export default RightSideArea3 = (props) => {
                 />
             </Modal>
 
-            <FlatList 
+            <SwipeListView 
                 data={areaList}
                 renderItem={(item) => (
                     <RightSideCell 
@@ -104,6 +121,13 @@ export default RightSideArea3 = (props) => {
                         docTapped={()=>showDoc(item.item.docID, item.item.id)}
                     />
                 )}
+                renderHiddenItem={ (data, rowMap) => (
+                    <TouchableHighlight onPress={()=>deleteItem(data)} style={{marginLeft: 'auto', alignItems: 'center', justifyContent: 'center', backgroundColor: 'red', width: 75, height: 50}}>
+                        <Text style={{color:'white', textAlign: 'center', fontWeight: 'bold', fontSize: 20}}>삭제</Text>
+                    </TouchableHighlight>
+                )}
+                leftOpenValue={0}
+                rightOpenValue={-70}
                 keyExtractor={item => `${item.id}listKey`}
             />
         </SafeAreaView>

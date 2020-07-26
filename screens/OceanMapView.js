@@ -848,7 +848,7 @@ const OceanMapView = (props) => {
           </Text>
         </TouchableOpacity>
         {
-          isAddingPolygon || isAddingRegionMark && <TouchableOpacity style={styles.polygonAddButtons} onPress={cancelAddPolygon}><Text>취소</Text></TouchableOpacity>
+          (isAddingPolygon || isAddingRegionMark) && <TouchableOpacity style={styles.polygonAddButtons} onPress={cancelAddPolygon}><Text>취소</Text></TouchableOpacity>
         }
         {
           isAddingPolygon ? 

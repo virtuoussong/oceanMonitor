@@ -33,7 +33,11 @@ export const BACK_LEVEL1 = "BACK_LEVEL1";
 // ]
 
 import Area2 from '../../Models/Area2';
-import { getAllArea2, insertNewArea2 } from '../database/area2DB'
+import { getAllArea2, insertNewArea2, deleteArea2FromDB } from '../database/area2DB';
+import {getAllArea3, deleteArea3FromDB} from '../database/area3DB';
+import {getAllArea4, deleteArea4FromDB} from '../database/area4DB';
+import {deleteLocationDoc} from '../database/locationDoc';
+
 
 export const fetchArea2 = () => {
     return async (dispatch, getState) => {
@@ -116,6 +120,47 @@ export const backToLevel1 = (id) => {
             type: BACK_LEVEL1,
             id: id
         })
+    }
+}
+
+export const deleteArea2 = (item) => {
+    console.log("deleing item id", item.id)
+    return async (dispatch, getState) => {
+        try {
+            console.log("delete area 2", item.id)
+            await deleteArea2FromDB(item.id)
+            await deleteRegionDoc(item.docID)
+            await getAllArea3(item.id).then((area3Array)=>{
+                console.log("area3Array.rows._array", area3Array.rows._array)
+                area3Array.rows._array.forEach(area3Item => {
+                    let parsedItem = JSON.parse(area3Item.data)
+                    parsedItem.id = area3Item.id
+                    parsedItem.docID = area3Item.docID
+                    
+                    deleteLocationDoc(parsedItem.docID)
+                    deleteArea3FromDB(parsedItem.id)
+
+                    getAllArea4(parsedItem.id).then((area4Array) => {
+                        // console.log("area4Array.rows._array", area4Array.rows._array)
+                        area4Array.rows._array.forEach(area4Item => {
+                            let parsedItem = JSON.parse(area4Item.data)
+                            parsedItem.id = area4Item.id
+                            parsedItem.docID = area4Item.docID
+
+                            deleteLocationDoc(parsedItem.docID)
+                            deleteArea4FromDB(parsedItem.id)
+                        })
+                    })
+                })
+            })
+
+            dispatch({
+                type: DELETE_AREA2,
+                id : item.id
+            })
+        } catch (error) {
+            throw error
+        }
     }
 }
 

@@ -7,7 +7,7 @@ import {
     View, 
     ActivityIndicator,
     TextInput, TouchableOpacity, Animated, Image, Easing,
-    Modal 
+    Modal, TouchableHighlight 
 } from "react-native";
 import { HeaderBackButton } from 'react-navigation-stack'
 
@@ -16,6 +16,7 @@ import RightSideCell from '../../components/RightSideFlatListCell';
 import * as coordinateNavAction from '../../Redux/actions/coordinateNav';
 import * as areaAction4 from '../../Redux/actions/area4';
 import RegionDetail from '../FolderViews/DocumentDetailView';
+import { SwipeListView } from 'react-native-swipe-list-view'
 
 export default RightSideArea4 = (props) => {
 
@@ -70,7 +71,18 @@ export default RightSideArea4 = (props) => {
         toggleModal()
     }
 
-   
+    const deleteItem = (data) => {
+        console.log(data.item.id)
+        dispatch(areaAction4.deleteArea4(data.item))
+        
+        //1 - area1 delete
+        //2 - area2 delete
+        //3 - area2 doc delete
+        //4 - area3 delete
+        //5 - area3 doc delete
+        //6 - area4 delete
+        //7 - area5 doc delete
+    }
 
     const toggleModal = () => {
         setDoc(!isDocOn)
@@ -90,7 +102,7 @@ export default RightSideArea4 = (props) => {
                 />
             </Modal>
 
-            <FlatList 
+            <SwipeListView 
                 data={areaList}
                 renderItem={(item) => (<RightSideCell  
                     showIcon={true}
@@ -98,6 +110,13 @@ export default RightSideArea4 = (props) => {
                     isDocShown={item.item.docID ? true : false}
                     docTapped={()=>showDoc(item.item.docID, item.item.id)}
                 />)}
+                renderHiddenItem={ (data, rowMap) => (
+                    <TouchableHighlight onPress={()=>deleteItem(data)} style={{marginLeft: 'auto', alignItems: 'center', justifyContent: 'center', backgroundColor: 'red', width: 75, height: 50}}>
+                        <Text style={{color:'white', textAlign: 'center', fontWeight: 'bold', fontSize: 20}}>삭제</Text>
+                    </TouchableHighlight>
+                )}
+                leftOpenValue={0}
+                rightOpenValue={-70}
                 keyExtractor={item => `${item.id}listKey`}
             />
         </SafeAreaView>

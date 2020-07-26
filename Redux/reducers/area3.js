@@ -48,7 +48,12 @@ export default (state = initialState3, action) => {
                 ...state,
                 filteredList : action.areaData,
             };
-
+        case DELETE_AREA3:
+            console.log("filtering area 3 id", action.id)
+            return {
+                ...state,
+                filteredList: state.filteredList.filter(item => item.id !== action.id)
+            }
        
     }
     return state;

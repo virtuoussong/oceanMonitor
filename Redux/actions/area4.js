@@ -12,8 +12,8 @@ let initialArea3 = [
     
 ]
 import Area2 from '../../Models/Area2';
-import { getAllArea4, insertNewArea4 } from '../database/area4DB'
-
+import { getAllArea4, insertNewArea4, deleteArea4FromDB } from '../database/area4DB'
+import {deleteLocationDoc} from '../database/locationDoc';
 // export const fetchArea4 = (id) => {
 //     return async (dispatch, getState) => {
 //         console.log("fetch area2 action", id)
@@ -77,6 +77,25 @@ export const fetchFilteredList = (id) => {
 
         }
         
+    }
+}
+
+export const deleteArea4 = (item) => {
+    return async (dispatch) => {
+        console.log("deleting cell id", item)
+        try {
+            await deleteArea4FromDB(item.id)
+            if (item.docID !== null) {
+                await deleteLocationDoc(item.docID)
+            }
+            dispatch({
+                type: DELETE_AREA4,
+                id: item.id
+            })
+
+        } catch (error) {
+
+        }
     }
 }
 

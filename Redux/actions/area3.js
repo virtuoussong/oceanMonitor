@@ -13,7 +13,9 @@ let initialArea3 = [
 ]
 
 import Area2 from '../../Models/Area2';
-import { getAllArea3, insertNewArea3 } from '../database/area3DB'
+import { getAllArea3, insertNewArea3, deleteArea3FromDB } from '../database/area3DB'
+import { getAllArea4, deleteArea4FromDB } from '../database/area4DB';
+import {deleteLocationDoc} from '../database/locationDoc';
 
 export const fetchArea3 = (id) => {
     return async (dispatch, getState) => {
@@ -70,6 +72,40 @@ export const fetchFilteredList = (id) => {
             dispatch({
                 type: GET_FILTERED_AREA3,
                 areaData: filteredArray
+            });
+
+        } catch (error) {
+            throw error
+        }
+        
+    }
+}
+
+export const deleteArea3 = (item) => {
+    console.log("area action 3 delete id", item.id)
+    return async (dispatch, getState) => {
+        try {
+            await getAllArea4(item.id).then((i)=>{
+                i.rows._array.forEach(element => {
+                    let parsedItem = JSON.parse(element.data)
+                    parsedItem.id = element.id
+                    parsedItem.docID = element.docID
+                    deleteArea4FromDB(parsedItem.id)
+                    if (parsedItem.docID !== null) {
+                        deleteLocationDoc(parsedItem.docID)
+                    }
+                });
+            })
+
+            await deleteArea3FromDB(item.id)
+
+            if (item.docID !== null) {
+                await deleteLocationDoc(item.docID)
+            }
+
+            dispatch({
+                type: DELETE_AREA3,
+                id: item.id
             });
 
         } catch (error) {

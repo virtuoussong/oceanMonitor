@@ -79,3 +79,21 @@ export const insertDocID = (docID, rowID) => {
     return promise
 }
 
+export const deleteArea2FromDB = (id) => {
+    console.log("delete from db", id)
+    const promise = new Promise((resolve, reject) => {
+        db.transaction( tx => {
+            tx.executeSql(
+                `DELETE FROM area2  WHERE id = ${id}`,
+                [],
+                (_, result) => {
+                    resolve(result);
+                },
+                (_, err)=> {
+                    reject(err);
+                }
+            );
+        });
+    })
+    return promise
+}

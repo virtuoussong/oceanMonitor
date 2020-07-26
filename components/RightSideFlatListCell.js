@@ -17,7 +17,7 @@ export default RightSideCell = (props) => {
     if (props.showIcon) {
 
         return (
-            <View style={{width: '100%', height: 50, flexDirection: 'row'}}>
+            <View style={{width: '100%', height: 50, flexDirection: 'row', backgroundColor: 'white'}}>
                 <TouchableOpacity onPress={props.onPress} >
                     <Text style={styles.title}>{props.name}</Text>
                 </TouchableOpacity>
@@ -32,7 +32,7 @@ export default RightSideCell = (props) => {
             </View>
         )
     } else {
-        return <View style={{width: '100%', height: 50, flexDirection: 'row'}}>
+        return <View style={{width: '100%', height: 50, flexDirection: 'row', backgroundColor: 'white'}}>
             <TouchableOpacity onPress={props.onPress} >
                 <Text style={styles.title}>{props.name}</Text>
             </TouchableOpacity>

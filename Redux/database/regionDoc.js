@@ -81,3 +81,23 @@ export const updateRegionDoc = (data, docID) => {
     return promise
 
 };
+
+export const deleteRegionDoc = (docID) => {
+
+    const promise = new Promise((resolve, reject) => {
+        db.transaction( tx => {
+            tx.executeSql(
+                `DELETE FROM regionDoc WHERE id = ?`,
+                [docID],
+                (_, result) => {
+                    resolve(result);
+                },
+                (_, err)=> {
+                    reject(err);
+                }
+            );
+        });
+    })
+    return promise
+
+};

@@ -79,3 +79,23 @@ export const updateLocationDoc = (data, docID) => {
     return promise
 
 };
+
+export const deleteLocationDoc = (docID) => {
+
+    const promise = new Promise((resolve, reject) => {
+        db.transaction( tx => {
+            tx.executeSql(
+                `DELETE FROM locationDoc WHERE id = ?`,
+                [docID],
+                (_, result) => {
+                    resolve(result);
+                },
+                (_, err)=> {
+                    reject(err);
+                }
+            );
+        });
+    })
+    return promise
+
+};

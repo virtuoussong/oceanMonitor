@@ -71,6 +71,13 @@ export default (state = initialState2, action) => {
                 ...state,
                 idForLevel1: action.id
             };
+        
+        case DELETE_AREA2: 
+            console.log("reducer delete", action.id)
+            return {
+                ...state,
+                filteredList: state.filteredList.filter(item => item.id !== action.id)
+            }
     }
     return state;
 }

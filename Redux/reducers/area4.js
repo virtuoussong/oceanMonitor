@@ -45,6 +45,11 @@ export default (state = initialState4, action) => {
                 ...state,
                 filteredList : action.areaData,
             };
+        case DELETE_AREA4:
+            return {
+                ...state,
+                filteredList: state.filteredList.filter(item => item.id !== action.id)
+            }
 
     }
     return state;

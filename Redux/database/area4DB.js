@@ -80,3 +80,22 @@ export const insertDocID4 = (docID, rowID) => {
     return promise
 }
 
+export const deleteArea4FromDB = (id) => {
+    const promise = new Promise((resolve, reject) => {
+        db.transaction( tx => {
+            tx.executeSql(
+                `DELETE FROM area4 WHERE id = ${id}`,
+                [],
+                (_, result) => {
+                    resolve(result);
+                },
+                (_, err)=> {
+                    reject(err);
+                }
+            );
+        });
+    })
+    return promise
+}
+
+

@@ -51,6 +51,11 @@ export default (state = initialArea, action) => {
                 // areaList : state.areaList.concat(addingAreaData)
                 areaList : state.areaList.concat(action.areaData)
             };
+        case DELETE_AREA:
+            return {
+                ...state,
+                areaList : state.areaList.filter(item => item.id !== action.id)
+            }
     }
     return state;
 }

@@ -19,6 +19,12 @@ import * as areaAction4 from '../../Redux/actions/area4';
 
 import {DocDetailModel} from '../../Models/DocDetailModel'
 import TitleInputView from '../DocDetail/components/DocDetail/TitleInput';
+
+import ViewShot, {captureRef} from 'react-native-view-shot' 
+import * as MailComposer from 'expo-mail-composer';
+import RNImageToPdf from 'react-native-image-to-pdf';
+
+
 let emptyDetailData = new DocDetailModel(null, null, null, null, null, null)
 export default DocumentDetailView = (props) => {
     
@@ -26,9 +32,7 @@ export default DocumentDetailView = (props) => {
 
     const nav = useNavigation()
     useEffect(()=>{
-        console.log("docID", props.docID)
-        console.log("location id", props.id)
-        console.log("location area", props.area)
+        
         if (props.docID != null) {
             loadData(props.docID)
             return
@@ -82,14 +86,14 @@ export default DocumentDetailView = (props) => {
 
         if (props.route.params.docID != null) {
             //update
-            console.log("doc id from nav", props.docID)
+            
             let docID = props.route.params.docID
             await updateLocationDoc(parsedData, docID).then(()=>{
                 props.navigation.goBack(null)
             })
         } else {
             //insert
-            console.log("id from nav", props.route.params.docID)
+            
             await newLocationDoc(parsedData).then((i)=>{
                 if (props.route.params.area == 3) {
                     insertDocID(i.insertId, props.route.params.id).then(()=>{
@@ -121,13 +125,13 @@ export default DocumentDetailView = (props) => {
 
         if (props.docID != null) {
             //update
-            console.log("doc id from nav", props.docID)
+           
             await updateLocationDoc(parsedData, props.docID).then(()=>{
                 props.close()
             })
         } else {
             //insert
-            console.log("doc id from nav", props.id)
+            
             await newLocationDoc(parsedData).then((i)=>{
                 if (props.area == 3) {
                     insertDocID(i.insertId, props.id).then(()=>{
@@ -154,6 +158,63 @@ export default DocumentDetailView = (props) => {
     let fifthDocRef = React.useRef(null)
     let sixthDocRef = React.useRef(null)
 
+    const exportPDF = async() => {
+        console.log("pdf")
+        let uri = await viewShotRef.current.capture()
+        let uri2 = await viewShotRef2.current.capture()
+        let uri3 = await viewShotRef3.current.capture()
+        let uri4 = await viewShotRef4.current.capture()
+        let uri5 = await viewShotRef5.current.capture()
+        let uri6 = await viewShotRef6.current.capture()
+
+        // let uri2 = await captureRef(secondDocRef.current, {
+        //     format: "jpg",
+        //     quality: 1
+        //   })
+
+        console.log(uri2)
+        let newUri = `file://${uri}`
+        let newUri2 = `file://${uri2}`
+        let newUri3 = `file://${uri3}`
+        let newUri4 = `file://${uri4}`
+        let newUri5 = `file://${uri5}`
+        let newUri6 = `file://${uri6}`
+        myAsyncPDFFunction([newUri, newUri2, newUri3, newUri4, newUri5, newUri6])
+        // openEmail([newUri, newUri2, newUri3, newUri4, newUri5, newUri6])
+    }
+
+    const myAsyncPDFFunction = async (i) => {
+        try {
+            const options = {
+                imagePaths: i,
+                name: 'unkown',
+                maxSize: { // optional maximum image dimension - larger images will be resized
+                    width: 900,
+                    height: 400,
+                },
+                quality: 1, // optional compression paramter
+            };
+            const pdf = await RNImageToPdf.createPDFbyImages(options);
+            
+            console.log(pdf);
+        } catch(e) {
+            console.log(e);
+        }
+    }
+
+    const openEmail = (i) => {
+        MailComposer.composeAsync({
+            attachments: i
+        })
+    }
+
+    let viewShotRef = React.useRef()
+    let viewShotRef2 = React.useRef()
+    let viewShotRef3 = React.useRef()
+    let viewShotRef4 = React.useRef()
+    let viewShotRef5 = React.useRef()
+    let viewShotRef6 = React.useRef()
+
     return <View style={styles.container}>
 
             {props.isBarShown && <View style={{width: '100%', height: 55, flexDirection: 'row'}}>
@@ -161,40 +222,64 @@ export default DocumentDetailView = (props) => {
                     <Text style={{fontSize: 20}}>취소</Text>
                 </TouchableOpacity>
 
-                <TouchableOpacity style={{marginLeft: 'auto', marginTop: 24, marginRight: 20}} onPress={()=>saveDoc()}>
+                <TouchableOpacity style={{marginLeft: 'auto', marginTop: 24, marginLeft: 'auto', marginRight: 20}} onPress={()=>exportPDF()}>
+                    {props.docID && <Text style={{fontSize: 20}}>PDF 출력</Text>}
+                </TouchableOpacity>
+
+                <TouchableOpacity style={{marginLeft: 20, marginTop: 24, marginRight: 20}} onPress={()=>saveDoc()}>
                     {props.docID ? <Text style={{fontSize: 20}}>수정</Text> : <Text style={{fontSize: 20}}>저장</Text>}
                 </TouchableOpacity>
             </View>}
+            <ViewShot ref={viewShotRef} style={{flex: 1}} options={{format: 'jpg', quality: 1}}>
 
-            <TitleInputView refData={titleRef} data={data.title}/>
+                <TitleInputView refData={titleRef} data={data.title}/>
 
-            <KeyboardAwareScrollView 
-                style={{ flex: 1}} 
-                contentContainerStyle={{ flexGrow: 1, justifyContent: 'space-between' }}
-                extraScrollHeight={70}
-                keyboardShouldPersistTaps={'always'} 
-                // style={styles.keyboardAwareView}
-                // behavior={'padding'} keyboardVerticalOffset={40} 
-                // style={[styles.scrollView]}
-            >
-                <ScrollView 
-                    style={[styles.scrollView, {backgroundColor: 'white'}]}
-                    contentContainerStyle={{
-                        width:Dimensions.get('window').width * 6,
-                    }}
-                    horizontal={true}
-                    snapToAlignment={"center"}
-                    pagingEnabled={true}
+                <KeyboardAwareScrollView 
+                    style={{ flex: 1}} 
+                    contentContainerStyle={{ flexGrow: 1, justifyContent: 'space-between' }}
+                    extraScrollHeight={70}
+                    keyboardShouldPersistTaps={'always'} 
+                    // style={styles.keyboardAwareView}
+                    // behavior={'padding'} keyboardVerticalOffset={40} 
+                    // style={[styles.scrollView]}
                 >
-                    <BasicInfoDoc refData={firstDocRef} data={data.first} isBarShown={props.isBarShown}/>
-                    <FirstDoc refData={secondDocRef} data={data.second} />
-                    <SecondtDoc refData={thirdDocRef} data={data.third} />
-                    <SecondtDoc refData={fourthDocRef} data={data.forth} isLower={true}/>
-                    <ThirdDoc refData={fifthDocRef} data={data.fifth} />
-                    <FourthDoc refData={sixthDocRef} data={data.sixth} />
-                    
-                </ScrollView>
-            </KeyboardAwareScrollView>
+                    <ScrollView 
+                        style={[styles.scrollView, {backgroundColor: 'white'}]}
+                        contentContainerStyle={{
+                            width:Dimensions.get('window').width * 6,
+                        }}
+                        horizontal={true}
+                        snapToAlignment={"center"}
+                        pagingEnabled={true}
+                    >
+                        <BasicInfoDoc  refData={firstDocRef} data={data.first} isBarShown={props.isBarShown}/>
+
+                        <ViewShot ref={viewShotRef2} style={{flex:1}}>
+                            <FirstDoc refData={secondDocRef} data={data.second} />
+                        </ViewShot>
+
+                        <ViewShot ref={viewShotRef3} style={{flex:1}}>
+                            <SecondtDoc refData={thirdDocRef} data={data.third} />
+                        </ViewShot>
+
+                        <ViewShot ref={viewShotRef4} style={{flex:1}}>
+                            <SecondtDoc refData={fourthDocRef} data={data.forth} isLower={true}/>
+                        </ViewShot>
+
+                        <ViewShot ref={viewShotRef5} style={{flex:1}}>
+                            <ThirdDoc refData={fifthDocRef} data={data.fifth} />
+                        </ViewShot>
+
+                        <ViewShot ref={viewShotRef6} style={{flex:1}}>
+                            <FourthDoc refData={sixthDocRef} data={data.sixth} />
+                        </ViewShot>
+                        
+                    </ScrollView>
+                </KeyboardAwareScrollView>
+
+            </ViewShot>
+
+            
             
     </View>
 }

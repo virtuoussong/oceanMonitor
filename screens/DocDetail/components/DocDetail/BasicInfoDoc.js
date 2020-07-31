@@ -39,18 +39,15 @@ export default BasicInfoDoc = (props) => {
     useEffect(()=>{
         if (props.data) {
             editAreaData(props.data)
-            console.log(props.data)
         }
     }, [props.data])
 
     useEffect(()=>{
-        // console.log(props)
         props.refData.current = areaData
     }, [areaData])
 
     const pictureTapped = async () => {
 
-        console.log("picture tapped")
         let permissionResult = await ImagePicker.requestCameraRollPermissionsAsync();
 
         if (permissionResult.granted === false) {
@@ -84,7 +81,6 @@ export default BasicInfoDoc = (props) => {
     }
 
     const cameraTapped = async () => {
-        console.log("camera tapped")
         // setModal(!isModalOn)
         let permissionResult = await ImagePicker.requestCameraPermissionsAsync();
 
@@ -161,7 +157,7 @@ export default BasicInfoDoc = (props) => {
                         <Text>{"조사\n시간"}</Text>
                     </View>
                     <View style={[{flex: 2}, styles.centerView]}>
-                        <TextInput value={areaData.hour} onChange={(i)=>editAreaData({...areaData, hour: i.nativeEvent.text})}/>
+                        <TextInput style={{width: '100%', height: '100%', paddingHorizontal: 4}} value={areaData.hour} onChange={(i)=>editAreaData({...areaData, hour: i.nativeEvent.text})}/>
                     </View>
                 </View>
                 <View style={[styles.flexRow, styles.borderBottom, {flex: 1}]}>
@@ -169,7 +165,7 @@ export default BasicInfoDoc = (props) => {
                         <Text>{"고조\n저조"}</Text>
                     </View>
                     <View style={[{flex: 2}, styles.centerView]}>
-                        <TextInput value={areaData.tide} onChange={(i)=>editAreaData({...areaData, tide: i.nativeEvent.text})}/>
+                        <TextInput style={{width: '100%', height: '100%', paddingHorizontal: 4}} value={areaData.tide} onChange={(i)=>editAreaData({...areaData, tide: i.nativeEvent.text})}/>
                     </View>
                 </View>
                 <View style={[styles.flexRow, styles.borderBottom, {flex: 1}]}>
@@ -177,7 +173,7 @@ export default BasicInfoDoc = (props) => {
                         <Text>{"천기"}</Text>
                     </View>
                     <View style={[{flex: 2}, styles.centerView]}>
-                        <TextInput value={areaData.sky} onChange={(i)=>editAreaData({...areaData, sky: i.nativeEvent.text})}/>
+                        <TextInput style={{width: '100%', height: '100%', paddingHorizontal: 4}} value={areaData.sky} onChange={(i)=>editAreaData({...areaData, sky: i.nativeEvent.text})}/>
                     </View>
                 </View>
                 <View style={[styles.flexRow, styles.borderBottom, {flex: 1}]}>
@@ -185,7 +181,7 @@ export default BasicInfoDoc = (props) => {
                         <Text>{"파고\n(m)"}</Text>
                     </View>
                     <View style={[{flex: 2}, styles.centerView]}>
-                        <TextInput value={areaData.wave} onChange={(i)=>editAreaData({...areaData, wave: i.nativeEvent.text})}/>
+                        <TextInput style={{width: '100%', height: '100%', paddingHorizontal: 4}} value={areaData.wave} onChange={(i)=>editAreaData({...areaData, wave: i.nativeEvent.text})}/>
                     </View>
                 </View>
                 <View style={[styles.flexRow, styles.borderBottom, {flex: 1}]}>
@@ -193,7 +189,7 @@ export default BasicInfoDoc = (props) => {
                         <Text>{"풍속\n(m/s)"}</Text>
                     </View>
                     <View style={[{flex: 2}, styles.centerView]}>
-                        <TextInput value={areaData.wind} onChange={(i)=>editAreaData({...areaData, wind: i.nativeEvent.text })}/>
+                        <TextInput style={{width: '100%', height: '100%', paddingHorizontal: 4}} value={areaData.wind} onChange={(i)=>editAreaData({...areaData, wind: i.nativeEvent.text })}/>
                     </View>
                 </View>
                 <View style={[styles.flexRow, styles.borderBottom, {flex: 1}]}>
@@ -201,7 +197,7 @@ export default BasicInfoDoc = (props) => {
                         <Text>{"기온\n(℃)"}</Text>
                     </View>
                     <View style={[{flex: 2}, styles.centerView]}>
-                        <TextInput value={areaData.temp} onChange={(i)=>editAreaData({...areaData, temp: i.nativeEvent.text})} />
+                        <TextInput style={{width: '100%', height: '100%', paddingHorizontal: 4}} value={areaData.temp} onChange={(i)=>editAreaData({...areaData, temp: i.nativeEvent.text})} />
                     </View>
                 </View>
                 <View style={[styles.flexRow, styles.borderBottom, {flex: 1}]}>
@@ -209,7 +205,7 @@ export default BasicInfoDoc = (props) => {
                         <Text>{"수온\n(℃)"}</Text>
                     </View>
                     <View style={[{flex: 2}, styles.centerView]}>
-                        <TextInput value={areaData.waterTemp} onChange={(i)=>editAreaData({...areaData, waterTemp: i.nativeEvent.text})}/>
+                        <TextInput style={{width: '100%', height: '100%', paddingHorizontal: 4}} value={areaData.waterTemp} onChange={(i)=>editAreaData({...areaData, waterTemp: i.nativeEvent.text})}/>
                     </View>
                 </View>
                 <View style={[styles.flexRow, styles.borderBottom, {flex: 2}]}>
@@ -220,7 +216,7 @@ export default BasicInfoDoc = (props) => {
                                 <Text>{"길\n이\n(m)"}</Text>
                             </View>
                             <View style={[{flex: 4}, styles.centerView]}>
-                                <TextInput value={areaData.beachLength} onChange={(i)=>editAreaData({...areaData, beachLength: i.nativeEvent.text})}/>
+                                <TextInput style={{width: '100%', height: '100%', paddingHorizontal: 4}} value={areaData.beachLength} onChange={(i)=>editAreaData({...areaData, beachLength: i.nativeEvent.text})}/>
                             </View>
                         </View>
 
@@ -229,7 +225,7 @@ export default BasicInfoDoc = (props) => {
                                 <Text>{"폭\n(m)"}</Text>
                             </View>
                             <View style={[{flex: 4}, styles.centerView]}>
-                                <TextInput value={areaData.beachWidth} onChange={(i)=>editAreaData({...areaData, beachWidth: i.nativeEvent.text})}/>
+                                <TextInput style={{width: '100%', height: '100%', paddingHorizontal: 4}} value={areaData.beachWidth} onChange={(i)=>editAreaData({...areaData, beachWidth: i.nativeEvent.text})}/>
                             </View>
                         </View>
                     </View>

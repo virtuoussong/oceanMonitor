@@ -84,21 +84,8 @@ export default RightSideArea1 = (props) => {
     }
 
     const deleteItem = (data) => {
-        // console.log(data.item.id)
-        dispatch(
-            areaActions.deleteArea1(data.item)
-        )
-        //1 - area1 delete
-        //2 - area2 delete
-        //3 - area2 doc delete
-        //4 - area3 delete
-        //5 - area3 doc delete
-        //6 - area4 delete
-        //7 - area5 doc delete
+        dispatch(areaActions.deleteArea1(data.item))
     }
-
-    
-    
 
     const onRowDidOpen = rowKey => {
         console.log('This row opened', rowKey);

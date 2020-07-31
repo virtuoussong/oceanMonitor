@@ -37,7 +37,7 @@ import { getAllArea2, insertNewArea2, deleteArea2FromDB } from '../database/area
 import {getAllArea3, deleteArea3FromDB} from '../database/area3DB';
 import {getAllArea4, deleteArea4FromDB} from '../database/area4DB';
 import {deleteLocationDoc} from '../database/locationDoc';
-
+import {deleteRegionDoc} from '../database/regionDoc';
 
 export const fetchArea2 = () => {
     return async (dispatch, getState) => {

@@ -24,6 +24,9 @@ import {
 import Camera from '../../../Camera';
 import { Video } from 'expo-av';
 
+import ViewShot from 'react-native-view-shot' 
+
+
 let dataSet = new FirstPage(
   new BeachType(
     SectionType.TOP,
@@ -343,13 +346,14 @@ export default FirstDoc = (props) => {
                 </TouchableOpacity>
                 <View style={styles.inputCell}>
                     <TextInput 
+                        style={[styles.textfield]}
                         keyboardType="number-pad"
                         value={data.firstSection.length} 
                         onChange={(i)=>setData({
                             ...data,
                             firstSection: {
                                 ...data.firstSection,
-                                length: i.target.value
+                                length: i.nativeEvent.text
                             }
                         })}/>
                 </View>
@@ -361,13 +365,14 @@ export default FirstDoc = (props) => {
                 </TouchableOpacity>
                 <View style={styles.inputCell}>
                     <TextInput
+                        style={[styles.textfield]}
                         keyboardType="number-pad"
                         value={data.firstSection.width}
                         onChange={(i)=>setData({
                             ...data,
                             firstSection: {
                                 ...data.firstSection,
-                                width: i.target.value
+                                width: i.nativeEvent.text
                             }
                         })}
                     />
@@ -380,13 +385,14 @@ export default FirstDoc = (props) => {
                 </TouchableOpacity>
                 <View style={styles.inputCell}>
                     <TextInput
+                        style={[styles.textfield]}
                         keyboardType="number-pad"
                         value={data.firstSection.angle}
                         onChange={(i)=>setData({
                             ...data,
                             firstSection: {
                                 ...data.firstSection,
-                                angle: i.target.value
+                                angle: i.nativeEvent.text
                             }
                         })}
                     />
@@ -407,12 +413,13 @@ export default FirstDoc = (props) => {
                 </TouchableOpacity>
                 <View style={styles.inputCell}>
                     <TextInput 
+                        style={[styles.textfield]}
                         value={data.firstSection.granularity} 
                         onChange={(i)=>setData({
                             ...data,
                             firstSection: {
                                 ...data.firstSection,
-                                granularity : i.target.value
+                                granularity : i.nativeEvent.text
                             }
                         })}
                     />
@@ -431,12 +438,13 @@ export default FirstDoc = (props) => {
 
                     <View style={styles.inputCell}>
                         <TextInput 
+                            style={[styles.textfield]}
                             value={data.firstSection.sphericity} 
                             onChange={(i)=>setData({
                                 ...data,
                                 firstSection: {
                                     ...data.firstSection,
-                                    sphericity : i.target.value
+                                    sphericity : i.nativeEvent.text
                                 }
                             })}
                         />
@@ -449,12 +457,13 @@ export default FirstDoc = (props) => {
                 
                     <View style={styles.inputCell}>
                         <TextInput 
+                            style={[styles.textfield]}
                             value={data.firstSection.roundNess} 
                             onChange={(i)=>setData({
                                 ...data,
                                 firstSection: {
                                     ...data.firstSection,
-                                    roundNess : i.target.value
+                                    roundNess : i.nativeEvent.text
                                 }
                             })}
                         />
@@ -567,12 +576,13 @@ export default FirstDoc = (props) => {
                 </TouchableOpacity>
                 <View style={styles.inputCell}>
                     <TextInput 
+                        style={[styles.textfield]}
                         value={data.secondSection.length} 
                         onChange={(i)=>setData({
                             ...data,
                             secondSection: {
                                 ...data.secondSection,
-                                length : i.target.value
+                                length : i.nativeEvent.text
                             }
                         })}
                     />
@@ -590,12 +600,13 @@ export default FirstDoc = (props) => {
               </TouchableOpacity>
                 <View style={styles.inputCell}>
                     <TextInput 
+                        style={[styles.textfield]}
                         value={data.secondSection.width} 
                         onChange={(i)=>setData({
                             ...data,
                             secondSection: {
                                 ...data.secondSection,
-                                width : i.target.value
+                                width : i.nativeEvent.text
                             }
                         })}
                     />
@@ -614,12 +625,13 @@ export default FirstDoc = (props) => {
 
                 <View style={styles.inputCell}>
                     <TextInput 
+                        style={[styles.textfield]}
                         value={data.secondSection.angle} 
                         onChange={(i)=>setData({
                             ...data,
                             secondSection: {
                                 ...data.secondSection,
-                                angle : i.target.value
+                                angle : i.nativeEvent.text
                             }
                         })}
                     />
@@ -641,12 +653,13 @@ export default FirstDoc = (props) => {
              
                 <View style={styles.inputCell}>
                     <TextInput 
+                        style={[styles.textfield]}
                         value={data.secondSection.granularity} 
                         onChange={(i)=>setData({
                             ...data,
                             secondSection: {
                                 ...data.secondSection,
-                                granularity : i.target.value
+                                granularity : i.nativeEvent.text
                             }
                         })}
                     />
@@ -665,12 +678,13 @@ export default FirstDoc = (props) => {
 
                 <View style={styles.inputCell}>
                     <TextInput 
+                        style={[styles.textfield]}
                         value={data.secondSection.sphericity} 
                         onChange={(i)=>setData({
                             ...data,
                             secondSection: {
                                 ...data.secondSection,
-                                sphericity : i.target.value
+                                sphericity : i.nativeEvent.text
                             }
                         })}
                     />
@@ -689,12 +703,13 @@ export default FirstDoc = (props) => {
               
                 <View style={styles.inputCell}>
                     <TextInput 
+                        style={[styles.textfield]}
                         value={data.secondSection.roundNess} 
                         onChange={(i)=>setData({
                             ...data,
                             secondSection: {
                                 ...data.secondSection,
-                                roundNess : i.target.value
+                                roundNess : i.nativeEvent.text
                             }
                         })}
                     />
@@ -807,12 +822,13 @@ export default FirstDoc = (props) => {
 
                 <View style={styles.inputCell}>
                     <TextInput 
+                        style={[styles.textfield]}
                         value={data.thirdSection.length} 
                         onChange={(i)=>setData({
                             ...data,
                             thirdSection: {
                                 ...data.thirdSection,
-                                length : i.target.value
+                                length : i.nativeEvent.text
                             }
                         })}
                     />
@@ -831,12 +847,13 @@ export default FirstDoc = (props) => {
 
                 <View style={styles.inputCell}>
                     <TextInput 
+                        style={[styles.textfield]}
                         value={data.thirdSection.width} 
                         onChange={(i)=>setData({
                             ...data,
                             thirdSection: {
                                 ...data.thirdSection,
-                                width : i.target.value
+                                width : i.nativeEvent.text
                             }
                         })}
                     />
@@ -856,12 +873,13 @@ export default FirstDoc = (props) => {
              
                 <View style={styles.inputCell}>
                     <TextInput 
+                        style={[styles.textfield]}
                         value={data.thirdSection.angle} 
                         onChange={(i)=>setData({
                             ...data,
                             thirdSection: {
                                 ...data.thirdSection,
-                                angle : i.target.value
+                                angle : i.nativeEvent.text
                             }
                         })}
                     />
@@ -885,12 +903,13 @@ export default FirstDoc = (props) => {
 
                 <View style={styles.inputCell}>
                     <TextInput 
+                        style={[styles.textfield]}
                         value={data.thirdSection.granularity} 
                         onChange={(i)=>setData({
                             ...data,
                             thirdSection: {
                                 ...data.thirdSection,
-                                granularity : i.target.value
+                                granularity : i.nativeEvent.text
                             }
                         })}
                     />
@@ -910,12 +929,13 @@ export default FirstDoc = (props) => {
 
                 <View style={styles.inputCell}>
                     <TextInput 
+                        style={[styles.textfield]}
                         value={data.thirdSection.sphericity} 
                         onChange={(i)=>setData({
                             ...data,
                             thirdSection: {
                                 ...data.thirdSection,
-                                sphericity : i.target.value
+                                sphericity : i.nativeEvent.text
                             }
                         })}
                     />
@@ -934,12 +954,13 @@ export default FirstDoc = (props) => {
 
                 <View style={styles.inputCell}>
                     <TextInput 
+                        style={[styles.textfield]}
                         value={data.thirdSection.roundNess} 
                         onChange={(i)=>setData({
                             ...data,
                             thirdSection: {
                                 ...data.thirdSection,
-                                roundNess : i.target.value
+                                roundNess : i.nativeEvent.text
                             }
                         })}
                     />
@@ -953,6 +974,12 @@ export default FirstDoc = (props) => {
 };
 
 const styles = StyleSheet.create({
+  textfield: {
+    width: '100%',
+    height: '100%',
+    paddingVertical: 4,
+    textAlign: 'center'
+  },  
   thirdSectionColor: {
     backgroundColor: "#E6E0EC",
   },

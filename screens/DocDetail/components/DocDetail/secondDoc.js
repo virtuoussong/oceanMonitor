@@ -224,13 +224,13 @@ export default SecondDoc = (props) => {
                         <View style={[styles.smallCell]}>
                             <TextInput 
                                 keyboardType="number-pad"
-                                style={{flex: 1, textAlign: 'center'}} 
+                                style={[styles.textfield]} 
                                 value={data.firstSection.length}
                                 onChange={(i)=>setData({
                                     ...data,
                                     firstSection: {
                                         ...data.firstSection,
-                                        length: i.target.value
+                                        length: i.nativeEvent.text
                                     }
                                 })}
                             />
@@ -241,13 +241,13 @@ export default SecondDoc = (props) => {
                         <View style={[styles.smallCell]}>
                             <TextInput 
                                 keyboardType="number-pad"
-                                style={{flex: 1, textAlign: 'center'}} 
+                                style={[styles.textfield]} 
                                 value={data.firstSection.width}
                                 onChange={(i)=>setData({
                                     ...data,
                                     firstSection: {
                                         ...data.firstSection,
-                                        length: i.target.value
+                                        width: i.nativeEvent.text
                                     }
                                 })}
                             />
@@ -349,13 +349,13 @@ export default SecondDoc = (props) => {
                         <View style={[styles.smallCell]}>
                             <TextInput 
                                 keyboardType="number-pad"
-                                style={{flex: 1, textAlign: 'center'}} 
+                                style={[styles.textfield]} 
                                 value={data.secondSection.length} 
                                 onChange={(i)=>setData({
                                     ...data,
                                     secondSection: {
                                         ...data.secondSection,
-                                        length: i.target.value
+                                        length: i.nativeEvent.text
                                     }
                                 })}
                             />
@@ -366,13 +366,13 @@ export default SecondDoc = (props) => {
                         <View style={[styles.smallCell]}>
                             <TextInput 
                                 keyboardType="number-pad"
-                                style={{flex: 1, textAlign: 'center'}} 
+                                style={[styles.textfield]}  
                                 value={data.secondSection.width} 
                                 onChange={(i)=>setData({
                                     ...data,
                                     secondSection: {
                                         ...data.secondSection,
-                                        width: i.target.value
+                                        width: i.nativeEvent.text
                                     }
                                 })}
                             />
@@ -474,13 +474,13 @@ export default SecondDoc = (props) => {
                         <View style={[styles.smallCell]}>
                             <TextInput 
                                 keyboardType="number-pad"
-                                style={{flex: 1, textAlign: 'center'}} 
+                                style={[styles.textfield]} 
                                 value={data.thirdSection.length} 
                                 onChange={(i)=>setData({
                                     ...data,
                                     thirdSection: {
                                         ...data.thirdSection,
-                                        length: i.target.value
+                                        length: i.nativeEvent.text
                                     }
                                 })}
                             />
@@ -491,13 +491,13 @@ export default SecondDoc = (props) => {
                         <View style={[styles.smallCell]}>
                             <TextInput 
                                 keyboardType="number-pad"
-                                style={{flex: 1, textAlign: 'center'}} 
+                                style={[styles.textfield]}  
                                 value={data.thirdSection.width} 
                                 onChange={(i)=>setData({
                                     ...data,
                                     thirdSection: {
                                         ...data.thirdSection,
-                                        width: i.target.value
+                                        width: i.nativeEvent.text
                                     }
                                 })}
                             />
@@ -587,6 +587,12 @@ export default SecondDoc = (props) => {
 }
 
 const styles = StyleSheet.create({
+    textfield: {
+        width: '100%',
+        height: '100%',
+        paddingVertical: 4,
+        textAlign: 'center'
+    },  
     imageSection: {
         flex: 1,
         flexDirection: 'row',

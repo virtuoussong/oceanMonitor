@@ -112,7 +112,7 @@ export default RightSideArea2 = (props) => {
 
     const onRowDidOpen = rowKey => {
         console.log('This row opened', rowKey);
-        
+
     };
 
     if (isLoading && areaList === null) {

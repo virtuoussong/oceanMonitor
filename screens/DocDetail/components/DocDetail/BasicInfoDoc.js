@@ -186,7 +186,7 @@ export default BasicInfoDoc = (props) => {
                 </View>
                 <View style={[styles.flexRow, styles.borderBottom, {flex: 1}]}>
                     <View style={[{flex: 1}, styles.borderRight, styles.centerView, styles.headerYellow]}>
-                        <Text>{"풍속\n(m/s)"}</Text>
+                        <Text style={{textAlign: 'center'}}>{"풍속\n(m/s)"}</Text>
                     </View>
                     <View style={[{flex: 2}, styles.centerView]}>
                         <TextInput style={{width: '100%', height: '100%', paddingHorizontal: 4}} value={areaData.wind} onChange={(i)=>editAreaData({...areaData, wind: i.nativeEvent.text })}/>
@@ -209,11 +209,11 @@ export default BasicInfoDoc = (props) => {
                     </View>
                 </View>
                 <View style={[styles.flexRow, styles.borderBottom, {flex: 2}]}>
-                    <View style={[styles.borderRight, {flex: 1}, styles.centerView, styles.headerYellow]}><Text>{"해\n안\n선"}</Text></View>
+                    <View style={[styles.borderRight, {flex: 0.95}, styles.centerView, styles.headerYellow]}><Text style={{textAlign: 'center'}}>{"해\n안\n선"}</Text></View>
                     <View style={[{flex: 5}]}>
                         <View style={[styles.flexRow, styles.borderBottom, {flex: 1}]}>
                             <View style={[{flex: 1}, styles.borderRight, styles.centerView, styles.headerYellow]}>
-                                <Text>{"길\n이\n(m)"}</Text>
+                                <Text style={{textAlign: 'center'}}>{"길\n이\n(m)"}</Text>
                             </View>
                             <View style={[{flex: 4}, styles.centerView]}>
                                 <TextInput style={{width: '100%', height: '100%', paddingHorizontal: 4}} value={areaData.beachLength} onChange={(i)=>editAreaData({...areaData, beachLength: i.nativeEvent.text})}/>
@@ -222,7 +222,7 @@ export default BasicInfoDoc = (props) => {
 
                         <View style={[styles.flexRow, styles.borderBottom, {flex: 1}]}>
                             <View style={[{flex: 1}, styles.borderRight, styles.centerView, styles.headerYellow]}>
-                                <Text>{"폭\n(m)"}</Text>
+                                <Text style={{textAlign: 'center'}}>{"폭\n(m)"}</Text>
                             </View>
                             <View style={[{flex: 4}, styles.centerView]}>
                                 <TextInput style={{width: '100%', height: '100%', paddingHorizontal: 4}} value={areaData.beachWidth} onChange={(i)=>editAreaData({...areaData, beachWidth: i.nativeEvent.text})}/>

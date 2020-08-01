@@ -837,7 +837,7 @@ const OceanMapView = (props) => {
           <Text style={{fontSize: 15, fontWeight: 'bold'}}>{"반경\n재기"}</Text>
         </TouchableOpacity>
         <TouchableOpacity onPress={openLink} style={[{backgroundColor: 'white', width: 50, height: 50, marginBottom: 2}, styles.centerItem]}>
-          <Text style={{fontSize: 15, fontWeight: 'bold'}}>{"국립\n해양"}</Text>
+          <Text style={{fontSize: 15, fontWeight: 'bold'}}>{"해양\n정보"}</Text>
         </TouchableOpacity>
       </View>
 

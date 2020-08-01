@@ -30,8 +30,9 @@ let fifthPageData = new FifthPage("", "");
 
 export default FourthdDoc = (props) => {
 
-    const [data, dataSet] = useState(fifthPageData)
-    const [height, setHeight] = useState(0)
+    const [data, dataSet] = useState(fifthPageData);
+    const [height, setHeight] = useState(0);
+    const [keyBoardHeight, setKeyboardHeight] = useState(0);
     useEffect(()=>{
         if (props.data) {
             dataSet(props.data)
@@ -48,15 +49,40 @@ export default FourthdDoc = (props) => {
         }, 50)
     }
 
+    useEffect(() => {
+        scrollKeyboard()
+        console.log("height", height)
+    }, [height])
+
+    const scrollKeyboard = () => {
+        if (height > 150) {
+            if (height < 550) {
+                scrollRef.current.scrollToPosition(0, height - 140, true)
+            }
+        }
+
+    }
+
+    const setHeightForTextInput = (event) => {
+        if (event.nativeEvent.contentSize.height < 550) {
+            setHeight(event.nativeEvent.contentSize.height)
+        } 
+    }
+
     // let scrollViewRef = React.createRef()
     let majorRef = React.createRef()
+    let scrollRef = React.createRef()
 
     return  <View style={[styles.container, styles.borderRight]}>
-        <KeyboardAwareScrollView style={{flex: 1, width: '100%'}} contentContainerStyle={{flexGrow: 1}} ref={(ref) => { scrollViewRef = ref }}>
+        <KeyboardAwareScrollView style={{flex: 1, width: '100%'}} contentContainerStyle={{flexGrow: 1}} ref={scrollRef} 
+            onKeyboardWillShow={(frames) => setKeyboardHeight(frames.endCoordinates.height)}
+            onKeyboardWillHide={(frames) => setKeyboardHeight(frames.endCoordinates.height)}
+        >
+            
             {/* <TitleInputView/> */}
             <View style={[styles.secondSection, styles.borderBottom, styles.firstSectionColor]}>
-                    <Text style={styles.secondTitle}>방제작업 설계</Text>
-                </View>
+                <Text style={styles.secondTitle}>방제작업 설계</Text>
+            </View>
                 <View style={[styles.thirdSection]}>
                     <View style={[styles.largeCell, styles.borderRight]}>
                         <View style={[styles.celltitle, styles.borderBottom, styles.firstSectionColor]}>
@@ -72,15 +98,14 @@ export default FourthdDoc = (props) => {
                                     major: i.nativeEvent.text
                                 })}
 
-                                onContentSizeChange={(event) => setHeight(event.nativeEvent.contentSize.height + 20)}
+                                onContentSizeChange={(event) => setHeightForTextInput(event)}
 
                                 style={[{
-                                    minHeight: '30%',
+                                    minHeight: 150,
                                     height: height,
                                     maxHeight: '100%',
                                     padding: 10,
                                     textAlignVertical: 'top',
-                                    backgroundColor: 'red'
                                 }]}
                                 ref={majorRef}
                                 onFocus={()=>inputFocus('major')}
@@ -93,7 +118,16 @@ export default FourthdDoc = (props) => {
                         </View>
                         <View style={{flex: 1}}>
                         <TextInput 
-                                style={{width: '100%', height: '100%', textAlignVertical: 'top', padding: 12}}
+                                onContentSizeChange={(event) => setHeightForTextInput(event)}
+
+                                style={[{
+                                    minHeight: 150,
+                                    height: height,
+                                    maxHeight: '100%',
+                                    padding: 10,
+                                    textAlignVertical: 'top',
+                                }]}
+
                                 value={data.variance}
                                 multiline={true}
                                 onChange={(i)=>dataSet({

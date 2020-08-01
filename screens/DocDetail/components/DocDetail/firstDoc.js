@@ -115,7 +115,11 @@ export default FirstDoc = (props) => {
         } else if (field == 'groundType1' || field == 'groundType2') {
             setDataForSelect(Object.values(GroudType))
         } else if (field == 'groundType1Perct' || field == 'groundType2Perct') {
-            setDataForSelect(["10", "20", "30", "40", "50", "60", "70", "80", "90", "100"])
+            setDataForSelect(["10%", "20%", "30%", "40%", "50%", "60%", "70%", "80%", "90%", "100%", "-"])
+        } else if (field == "sphericity") {
+          setDataForSelect(["0.1", "0.2", "0.3", "0.4", "0.5", "0.6", "0.7", "0.8", "0.9"])
+        } else if (field == "roundNess") {
+          setDataForSelect(["0.1", "0.2", "0.3", "0.4", "0.5", "0.6", "0.7", "0.8", "0.9"])
         }
 
 
@@ -277,12 +281,12 @@ export default FirstDoc = (props) => {
               <TouchableOpacity style={[styles.inputCell, styles.borderBottom]}
                 onPress={() => selectInput('firstSection', 'groundType1Perct')}
               >
-                <Text>{`${data.firstSection.groundType1Perct}%`}</Text>
+                <Text>{`${data.firstSection.groundType1Perct}`}</Text>
               </TouchableOpacity>
               <TouchableOpacity style={styles.inputCell}
                 onPress={() => selectInput('firstSection', 'groundType2Perct')}
               >
-                <Text>{`${data.firstSection.groundType2Perct}%`}</Text>
+                <Text>{`${data.firstSection.groundType2Perct}`}</Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -432,43 +436,27 @@ export default FirstDoc = (props) => {
                         styles.borderBottom,
                         styles.firstSectionColor,
                         ]}
+                        onPress={()=>selectInput('firstSection','sphericity')}
                     >
-                        <Text>구형도</Text>
+                        <Text>구형도 ▼</Text>
                     </TouchableOpacity>
 
                     <View style={styles.inputCell}>
-                        <TextInput 
-                            style={[styles.textfield]}
-                            value={data.firstSection.sphericity} 
-                            onChange={(i)=>setData({
-                                ...data,
-                                firstSection: {
-                                    ...data.firstSection,
-                                    sphericity : i.nativeEvent.text
-                                }
-                            })}
-                        />
+                        <Text>{data.firstSection.sphericity}</Text>
                     </View>
                 </View>
                 <View style={[styles.midSizeCell]}>
-                <TouchableOpacity style={[styles.inputCell, styles.borderBottom, styles.firstSectionColor]}>
-                    <Text>원마도</Text>
+                <TouchableOpacity 
+                  style={[styles.inputCell, styles.borderBottom, styles.firstSectionColor]}
+                  onPress={()=>selectInput('firstSection','roundNess')}
+                >
+                    <Text>원마도 ▼</Text>
                 </TouchableOpacity>
                 
-                    <View style={styles.inputCell}>
-                        <TextInput 
-                            style={[styles.textfield]}
-                            value={data.firstSection.roundNess} 
-                            onChange={(i)=>setData({
-                                ...data,
-                                firstSection: {
-                                    ...data.firstSection,
-                                    roundNess : i.nativeEvent.text
-                                }
-                            })}
-                        />
-                    </View>
+                <View style={styles.inputCell}>
+                    <Text>{data.firstSection.roundNess}</Text>
                 </View>
+              </View>
             </View>
         </View>
 
@@ -501,12 +489,12 @@ export default FirstDoc = (props) => {
               <TouchableOpacity style={[styles.inputCell, styles.borderBottom]}
                 onPress={() => selectInput('secondSection', 'groundType1Perct')}
               >
-                <Text>{`${data.secondSection.groundType1Perct}%`}</Text>
+                <Text>{`${data.secondSection.groundType1Perct}`}</Text>
               </TouchableOpacity>
               <TouchableOpacity style={styles.inputCell}
                 onPress={() => selectInput('secondSection', 'groundType2Perct')}
               >
-                <Text>{`${data.secondSection.groundType2Perct}%`}</Text>
+                <Text>{`${data.secondSection.groundType2Perct}`}</Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -672,22 +660,13 @@ export default FirstDoc = (props) => {
                     styles.borderBottom,
                     styles.secondSectionColor,
                     ]}
+                    onPress={()=>selectInput('secondSection','sphericity')}
                 >
-                    <Text>구형도</Text>
+                  <Text>구형도 ▼</Text>
                 </TouchableOpacity>
 
                 <View style={styles.inputCell}>
-                    <TextInput 
-                        style={[styles.textfield]}
-                        value={data.secondSection.sphericity} 
-                        onChange={(i)=>setData({
-                            ...data,
-                            secondSection: {
-                                ...data.secondSection,
-                                sphericity : i.nativeEvent.text
-                            }
-                        })}
-                    />
+                  <Text> {data.secondSection.sphericity} </Text>
                 </View>
             </View>
             <View style={[styles.midSizeCell]}>
@@ -697,23 +676,15 @@ export default FirstDoc = (props) => {
                   styles.borderBottom,
                   styles.secondSectionColor,
                 ]}
+                onPress={()=>selectInput('secondSection','roundNess')}
               >
-                <Text>원마도</Text>
+                <Text>원마도 ▼</Text>
               </TouchableOpacity>
               
-                <View style={styles.inputCell}>
-                    <TextInput 
-                        style={[styles.textfield]}
-                        value={data.secondSection.roundNess} 
-                        onChange={(i)=>setData({
-                            ...data,
-                            secondSection: {
-                                ...data.secondSection,
-                                roundNess : i.nativeEvent.text
-                            }
-                        })}
-                    />
-                </View>
+              <View style={styles.inputCell}>
+                <Text> {data.secondSection.roundNess} </Text>
+                
+              </View>
             </View>
           </View>
         </View>
@@ -747,12 +718,12 @@ export default FirstDoc = (props) => {
               <TouchableOpacity style={[styles.inputCell, styles.borderBottom]}
                 onPress={() => selectInput('thirdSection', 'groundType1Perct')}
               >
-                <Text>{`${data.thirdSection.groundType1Perct}%`}</Text>
+                <Text>{`${data.thirdSection.groundType1Perct}`}</Text>
               </TouchableOpacity>
               <TouchableOpacity style={styles.inputCell}
                 onPress={() => selectInput('thirdSection', 'groundType2Perct')}
               >
-                <Text>{`${data.thirdSection.groundType2Perct}%`}</Text>
+                <Text>{`${data.thirdSection.groundType2Perct}`}</Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -923,23 +894,15 @@ export default FirstDoc = (props) => {
                   styles.borderBottom,
                   styles.thirdSectionColor,
                 ]}
+                onPress={()=>selectInput('thirdSection','sphericity')}
               >
-                <Text>구형도</Text>
+                <Text>구형도 ▼</Text>
               </TouchableOpacity>
 
-                <View style={styles.inputCell}>
-                    <TextInput 
-                        style={[styles.textfield]}
-                        value={data.thirdSection.sphericity} 
-                        onChange={(i)=>setData({
-                            ...data,
-                            thirdSection: {
-                                ...data.thirdSection,
-                                sphericity : i.nativeEvent.text
-                            }
-                        })}
-                    />
-                </View>
+              <View style={styles.inputCell}>
+                <Text> {data.thirdSection.sphericity} </Text>
+              </View>
+
             </View>
             <View style={[styles.midSizeCell]}>
               <TouchableOpacity
@@ -948,23 +911,14 @@ export default FirstDoc = (props) => {
                   styles.borderBottom,
                   styles.thirdSectionColor,
                 ]}
+                onPress={()=>selectInput('thirdSection','roundNess')}
               >
-                <Text>원마도</Text>
+                <Text>원마도 ▼</Text>
               </TouchableOpacity>
 
-                <View style={styles.inputCell}>
-                    <TextInput 
-                        style={[styles.textfield]}
-                        value={data.thirdSection.roundNess} 
-                        onChange={(i)=>setData({
-                            ...data,
-                            thirdSection: {
-                                ...data.thirdSection,
-                                roundNess : i.nativeEvent.text
-                            }
-                        })}
-                    />
-                </View>
+              <View style={styles.inputCell}>
+                <Text> {data.thirdSection.roundNess} </Text>
+              </View>
             </View>
           </View>
         </View>

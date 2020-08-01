@@ -85,10 +85,10 @@ export default SecondDoc = (props) => {
         } else if (field == 'oilType') {
             setDataForSelect(Object.values(OilStatus))
         } else if (field == 'spread') {
-            setDataForSelect(["10", "20", "30", "40", "50", "60", "70", "80", "90", "100"])
+            setDataForSelect(["10%", "20%", "30%", "40%", "50%", "60%", "70%", "80%", "90%", "100%"])
         } else if (field == 'location') {
             setDataForSelect(Object.values(SectionType))
-        }
+        } 
 
         togglePicker()
     }
@@ -207,7 +207,7 @@ export default SecondDoc = (props) => {
         </Modal>
 
         {/* <TitleInputView/> */}
-        <PageTitle title={`${props.isLower ? "표면상 오염상태 하" :"표면상 오염상태 상"}`}/>
+        <PageTitle title={`${props.isLower ? "표면상 오염상태" :"표면하 오염상태"}`}/>
         <View style={styles.divisionWrapper}>
             {/* first section*/}
             <View style={[styles.divisionSection, styles.rightBorderLine]}>
@@ -220,7 +220,7 @@ export default SecondDoc = (props) => {
                 </View>
                 <View style={[styles.flexRowColumn, styles.borderBottom]}>
                     <View style={[styles.midSizeCell, styles.rightBorderLine]}>
-                        <View style={[styles.smallCell, styles.firstSectionColor, styles.borderBottom]}><Text style={styles.regularFont}>길이</Text></View>
+                        <View style={[styles.smallCell, styles.firstSectionColor, styles.borderBottom]}><Text style={styles.regularFont}>{"길이\n(m)"}</Text></View>
                         <View style={[styles.smallCell]}>
                             <TextInput 
                                 keyboardType="number-pad"
@@ -237,7 +237,7 @@ export default SecondDoc = (props) => {
                         </View>
                     </View>
                     <View style={[styles.midSizeCell, styles.rightBorderLine]}>
-                        <View style={[styles.smallCell, styles.firstSectionColor, styles.borderBottom]}><Text style={styles.regularFont}>폭</Text></View>
+                        <View style={[styles.smallCell, styles.firstSectionColor, styles.borderBottom]}><Text style={styles.regularFont}>{"폭(m)"}</Text></View>
                         <View style={[styles.smallCell]}>
                             <TextInput 
                                 keyboardType="number-pad"
@@ -259,7 +259,7 @@ export default SecondDoc = (props) => {
                             <Image style={styles.triangleInSmallCell} source={WhiteTriangle}/>
                         </TouchableOpacity>
                             <View style={[styles.smallCell]}>
-                                <Text>{`${data.firstSection.spread}%`}</Text>
+                                <Text>{`${data.firstSection.spread}`}</Text>
                             </View>
                     </View>
                 </View>
@@ -278,9 +278,9 @@ export default SecondDoc = (props) => {
                             <Text style={[styles.regularFont, styles.smallCellWithImage]}>기름 상태</Text>
                             <Image style={styles.triangleInSmallCell} source={WhiteTriangle}/>
                         </TouchableOpacity>
-                            <View style={[styles.smallCell]}>
-                                <Text style={{textAlign:'center'}}>{data.firstSection.oilType}</Text>
-                            </View>
+                        <View style={[styles.smallCell]}>
+                            <Text style={{textAlign:'center'}}>{data.firstSection.oilType}</Text>
+                        </View>
                     </View>
                 </View>
                 <View style={[styles.imageSection]}>
@@ -345,7 +345,7 @@ export default SecondDoc = (props) => {
                 </View>
                 <View style={[styles.flexRowColumn, styles.borderBottom]}>
                     <View style={[styles.midSizeCell, styles.rightBorderLine]}>
-                        <View style={[styles.smallCell, styles.secondSectionColor, styles.borderBottom]}><Text style={styles.regularFont}>길이</Text></View>
+                        <View style={[styles.smallCell, styles.secondSectionColor, styles.borderBottom]}><Text style={styles.regularFont}>{"길이\n(m)"}</Text></View>
                         <View style={[styles.smallCell]}>
                             <TextInput 
                                 keyboardType="number-pad"
@@ -362,7 +362,7 @@ export default SecondDoc = (props) => {
                         </View>
                     </View>
                     <View style={[styles.midSizeCell, styles.rightBorderLine]}>
-                        <View style={[styles.smallCell, styles.secondSectionColor, styles.borderBottom]}><Text style={styles.regularFont}>폭</Text></View>
+                        <View style={[styles.smallCell, styles.secondSectionColor, styles.borderBottom]}><Text style={styles.regularFont}>{"폭(m)"}</Text></View>
                         <View style={[styles.smallCell]}>
                             <TextInput 
                                 keyboardType="number-pad"
@@ -384,7 +384,7 @@ export default SecondDoc = (props) => {
                             <Image style={styles.triangleInSmallCell} source={WhiteTriangle}/>
                         </TouchableOpacity>
                             <View style={[styles.smallCell]}>
-                                <Text>{`${data.secondSection.spread}%`}</Text>
+                                <Text>{`${data.secondSection.spread}`}</Text>
                             </View>
                     </View>
                 </View>
@@ -470,7 +470,7 @@ export default SecondDoc = (props) => {
                 </View>
                 <View style={[styles.flexRowColumn, styles.borderBottom]}>
                     <View style={[styles.midSizeCell, styles.rightBorderLine]}>
-                        <View style={[styles.smallCell, styles.thirdSectionColor, styles.borderBottom]}><Text style={styles.regularFont}>길이</Text></View>
+                        <View style={[styles.smallCell, styles.thirdSectionColor, styles.borderBottom]}><Text style={styles.regularFont}>{"길이\n(m)"}</Text></View>
                         <View style={[styles.smallCell]}>
                             <TextInput 
                                 keyboardType="number-pad"
@@ -487,7 +487,7 @@ export default SecondDoc = (props) => {
                         </View>
                     </View>
                     <View style={[styles.midSizeCell, styles.rightBorderLine]}>
-                        <View style={[styles.smallCell, styles.thirdSectionColor, styles.borderBottom]}><Text style={styles.regularFont}>폭</Text></View>
+                        <View style={[styles.smallCell, styles.thirdSectionColor, styles.borderBottom]}><Text style={styles.regularFont}>{"폭(m)"}</Text></View>
                         <View style={[styles.smallCell]}>
                             <TextInput 
                                 keyboardType="number-pad"
@@ -508,7 +508,7 @@ export default SecondDoc = (props) => {
                             <Text style={[styles.regularFont, styles.smallCellWithImage]}>분포</Text>
                             <Image style={styles.triangleInSmallCell} source={WhiteTriangle}/>
                         </TouchableOpacity>
-                            <View style={[styles.smallCell]}><Text>{`${data.thirdSection.spread}%`}</Text></View>
+                            <View style={[styles.smallCell]}><Text>{`${data.thirdSection.spread}`}</Text></View>
                     </View>
                 </View>
                 <View style={[styles.flexRowColumn, styles.borderBottom]}>

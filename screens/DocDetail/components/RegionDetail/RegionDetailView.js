@@ -320,7 +320,7 @@ export default RegionDetailView = (props) => {
             <View style={[{flex: 1, width: '100%', justifyContent: 'center', paddingLeft: 20}, styles.borderBottom, styles.headerLightBlue2,]}><Text>▶일반현황</Text></View>
             <View style={[{flex: 3, width: '100%'}, styles.flexRow, styles.borderBottom]}>
                 <View style={[{flex: 1}, styles.borderRight, styles.center]}>
-                    <View style={[{flex:2,  width: '100%'}, styles.center, styles.borderBottom, styles.headerYellowColor]}><Text style={{textAlign: 'center'}}>주민수</Text></View>
+                <View style={[{flex:2,  width: '100%'}, styles.center, styles.borderBottom, styles.headerYellowColor]}><Text style={{textAlign: 'center'}}>{"주민수\n(명)"}</Text></View>
                     <View style={[{flex:1,  width: '100%'}, styles.center,]}>
                         <TextInput style={{flex:1, width: '100%', textAlign: "center"}} 
                             onChange={(i)=>setData({
@@ -357,7 +357,7 @@ export default RegionDetailView = (props) => {
                 </View>
                 <View style={[{flex: 1}, styles.borderRight, styles.center]}>
                     <View style={[{flex:2,  width: '100%'}, styles.center, styles.borderBottom, styles.headerYellowColor]}>
-                        <Text style={{textAlign: 'center'}}>{"어촌계\n인원"}</Text>
+                        <Text style={{textAlign: 'center'}}>{"어촌계\n인원수"}</Text>
                     </View>
                     <View style={[{flex:1,  width: '100%'}, styles.center,]}>
                         <TextInput style={{flex:1, width: '100%', textAlign: "center"}} 
@@ -370,7 +370,7 @@ export default RegionDetailView = (props) => {
                     </View>
                 </View>
                 <View style={[{flex: 2}, styles.borderRight, styles.center]}>
-                    <View style={[{flex:1,  width: '100%'}, styles.center, styles.borderBottom, styles.headerYellowColor]}><Text>어선척수</Text></View>
+                    <View style={[{flex:1,  width: '100%'}, styles.center, styles.borderBottom, styles.headerYellowColor]}><Text>어선척수(척)</Text></View>
                     <View style={[{flex:1,  width: '100%', flexDirection: 'row'}, styles.center, styles.borderBottom, styles.headerYellowColor]}>
                         <View style={[{flex:1 , height: '100%'}, styles.center, styles.borderRight]}>
                             <Text>일반</Text> 
@@ -590,7 +590,7 @@ export default RegionDetailView = (props) => {
                 <View style={[{flex: 1, height: '100%'}, styles.center, styles.borderRight]}><Text>방제조치 우선순위</Text></View>
             </View>
             <View style={[{flex: 2, flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}, styles.borderBottom]}>
-                <View style={[{flex: 1, height: '100%'}, styles.center, styles.borderRight]}>
+                <View style={[{width: '50%', height: '100%'}, styles.center, styles.borderRight]}>
                     <View style={[{flex: 1, width: '100%', flexDirection: 'row'}, styles.center, styles.borderBottom]}>
                         <View style={[{flex:1, height: '100%'}, styles.center, styles.borderRight]}>
                             <Text>양력</Text>
@@ -603,21 +603,12 @@ export default RegionDetailView = (props) => {
                         <View style={[{flex:1, height: '100%'}, styles.center, styles.borderRight]}>
                             <Text>음력</Text>
                         </View>
-                        {/* <View style={{flex:3}}>
-                            <TextInput style={{flex:1, width: '100%', textAlign: "center"}} 
-                                onChange={(i)=>setData({
-                                ...data,
-                                recordDataMoon: i.nativeEvent.text
-                                })} 
-                                value={data.recordDataMoon}
-                            />
-                        </View> */}
                         <TouchableOpacity style={{flex:3, alignItems: "center", justifyContent: 'center'}} onPress={()=>toggleCalendar("recordDataMoon")}>
                             <Text>{data.recordDataMoon}</Text>
                         </TouchableOpacity>
                     </View>
                 </View>
-                <View style={[{flex: 1, height: '100%', padding: 10}, styles.center, styles.borderRight]}>
+                <View style={[{width: '50%', height: '100%', padding: 10}, styles.center, styles.borderRight]}>
                     <TextInput multiline={true} style={{flex:1, width: '100%', textAlignVertical: 'top', textAlign: "left"}} 
                         onChange={(i)=>setData({
                             ...data,

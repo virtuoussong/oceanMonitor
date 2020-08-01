@@ -33,7 +33,7 @@ let styles = StyleSheet.create({
         backgroundColor: "rgba(0, 0, 1, 0.5)",
     },
     pickerView: {
-        height: "50%", 
+        height: "40%", 
         width: "50%",
         backgroundColor:'white',
         borderRadius: 30,

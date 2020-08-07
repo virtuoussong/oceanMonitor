@@ -220,7 +220,7 @@ export default SecondDoc = (props) => {
                 </View>
                 <View style={[styles.flexRowColumn, styles.borderBottom]}>
                     <View style={[styles.midSizeCell, styles.rightBorderLine]}>
-                        <View style={[styles.smallCell, styles.firstSectionColor, styles.borderBottom]}><Text style={styles.regularFont}>{"길이\n(m)"}</Text></View>
+                        <View style={[styles.smallCell, styles.firstSectionColor, styles.borderBottom]}><Text style={styles.regularFont}>{"길이(m)"}</Text></View>
                         <View style={[styles.smallCell]}>
                             <TextInput 
                                 keyboardType="number-pad"
@@ -345,7 +345,7 @@ export default SecondDoc = (props) => {
                 </View>
                 <View style={[styles.flexRowColumn, styles.borderBottom]}>
                     <View style={[styles.midSizeCell, styles.rightBorderLine]}>
-                        <View style={[styles.smallCell, styles.secondSectionColor, styles.borderBottom]}><Text style={styles.regularFont}>{"길이\n(m)"}</Text></View>
+                        <View style={[styles.smallCell, styles.secondSectionColor, styles.borderBottom]}><Text style={styles.regularFont}>{"길이(m)"}</Text></View>
                         <View style={[styles.smallCell]}>
                             <TextInput 
                                 keyboardType="number-pad"
@@ -470,7 +470,7 @@ export default SecondDoc = (props) => {
                 </View>
                 <View style={[styles.flexRowColumn, styles.borderBottom]}>
                     <View style={[styles.midSizeCell, styles.rightBorderLine]}>
-                        <View style={[styles.smallCell, styles.thirdSectionColor, styles.borderBottom]}><Text style={styles.regularFont}>{"길이\n(m)"}</Text></View>
+                        <View style={[styles.smallCell, styles.thirdSectionColor, styles.borderBottom]}><Text style={styles.regularFont}>{"길이(m)"}</Text></View>
                         <View style={[styles.smallCell]}>
                             <TextInput 
                                 keyboardType="number-pad"

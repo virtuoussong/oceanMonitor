@@ -35,7 +35,7 @@ export const SectionType = {
     BOTTOM : '하부',
     TOP_MIDDLE : '상부+중부',
     MIDDLE_BOTTOM : '중부+하부',
-    ALL: "상부+중부+하부",
+    ALL: "상중하부",
     TMB : '없음'
 };
 

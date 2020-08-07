@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import {StyleSheet, View, FlatList, Text, Dimensions, TouchableOpacity, ScrollView, KeyboardAvoidingView} from 'react-native';
+import {StyleSheet, View, FlatList, Text, Dimensions, TouchableOpacity, ScrollView, KeyboardAvoidingView, Platform} from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import DrawerButton from '../../components/DrawerNavButton';
 import { useNavigation } from '@react-navigation/native'
@@ -24,6 +24,10 @@ import ViewShot, {captureRef} from 'react-native-view-shot'
 import * as MailComposer from 'expo-mail-composer';
 import RNImageToPdf from 'react-native-image-to-pdf';
 
+import * as Print from 'expo-print';
+import * as Sharing from 'expo-sharing';
+import { Asset } from "expo-asset";
+import * as ImageManipulator from 'expo-image-manipulator';
 
 let emptyDetailData = new DocDetailModel(null, null, null, null, null, null)
 export default DocumentDetailView = (props) => {
@@ -179,27 +183,149 @@ export default DocumentDetailView = (props) => {
         let newUri4 = `file://${uri4}`
         let newUri5 = `file://${uri5}`
         let newUri6 = `file://${uri6}`
-        myAsyncPDFFunction([newUri, newUri2, newUri3, newUri4, newUri5, newUri6])
+        // myAsyncPDFFunction([newUri, newUri2, newUri3, newUri4, newUri5, newUri6])
+        // myAsyncPDFFunction([uri, uri2, uri3, uri4, uri5, uri6])
+       
+        // console.log("html image path", i[0])
+        const img1 = await htmlContent(newUri)
+        const img2 = await htmlContent(newUri2)
+        const img3 = await htmlContent(newUri3)
+        const img4 = await htmlContent(newUri4)
+        const img5 = await htmlContent(newUri5)
+        const img6 = await htmlContent(newUri6)
+
+        myAsyncPDFFunction([img1, img2, img3, img4, img5, img6])
+
+        // myAsyncPDFFunction(html)
+
         // openEmail([newUri, newUri2, newUri3, newUri4, newUri5, newUri6])
     }
 
-    const myAsyncPDFFunction = async (i) => {
+    const copyFromAssets = async (asset) => {
         try {
-            const options = {
-                imagePaths: i,
-                name: 'unkown',
-                maxSize: { // optional maximum image dimension - larger images will be resized
-                    width: 900,
-                    height: 400,
-                },
-                quality: 1, // optional compression paramter
-            };
-            const pdf = await RNImageToPdf.createPDFbyImages(options);
-            
-            console.log(pdf);
-        } catch(e) {
-            console.log(e);
+          await Asset.loadAsync(asset);
+          const { localUri } = Asset.fromModule(asset);
+          return localUri;
+        } catch (error) {
+          console.log(error);
+          throw error;
         }
+      };
+
+      const processLocalImageIOS = async (imageUri) => {
+        try {
+          const uriParts = imageUri.split(".");
+          const formatPart = uriParts[uriParts.length - 1];
+          let format;
+          if (formatPart.includes("png")) {
+            format = "png";
+          } else if (formatPart.includes("jpg") || formatPart.includes("jpeg")) {
+            format = "jpeg";
+          }
+          const { base64 } = await ImageManipulator.manipulateAsync(
+            imageUri,
+            [],
+            { format: format || "png", base64: true }
+          );
+          return `data:image/${format};base64,${base64}`;
+        } catch (error) {
+          console.log(error);
+          throw error
+        }
+      };
+
+      const htmlContent = async (i) => {
+        try {
+            let src = await copyFromAssets(i);
+            if(Platform.OS === 'ios') {
+                src = await processLocalImageIOS(src);
+            }
+            return src
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    const myAsyncPDFFunction = async (i) => {
+
+        const htmlContent = `
+            <!DOCTYPE html>
+            <html lang="en">
+            <head>
+                <meta charset="UTF-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                <title>Pdf Content</title>
+                <style>
+                    body {
+                        font-size: 16px;
+                        color: rgb(255, 196, 0);
+                        float: none !important;
+                    }
+                    h1 {
+                        text-align: center;
+                    }
+
+                    div {
+                        width: ${Dimensions.get('screen').width};
+                        height: ${Dimensions.get('screen').height};
+                        
+                       
+                    }
+
+                    .print:last-child {
+                        page-break-after: auto;
+                   }
+
+                    .fit {
+                        display: block;
+                        max-width: 100%;
+                        max-height: 100%;
+                        width: auto;
+                        height: auto;
+                    }
+                </style>
+            </head>
+            <body>
+                <div class="print"><img class=fit src=${i[0]}></div>
+                <p style="page-break-after: always;">&nbsp;</p>
+
+                <div class="print"><img class="fit" src=${i[1]}></div>
+                <p style="page-break-after: always;">&nbsp;</p>
+                
+                <p style="page-break-before: always;">&nbsp;</p>
+                <div class="print"><img class="fit" src=${i[2]}></div>
+                <p style="page-break-after: always;">&nbsp;</p>
+                
+                <p style="page-break-before: always;">&nbsp;</p>
+                <div class="print"><img class="fit" src=${i[3]}></div>
+                <p style="page-break-after: always;">&nbsp;</p>
+
+                <p style="page-break-before: always;">&nbsp;</p>
+                <div class="print"><img class="fit" src=${i[4]}></div>
+                <p style="page-break-after: always;">&nbsp;</p>
+
+                <p style="page-break-before: always;">&nbsp;</p>
+                <div class="print"><img class="fit" src=${i[5]}></div>
+                
+
+                <div class="print"><img class="fit" src=${i[6]}></div>
+            </body>
+            </html>
+        `;
+
+        
+        try {
+            const { uri } = await Print.printToFileAsync({ 
+                html: htmlContent,
+                width: Dimensions.get('screen').width,
+                height: Dimensions.get('screen').height-50, 
+            });
+            await Sharing.shareAsync(uri);
+            // openEmail([`file://${uri}`])
+        } catch (err) {
+            console.error(err);
+        }
+
     }
 
     const openEmail = (i) => {
@@ -230,6 +356,7 @@ export default DocumentDetailView = (props) => {
                     {props.docID ? <Text style={{fontSize: 20}}>수정</Text> : <Text style={{fontSize: 20}}>저장</Text>}
                 </TouchableOpacity>
             </View>}
+
             <ViewShot ref={viewShotRef} style={{flex: 1}} options={{format: 'jpg', quality: 1}}>
 
                 <TitleInputView refData={titleRef} data={data.title}/>

@@ -23,7 +23,8 @@ export const ThicknessType = {
     CV : 'CV(Cover)\n(1~0.1cm)',
     CT : 'CT(Coat)\n(0.01~0.1cm)',
     ST : 'ST(Stain)(0.01cm 이하)',
-    FL : 'FL(Film)\n(투명, 반투명)'
+    FL : 'FL(Film)\n(투명, 반투명)',
+    NONE : '-'
 };
 
 export const OilStatus = {
@@ -33,6 +34,7 @@ export const OilStatus = {
     TP : 'TP(Tar Patties)\n(기름덩어리 10cm 이상)',
     TC : 'TC(Tar Coating)\n(반고체 코팅)',
     AP : 'AP(Asphalt Pavement)\n(아스팔트)',
-    OD : 'OD(Oiled Debris)\n(쓰레기 혼합)'
+    OD : 'OD(Oiled Debris)\n(쓰레기 혼합)',
+    NONE : '-'
 };
 

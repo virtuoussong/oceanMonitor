@@ -162,7 +162,8 @@ const styles = StyleSheet.create({
         backgroundColor: 'white',
         height: '100%',
         padding: 20,
-        fontSize: 14
+        fontSize: 14,
+        textAlign: 'center'
     },
     inspectors: {
         padding: 20,

@@ -11,7 +11,7 @@
     "orientation": "landscape",
     "icon": "./assets/appIcon.png",
     "splash": {
-      "image": "./assets/splashScreen.jpeg",
+      "image": "./assets/splashScreen.png",
       "resizeMode": "cover",
       "backgroundColor": "#ffffff"
     },

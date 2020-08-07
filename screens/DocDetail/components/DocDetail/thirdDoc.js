@@ -327,7 +327,7 @@ export default ThirdDoc = (props) => {
                         onClick={()=>updateData("access", "field3Val", !data.access.field3Val)}
                     />
                 </View>
-                <View style={[{flex: 1, width: '100%', flexDirection: 'row', justifyContent:'center', alignItems: 'center'}]}>
+                <View style={[s.textWithCheckBoxContainer, { flexDirection: 'row', justifyContent:'center', alignItems: 'center'}]}>
                     <TextInput 
                         style={{flex: 1, padding: 4}}
                         value={data.access.field4} 
@@ -412,7 +412,7 @@ export default ThirdDoc = (props) => {
                     />
                 </View>
                 <View style={[s.textWithCheckBoxContainer, s.borderBottom]}>
-                    <Text style={s.textWithCheckBox}>선회기 활용 방제기자제 수령가능(보관은 불가)</Text>
+                    <Text style={s.textWithCheckBox}>선외기 활용 방제기자재 수령가능(보관은 불가)</Text>
                     <CheckBox 
                         style={{width: 24}}
                         isChecked={data.storage.outBoardRecieve}
@@ -1264,7 +1264,7 @@ export default ThirdDoc = (props) => {
                 <View style={[{flex: 4}, s.borderRight]}>
                     <View style={[{flex:1, flexDirection: 'row'}]}>
                         <View style={[{flex:1}, s.borderRight]}>
-                            <View style={[{flex:2.75}, s.borderBottom, s.flexWrapper, s.headerYellow]}><Text>{"걸래"}</Text></View>
+                            <View style={[{flex:2.75}, s.borderBottom, s.flexWrapper, s.headerYellow]}><Text>{"걸레"}</Text></View>
                             <TextInput 
                                 style={{flex:1, width: '100%', textAlign: 'center'}}
                                 value={data.tool.mob} 
@@ -1373,7 +1373,7 @@ const s = StyleSheet.create({
         fontSize: 12
     },
     textWithCheckBoxContainer: {
-        flex: 1,
+        flex:1,
         flexDirection: 'row',
         alignItems: 'center',
     },

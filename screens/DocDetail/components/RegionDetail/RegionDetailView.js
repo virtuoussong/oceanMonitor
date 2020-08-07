@@ -332,8 +332,8 @@ export default RegionDetailView = (props) => {
                     </View>
                 </View>
                 <View style={[{flex: 1}, styles.borderRight, styles.center]}>
-                    <View style={[{flex:2,  width: '100%'}, styles.center, styles.borderBottom, styles.headerYellowColor]}><Text style={{textAlign: 'center'}}>가구수</Text></View>
-                    <View style={[{flex:1,  width: '100%'}, styles.center,]}>
+                    <View style={[{height: '66%',  width: '100%'}, styles.center, styles.borderBottom, styles.headerYellowColor]}><Text style={{textAlign: 'center'}}>가구수</Text></View>
+                    <View style={[{height: '34%',  width: '100%'}, styles.center]}>
                         <TextInput style={{flex:1, width: '100%', textAlign: "center"}} 
                             onChange={(i)=>setData({
                             ...data,
@@ -370,8 +370,8 @@ export default RegionDetailView = (props) => {
                     </View>
                 </View>
                 <View style={[{flex: 2}, styles.borderRight, styles.center]}>
-                    <View style={[{flex:1,  width: '100%'}, styles.center, styles.borderBottom, styles.headerYellowColor]}><Text>어선척수(척)</Text></View>
-                    <View style={[{flex:1,  width: '100%', flexDirection: 'row'}, styles.center, styles.borderBottom, styles.headerYellowColor]}>
+                    <View style={[{height: '33%',  width: '100%'}, styles.center, styles.borderBottom, styles.headerYellowColor]}><Text>어선척수(척)</Text></View>
+                    <View style={[{height:'32%',  width: '100%', flexDirection: 'row'}, styles.center, styles.borderBottom, styles.headerYellowColor]}>
                         <View style={[{flex:1 , height: '100%'}, styles.center, styles.borderRight]}>
                             <Text>일반</Text> 
                         </View>
@@ -379,7 +379,7 @@ export default RegionDetailView = (props) => {
                             <Text>선외기</Text> 
                         </View>
                     </View>                   
-                    <View style={[{flex:1,  width: '100%', flexDirection: 'row'}, styles.center]}>
+                    <View style={[{height:'35%',  width: '100%', flexDirection: 'row'}, styles.center]}>
                         <View style={[{flex:1 , height: '100%'}, styles.center, styles.borderRight]}>
                             <TextInput style={{flex:1, width: '100%', textAlign: "center"}} 
                                 onChange={(i)=>setData({
@@ -401,10 +401,10 @@ export default RegionDetailView = (props) => {
                     </View>
                 </View>
                 <View style={[{flex: 1}, styles.borderRight, styles.center]}>
-                    <View style={[{flex:2,  width: '100%'}, styles.center, styles.borderBottom, styles.headerYellowColor]}>
-                        <Text>{"숙박\n시설"}</Text>
+                    <View style={[{height:'65%',  width: '100%'}, styles.center, styles.borderBottom, styles.headerYellowColor]}>
+                        <Text style={{textAlign: 'center'}}>{"숙박\n시설\n(개소)"}</Text>
                     </View>
-                    <View style={[{flex:1,  width: '100%'}, styles.center,]}>
+                    <View style={[{height:'35%',  width: '100%'}, styles.center,]}>
                         <TextInput style={{flex:1, width: '100%', textAlign: "center"}} 
                             onChange={(i)=>setData({
                             ...data,
@@ -415,10 +415,10 @@ export default RegionDetailView = (props) => {
                     </View>
                 </View>
                 <View style={[{flex: 1}, styles.borderRight, styles.center]}>
-                    <View style={[{flex:2,  width: '100%'}, styles.center, styles.borderBottom, styles.headerYellowColor]}>
-                        <Text>{"접안\n시설"}</Text>
+                    <View style={[{height:'65%',  width: '100%'}, styles.center, styles.borderBottom, styles.headerYellowColor]}>
+                        <Text style={{textAlign: 'center'}}>{"접안\n시설\n(개소)"}</Text>
                     </View>
-                    <View style={[{flex:1,  width: '100%'}, styles.center,]}>
+                    <View style={[{height:'35%',  width: '100%'}, styles.center,]}>
                         <TextInput style={{flex:1, width: '100%', textAlign: "center"}} 
                             onChange={(i)=>setData({
                             ...data,
@@ -429,10 +429,10 @@ export default RegionDetailView = (props) => {
                     </View>
                 </View>
                 <View style={[{flex: 2}, styles.borderRight, styles.center]}>
-                    <View style={[{flex:1,  width: '100%'}, styles.center, styles.borderBottom, styles.headerYellowColor]}>
+                    <View style={[{height:'32%',  width: '100%'}, styles.center, styles.borderBottom, styles.headerYellowColor]}>
                         <Text>도서</Text>
                     </View>
-                    <View style={[{flex:1,  width: '100%', flexDirection: 'row'}, styles.center, styles.borderBottom, styles.headerYellowColor]}>
+                    <View style={[{height:'33%',  width: '100%', flexDirection: 'row'}, styles.center, styles.borderBottom, styles.headerYellowColor]}>
                         <View style={[{flex:1 , height: '100%'}, styles.center, styles.borderRight]}>
                             <Text>유인</Text> 
                         </View>
@@ -440,7 +440,7 @@ export default RegionDetailView = (props) => {
                             <Text>무인</Text> 
                         </View>
                     </View>                   
-                    <View style={[{flex:1,  width: '100%', flexDirection: 'row'}, styles.center]}>
+                    <View style={[{height:'35%',  width: '100%', flexDirection: 'row'}, styles.center]}>
                         <View style={[{flex:1 , height: '100%'}, styles.center, styles.borderRight]}>
                             <TextInput style={{flex:1, width: '100%', textAlign: "center"}} 
                                 onChange={(i)=>setData({
@@ -595,7 +595,7 @@ export default RegionDetailView = (props) => {
                         <View style={[{flex:1, height: '100%'}, styles.center, styles.borderRight]}>
                             <Text>양력</Text>
                         </View>
-                        <TouchableOpacity style={{flex:3, alignItems: "center", justifyContent: 'center'}} onPress={()=>toggleCalendar("recordDataSun")}>
+                        <TouchableOpacity style={{flex:3, height: '100%',alignItems: "center", justifyContent: 'center'}} onPress={()=>toggleCalendar("recordDataSun")}>
                             <Text>{data.recordDataSun}</Text>
                         </TouchableOpacity>
                     </View>
@@ -603,7 +603,7 @@ export default RegionDetailView = (props) => {
                         <View style={[{flex:1, height: '100%'}, styles.center, styles.borderRight]}>
                             <Text>음력</Text>
                         </View>
-                        <TouchableOpacity style={{flex:3, alignItems: "center", justifyContent: 'center'}} onPress={()=>toggleCalendar("recordDataMoon")}>
+                        <TouchableOpacity style={{flex:3, height: '100%', alignItems: "center", justifyContent: 'center'}} onPress={()=>toggleCalendar("recordDataMoon")}>
                             <Text>{data.recordDataMoon}</Text>
                         </TouchableOpacity>
                     </View>

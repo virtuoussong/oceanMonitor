@@ -57,7 +57,8 @@ export default SecondDoc = (props) => {
         section: null,
         field: null
     });
-    const [isCameraOn, setCamera] = useState(false)
+    const [isCameraOn, setCamera] = useState(false);
+    const [isImageModalOn, setImageModel] = useState(false);
 
     useEffect(()=>{
         if (props.data) {
@@ -85,7 +86,7 @@ export default SecondDoc = (props) => {
         } else if (field == 'oilType') {
             setDataForSelect(Object.values(OilStatus))
         } else if (field == 'spread') {
-            setDataForSelect(["10%", "20%", "30%", "40%", "50%", "60%", "70%", "80%", "90%", "100%"])
+            setDataForSelect(["0%", "10%", "20%", "30%", "40%", "50%", "60%", "70%", "80%", "90%", "100%"])
         } else if (field == 'location') {
             setDataForSelect(Object.values(SectionType))
         } 
@@ -190,10 +191,32 @@ export default SecondDoc = (props) => {
     }
 
     const toggleCamera = () => {
-    setCamera(!isCameraOn)
+        setCamera(!isCameraOn)
+    }
+
+    const toggleImageModal = () => {
+        console.log("toggle image", isImageModalOn)
+        setImageModel(!isImageModalOn)
     }
     
     return <View style={styles.container}>
+        <Modal 
+            visible={isImageModalOn}
+            transparent={true}
+            animationType={'fade'}
+            
+        >
+            <TouchableOpacity 
+                onPress={()=>toggleImageModal()} 
+                style={{width: '100%', height: '100%', alignContent: 'center', justifyContent: 'center', backgroundColor: 'rgba(0, 0, 1, 0.5)'}}>
+                <Image 
+                    style={{width: '80%', height: 300, marginLeft: 'auto', marginRight: 'auto'}} 
+                    resizeMode={'contain'} 
+                    source={require('../../../../assets/oilStatus.png')}
+                />
+            </TouchableOpacity>
+        </Modal>
+
         <Modal visible={isCameraOn}>
             <Camera toggleCamera={()=>toggleCamera()} save={(i)=>savePhoto(i)}/>
         </Modal>
@@ -207,7 +230,7 @@ export default SecondDoc = (props) => {
         </Modal>
 
         {/* <TitleInputView/> */}
-        <PageTitle title={`${props.isLower ? "표면상 오염상태" :"표면하 오염상태"}`}/>
+        <PageTitle title={`${props.isLower ? "표면하 오염상태" :"표면상 오염상태"}`}/>
         <View style={styles.divisionWrapper}>
             {/* first section*/}
             <View style={[styles.divisionSection, styles.rightBorderLine]}>
@@ -275,7 +298,10 @@ export default SecondDoc = (props) => {
                     </View>
                     <View style={[styles.midSizeCell]}>
                         <TouchableOpacity onPress={()=>selectInput('firstSection', 'oilType')} style={[styles.smallCell, styles.firstSectionColor, styles.borderBottom]}>
-                            <Text style={[styles.regularFont, styles.smallCellWithImage]}>기름 상태</Text>
+                            <TouchableOpacity onPress={() => toggleImageModal()}>
+                                <Image style={{width: 24, height: 24, marginLeft: 16}} source={require('../../../../assets/question.png')}/>
+                            </TouchableOpacity>
+                            <Text style={[styles.regularFont, styles.smallCellWithImage, {marginRight: 8}]}>기름 상태</Text>
                             <Image style={styles.triangleInSmallCell} source={WhiteTriangle}/>
                         </TouchableOpacity>
                         <View style={[styles.smallCell]}>

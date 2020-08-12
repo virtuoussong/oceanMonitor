@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from "react";
-import {ActivityIndicator, StyleSheet, Text, View, TouchableOpacity, Animated, Image, Easing, Modal, Linking , AsyncStorage, Alert} from "react-native";
-import MapView, {PROVIDER_GOOGLE, Polygon, Marker, Polyline, Circle, fitToCoordinates } from "react-native-maps";
+import {ActivityIndicator, StyleSheet, Text, View, TouchableOpacity, Animated, Image, Modal, Linking , AsyncStorage, Alert} from "react-native";
+import MapView, {Polygon, Marker, Polyline, Circle } from "react-native-maps";
 import LocationNameModal from '../screens/LocationNameModel';
 import RightSideView from '../screens/RightSideView';
 import DrawerNavButton from '../components/DrawerNavButton';
@@ -13,12 +13,12 @@ import * as area4Actions from '../Redux/actions/area4.js';
 
 import * as polygonNavAction from '../Redux/actions/coordinateNav.js';
 import * as regionMarkDB from '../Redux/database/regionMarks';
-import UUIDGenerator from 'react-native-uuid-generator'
 
 import { useSelector, useDispatch } from "react-redux";
 import InitialRegion from '../Models/InitialRegion';
 
 const OceanMapView = (props) => {
+
   const [initialLocation, setInitial] = useState({
     latitude: 35.82991503548142,
     longitude: 127.66985032707453,
@@ -49,6 +49,7 @@ const OceanMapView = (props) => {
   const [regionMarkArray, setRegionMarkArray] = useState([]);
   const [isAddingRegionMark, setIsAddingRegionMark] = useState(false);
   const [newRegionMark, setNewRionMark] = useState();
+  
   // useEffect(()=>{
   //   getInitialLocation()
   // }, [])
@@ -56,8 +57,8 @@ const OceanMapView = (props) => {
   const getInitialLocation = async() => {
     try {
       await AsyncStorage.getItem('initialLocation', (err, result)=>{
+        if (result !== null) {
           let parsed = JSON.parse(result)
-          console.log("parsed", parsed)
           let region = new InitialRegion(
               parsed.latitude,
               parsed.longitude,
@@ -65,6 +66,7 @@ const OceanMapView = (props) => {
               parsed.longitudeDelta
           )
           setInitial(region)
+        } 
       })
     } catch (error) {
 
@@ -79,7 +81,6 @@ const OceanMapView = (props) => {
     try {
       const data = await regionMarkDB.getRegionMarks()
       if (data.rows._array !== null) {
-        console.log("region marks fetched", data.rows._array)
         let array = data.rows._array
         let passingArray = []
         array.forEach((item)=>{
@@ -137,7 +138,6 @@ const OceanMapView = (props) => {
   //Area 2
   const area2List = useSelector(state => state.area2ListRoot.filteredList)
   
-
   useEffect(()=>{
    
   }, [area2List])

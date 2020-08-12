@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import {StyleSheet, View, Text, TextInput, KeyboardAvoidingView, Image, TouchableOpacity, Modal} from 'react-native';
+import {StyleSheet, View, Text, TextInput, Image, TouchableOpacity, Modal, Dimensions} from 'react-native';
 import { useNavigation } from '@react-navigation/native'
 import DrawerButton from '../../../../components/DrawerNavButton';
 import TitleInputView from '../DocDetail/TitleInput';
@@ -15,45 +15,51 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 import CalendarPicker from '../../../../components/Calendar';
 import { Video } from 'expo-av';
 
+import ViewShot from 'react-native-view-shot' 
+import * as Print from 'expo-print';
+import * as Sharing from 'expo-sharing';
+import { Asset } from "expo-asset";
+import * as ImageManipulator from 'expo-image-manipulator';
+
 let dummyData = new RegionInfo(
-    null,
-    null,
-    null,
-    null,
-    null,
+    "",
+    "",
+    "",
+    "",
+    "",
 
 
-    null,
-    null,
-    null,
-    null,
-    null,
+    "",
+    "",
+    "",
+    "",
+    "",
 
 
-    null,
-    null,
-    null,
-    null,
-    null,
+    "",
+    "",
+    "",
+    "",
+    "",
 
 
-    null,
-    null,
-    null,
-    null,
-    null,
+    "",
+    "",
+    "",
+    "",
+    "",
 
 
-    null,
-    null,
-    null,
-    null,
-    null,
+    "",
+    "",
+    "",
+    "",
+    "",
 
 
-    null,
-    null,
-    null
+    "",
+    "",
+    ""
 )
 
 export default RegionDetailView = (props) => {
@@ -61,6 +67,7 @@ export default RegionDetailView = (props) => {
     const [data, setData] = useState(dummyData);
     const [isModalOn, setModal] = useState(false);
     const [isCalendarOn, setCalendarOn] = useState(false)
+    const [key, setKey] = useState()
 
     useEffect(()=>{
         regionData.current = data
@@ -72,6 +79,7 @@ export default RegionDetailView = (props) => {
         if (props.docID) {
             loadData(props.docID)
         }
+
         if (props.route != undefined) {
             setupNavbutton()
         }
@@ -169,7 +177,7 @@ export default RegionDetailView = (props) => {
 
     const saveDocFromNav = async ()=> {
         
-        console.log("saving data", regionData.current)
+        // console.log("saving data", regionData.current)
         let jsonData = JSON.stringify(regionData.current)
         
         // console.log("docID save", props.route.params.docID)
@@ -208,8 +216,8 @@ export default RegionDetailView = (props) => {
         }
     }
 
-    const updateData = (key, i) => {
-        console.log(key, i)
+    const updateData = (i) => {
+        console.log("setting data form calendar", key, i)
         setData({
             ...data,
             [key]: i
@@ -220,19 +228,141 @@ export default RegionDetailView = (props) => {
         props.close()
     }
 
+    //날짜 선택
+    const handleDatePicked =(i)=> {
+        updateData(i)
+    }
+
     const toggleCalendar = (i) =>{
-        setCalendarOn(!isCalendarOn)
         setKey(i)
     }
-    const [key, setKey] = useState()
-    const handleDatePicked =(i)=> {
-        console.log(i)
-        updateData(key, i)
+
+    useEffect(()=>{
+        console.log("key ㄴㄷㅆㄷㅇ", key)
+        if (key === "recordDataSun" || key === "recordDataMoon") {
+            setCalendarOn(!isCalendarOn)
+        }
+    }, [key])
+    
+
+   const closeModal = () => {
+        setCalendarOn(false)
+   }
+
+    let viewShotRef = React.useRef()
+
+    const exportPDF = async() => {
+        let uri = await viewShotRef.current.capture()
+        let newUri = `file://${uri}`
+        const img1 = await htmlContent(newUri)
+        myAsyncPDFFunction([img1])
     }
+
+    const htmlContent = async (i) => {
+        try {
+            let src = await copyFromAssets(i);
+            if(Platform.OS === 'ios') {
+                src = await processLocalImageIOS(src);
+            }
+            return src
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    const copyFromAssets = async (asset) => {
+        try {
+          await Asset.loadAsync(asset);
+          const { localUri } = Asset.fromModule(asset);
+          return localUri;
+        } catch (error) {
+          throw error;
+        }
+      };
+
+      const processLocalImageIOS = async (imageUri) => {
+        try {
+          const uriParts = imageUri.split(".");
+          const formatPart = uriParts[uriParts.length - 1];
+          let format;
+          if (formatPart.includes("png")) {
+            format = "png";
+          } else if (formatPart.includes("jpg") || formatPart.includes("jpeg")) {
+            format = "jpeg";
+          }
+          const { base64 } = await ImageManipulator.manipulateAsync(
+            imageUri,
+            [],
+            { format: format || "png", base64: true }
+          );
+          return `data:image/${format};base64,${base64}`;
+        } catch (error) {
+          throw error
+        }
+      };
+
+      const myAsyncPDFFunction = async (i) => {
+
+        const htmlContent = `
+            <!DOCTYPE html>
+            <html lang="en">
+            <head>
+                <meta charset="UTF-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                <title>Pdf Content</title>
+                <style>
+                    body {
+                        font-size: 16px;
+                        color: rgb(255, 196, 0);
+                        float: none !important;
+                    }
+                    h1 {
+                        text-align: center;
+                    }
+
+                    div {
+                        width: ${Dimensions.get('screen').width};
+                        height: ${Dimensions.get('screen').height};
+                    }
+
+                    .print:last-child {
+                        page-break-after: auto;
+                   }
+
+                    .fit {
+                        display: block;
+                        max-width: 100%;
+                        max-height: 100%;
+                        width: auto;
+                        height: auto;
+                    }
+                </style>
+            </head>
+            <body>
+                <div class="print"><img class=fit src=${i[0]}></div>
+            </body>
+            </html>
+        `;
+
+        
+        try {
+            const { uri } = await Print.printToFileAsync({ 
+                html: htmlContent,
+                width: Dimensions.get('screen').width,
+                height: Dimensions.get('screen').height-50, 
+            });
+            await Sharing.shareAsync(uri);
+            // openEmail([`file://${uri}`])
+        } catch (err) {
+            console.error(err);
+        }
+
+    }
+
 
     return <View style={styles.constainer}>
             <Modal visible={isCalendarOn} transparent={true} animationType="slide"> 
-                <CalendarPicker close={()=>toggleCalendar()} setDate={(i)=>handleDatePicked(i)}/>
+                <CalendarPicker close={()=>closeModal()} setDate={(i)=>handleDatePicked(i)}/>
             </Modal>
 
             {props.hasCloseButton && <View style={{width: '100%', height: 55, flexDirection: 'row'}}>
@@ -240,14 +370,21 @@ export default RegionDetailView = (props) => {
                     <Text style={{fontSize: 20}}>취소</Text>
                 </TouchableOpacity>
 
-                <TouchableOpacity style={{marginLeft: 'auto', marginTop: 24, marginRight: 20}} onPress={()=>saveDoc()}>
+                <TouchableOpacity style={{marginTop: 24, marginLeft: 'auto', marginRight: 20}} onPress={()=>exportPDF()}>
+                    {props.docID && <Text style={{fontSize: 20}}>PDF 출력</Text>}
+                </TouchableOpacity>
+
+                <TouchableOpacity style={{marginTop: 24, marginRight: 20}} onPress={()=>saveDoc()}>
                     {props.docID ? <Text style={{fontSize: 20}}>수정</Text> : <Text style={{fontSize: 20}}>저장</Text>}
                 </TouchableOpacity>
             </View>}
+
             <Modal visible={isModalOn}>
                 <Camera toggleCamera={()=>toggleCamera()} save={(i)=>savePhoto(i)}/>
             </Modal>
-        <KeyboardAwareScrollView style={{width: '100%', height: '100%'}} contentContainerStyle={{flexGrow: 1}}>
+
+            <ViewShot ref={viewShotRef} style={{flex: 1, width: '100%'}} options={{format: 'jpg', quality: 1}}>
+                <KeyboardAwareScrollView style={{width: '100%', height: '100%'}} contentContainerStyle={{flexGrow: 1}}>
             <View style={[styles.constainer, styles.flexRow, styles.borderAll]}>
         
         <View style={[styles.constainer, styles.borderRight, styles.flexRow, {height: '100%'}]}>
@@ -592,18 +729,18 @@ export default RegionDetailView = (props) => {
             <View style={[{flex: 2, flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}, styles.borderBottom]}>
                 <View style={[{width: '50%', height: '100%'}, styles.center, styles.borderRight]}>
                     <View style={[{flex: 1, width: '100%', flexDirection: 'row'}, styles.center, styles.borderBottom]}>
-                        <View style={[{flex:1, height: '100%'}, styles.center, styles.borderRight]}>
-                            <Text>양력</Text>
+                        <View style={[{width: '25%', height: '100%'}, styles.center, styles.borderRight]}>
+                            <Text>시작</Text>
                         </View>
-                        <TouchableOpacity style={{flex:3, height: '100%',alignItems: "center", justifyContent: 'center'}} onPress={()=>toggleCalendar("recordDataSun")}>
+                        <TouchableOpacity style={{width: '75%', height: '100%',alignItems: "center", justifyContent: 'center'}} onPress={()=>toggleCalendar("recordDataSun")}>
                             <Text>{data.recordDataSun}</Text>
                         </TouchableOpacity>
                     </View>
                     <View style={[{flex: 1, width: '100%', flexDirection: 'row'}, styles.center]}>
-                        <View style={[{flex:1, height: '100%'}, styles.center, styles.borderRight]}>
-                            <Text>음력</Text>
+                        <View style={[{width: '25%', height: '100%'}, styles.center, styles.borderRight]}>
+                            <Text>종료</Text>
                         </View>
-                        <TouchableOpacity style={{flex:3, height: '100%', alignItems: "center", justifyContent: 'center'}} onPress={()=>toggleCalendar("recordDataMoon")}>
+                        <TouchableOpacity style={{width: '75%', height: '100%', alignItems: "center", justifyContent: 'center'}} onPress={()=>toggleCalendar("recordDataMoon")}>
                             <Text>{data.recordDataMoon}</Text>
                         </TouchableOpacity>
                     </View>
@@ -633,6 +770,7 @@ export default RegionDetailView = (props) => {
         </View>
     </View>
         </KeyboardAwareScrollView>
+            </ViewShot>
         </View>
         
         
@@ -687,3 +825,45 @@ const styles = StyleSheet.create({
     }
 
 })
+
+
+// let dummyData = new RegionInfo(
+//     null,
+//     null,
+//     null,
+//     null,
+//     null,
+
+
+//     null,
+//     null,
+//     null,
+//     null,
+//     null,
+
+
+//     null,
+//     null,
+//     null,
+//     null,
+//     null,
+
+
+//     null,
+//     null,
+//     null,
+//     null,
+//     null,
+
+
+//     null,
+//     null,
+//     null,
+//     null,
+//     null,
+
+
+//     null,
+//     null,
+//     null
+// )

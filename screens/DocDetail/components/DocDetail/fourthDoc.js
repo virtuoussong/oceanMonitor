@@ -1,28 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import {StyleSheet, View, FlatList, Text, Dimensions, TouchableOpacity, ScrollView, TextInput, findNodeHandle} from 'react-native';
+import {StyleSheet, View, Image, Text, Dimensions, TouchableOpacity, TextInput, Modal} from 'react-native';
 import TitleInputView from './TitleInput';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 
-// import { TextInput } from 'react-native-gesture-handler';
-
-let dataSet = [
-    {id: 1, name: "구역 1"},
-    {id: 2, name: "구역 2"},
-    {id: 3, name: "구역 3"},
-    {id: 4, name: "구역 4"},
-    {id: 5, name: "구역 5"},
-    {id: 6, name: "구역 6"},
-    {id: 7, name: "구역 7"},
-    {id: 8, name: "구역 8"},
-    {id: 9, name: "구역 1"},
-    {id: 10, name: "구역 2"},
-    {id: 11, name: "구역 3"},
-    {id: 12, name: "구역 4"},
-    {id: 13, name: "구역 5"},
-    {id: 14, name: "구역 6"},
-    {id: 15, name: "구역 7"},
-    {id: 16, name: "구역 8"},
-]
 
 import {FifthPage} from '../../../../Models/fifthPage.js'
 
@@ -33,6 +13,7 @@ export default FourthdDoc = (props) => {
     const [data, dataSet] = useState(fifthPageData);
     const [height, setHeight] = useState(0);
     const [keyBoardHeight, setKeyboardHeight] = useState(0);
+    const [isImageModalOn, setImageModal] = useState(false);
     useEffect(()=>{
         if (props.data) {
             dataSet(props.data)
@@ -51,7 +32,6 @@ export default FourthdDoc = (props) => {
 
     useEffect(() => {
         scrollKeyboard()
-        console.log("height", height)
     }, [height])
 
     const scrollKeyboard = () => {
@@ -69,11 +49,26 @@ export default FourthdDoc = (props) => {
         } 
     }
 
-    // let scrollViewRef = React.createRef()
     let majorRef = React.createRef()
     let scrollRef = React.createRef()
 
+    const toggleInstructionImage = () => {
+        setImageModal(!isImageModalOn)
+    }
+
     return  <View style={[styles.container, styles.borderRight]}>
+        <Modal
+            transparent={true}
+            animationType={'fade'}
+            visible={isImageModalOn}
+        >
+            <TouchableOpacity 
+                style={{flex: 1, backgroundColor: 'rgba(0, 0, 1, 0.5)'}} 
+                onPress={()=>toggleInstructionImage()}
+            >
+                <Image style={{width: '80%', height: '80%', marginLeft: 'auto', marginRight: 'auto', marginTop: 'auto', marginBottom: 'auto'}} resizeMode={'contain'} source={require('../../../../assets/writingInstruction.png')}/>
+            </TouchableOpacity>
+        </Modal>
         <KeyboardAwareScrollView style={{flex: 1, width: '100%'}} contentContainerStyle={{flexGrow: 1}} ref={scrollRef} 
             onKeyboardWillShow={(frames) => setKeyboardHeight(frames.endCoordinates.height)}
             onKeyboardWillHide={(frames) => setKeyboardHeight(frames.endCoordinates.height)}
@@ -85,8 +80,14 @@ export default FourthdDoc = (props) => {
             </View>
                 <View style={[styles.thirdSection]}>
                     <View style={[styles.largeCell, styles.borderRight]}>
-                        <View style={[styles.celltitle, styles.borderBottom, styles.firstSectionColor]}>
-                            <Text style={styles.cellTitleText}>주요 시방서</Text>
+                        <View style={[styles.celltitle, styles.borderBottom, styles.firstSectionColor, {flexDirection: 'row'}]}>
+                            <TouchableOpacity onPress={()=>toggleInstructionImage()} style={{width: 24, height: 24, marginLeft: 16, marginRight: 'auto'}}>
+                                <Image
+                                    style={{width: 24, height: 24, marginLeft: 16, marginRight: 'auto'}} 
+                                    source={require('../../../../assets/question.png')}
+                                />
+                            </TouchableOpacity>
+                            <Text style={[styles.cellTitleText, {marginLeft: 'auto', marginRight: 300}]}>주요 시방서</Text>
                         </View>
                         <View style={{flex: 1}}>
                             <TextInput 

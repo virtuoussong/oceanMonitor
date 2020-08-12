@@ -158,7 +158,6 @@ export default ThirdDoc = (props) => {
     }
 
     const handleDatePicked =(i)=> {
-        console.log(i)
         updateData("agent", "date", i)
     }
  
@@ -172,13 +171,13 @@ export default ThirdDoc = (props) => {
         <View style={[s.secondSection, s.borderBottom]}>
             {/* 접근 여건 */}
             <View style={[s.secondSectionColumns, s.borderRight]}>
-                <View style={[s.seconSectionTitle, s.borderBottom, s.headerYellow]}><Text style={s.sectionTitleText}>접근여건</Text></View>
-                <View style={[s.borderBottom, {flex:3.065, flexDirection: 'row'}]}>
+                <View style={[s.seconSectionTitle, s.borderBottom, s.headerYellow, {width: '100%', height: `${(1/11)*100}%`}]}><Text style={s.sectionTitleText}>접근여건</Text></View>
+                <View style={[s.borderBottom, {width: '100%', height: `${(3/11)*100}%`, flexDirection: 'row'}]}>
                     <View style={[{flex: 1, justifyContent: 'center', alignItems: 'center'}, s.borderRight]}>
                         <Text>{"육\n상"}</Text>
                     </View>
                     <View style={[{flex: 8}]}>
-                        <View style={[s.textWithCheckBoxContainer, s.borderBottom]}>
+                        <View style={[s.borderBottom, {width: '100%', height: `33.6%`,flexDirection: 'row', alignItems: 'center'}]}>
                             <Text style={s.yesnoTextBox}>소형차 진입 가능</Text>
                             <CheckBox 
                                 style={[s.checkBox, s.yesBox]}
@@ -196,7 +195,7 @@ export default ThirdDoc = (props) => {
                             />
                         </View>
 
-                        <View style={[s.textWithCheckBoxContainer, s.borderBottom]}>
+                        <View style={[s.borderBottom, {width: '100%', height: `33.8%`,flexDirection: 'row', alignItems: 'center'}]}>
                             <Text style={s.yesnoTextBox}>중대형차 진입 가능</Text>
                             <CheckBox 
                                  style={[s.checkBox, s.yesBox]}
@@ -213,7 +212,7 @@ export default ThirdDoc = (props) => {
                                 onClick={()=>updateData("access", "middleCar", false)}
                             />
                         </View>
-                        <View style={[s.textWithCheckBoxContainer]}>
+                        <View style={[{width: '100%', height: `33.35%`,flexDirection: 'row', alignItems: 'center'}]}>
                             <Text style={{flex: 3, paddingLeft: 7,textAlign: 'left', fontSize: 12}}>중장비 진입 가능</Text>
                             <CheckBox 
                                 style={[s.checkBox, s.yesBox]}
@@ -233,12 +232,12 @@ export default ThirdDoc = (props) => {
                     </View>
                 </View>
 
-                <View style={[s.borderBottom, {flex:3.065, flexDirection: 'row'}]}>
+                <View style={[s.borderBottom, {width: '100%', height: `${(3/11)*100}%`, flexDirection: 'row'}]}>
                     <View style={[{flex: 1, justifyContent: 'center', alignItems: 'center'}, s.borderRight]}>
                         <Text>{"해\n상"}</Text>
                     </View> 
                     <View style={[{flex: 8}]}>
-                        <View style={[s.textWithCheckBoxContainer, s.borderBottom]}>
+                        <View style={[{width: '100%', height: `33.38%`,flexDirection: 'row', alignItems: 'center'}, s.borderBottom]}>
                             <Text style={s.yesnoTextBox}>간조시 육상진입 가능</Text>
                             <CheckBox 
                                 style={[s.checkBox, s.yesBox]}
@@ -255,7 +254,7 @@ export default ThirdDoc = (props) => {
                                onClick={()=>updateData("access", "smallShip", false)}
                             />
                         </View>
-                        <View style={[s.textWithCheckBoxContainer, s.borderBottom]}>
+                        <View style={[{width: '100%', height: `33.8%`, flexDirection: 'row', alignItems: 'center'}, s.borderBottom]}>
                             <Text style={s.yesnoTextBox}>작업선 접근 가능</Text>
                             <CheckBox 
                                 style={[s.checkBox, s.yesBox]}
@@ -272,7 +271,7 @@ export default ThirdDoc = (props) => {
                                 onClick={()=>updateData("access", "middleShip", false)}
                             />
                         </View>
-                        <View style={[s.textWithCheckBoxContainer]}>
+                        <View style={[{width: '100%', height: `33.38%`,flexDirection: 'row', alignItems: 'center'}]}>
                             <Text style={{flex: 3, paddingLeft: 7,textAlign: 'left', fontSize: 12}}>방제선 접근 가능</Text>
                             <CheckBox 
                                 style={[s.checkBox, s.yesBox]}
@@ -291,7 +290,7 @@ export default ThirdDoc = (props) => {
                         </View>
                     </View>
                 </View>
-                <View style={[s.borderBottom, {flex: 1, width: '100%', flexDirection: 'row', justifyContent:'center', alignItems: 'center'}]}>
+                <View style={[s.borderBottom, {height: `${(1/11)*100}%`, width: '100%', flexDirection: 'row', justifyContent:'center', alignItems: 'center'}]}>
                     <TextInput 
                         style={{flex: 1, padding: 4}}
                         value={data.access.field1} 
@@ -303,7 +302,7 @@ export default ThirdDoc = (props) => {
                         onClick={()=>updateData("access", "field1Val", !data.access.field1Val)}
                     />
                 </View>
-                <View style={[s.borderBottom, {flex: 1, width: '100%', flexDirection: 'row', justifyContent:'center', alignItems: 'center'}]}>
+                <View style={[s.borderBottom, {height: `${(1/11)*100}%`, width: '100%', flexDirection: 'row', justifyContent:'center', alignItems: 'center'}]}>
                     <TextInput 
                         style={{flex: 1, padding: 4}}
                         value={data.access.field2} 
@@ -315,7 +314,7 @@ export default ThirdDoc = (props) => {
                         onClick={()=>updateData("access", "field2Val", !data.access.field2Val)}
                     />
                 </View>
-                <View style={[s.borderBottom, {flex: 1, width: '100%', flexDirection: 'row', justifyContent:'center', alignItems: 'center'}]}>
+                <View style={[s.borderBottom, {height: `${(1/11)*100}%`, width: '100%', flexDirection: 'row', justifyContent:'center', alignItems: 'center'}]}>
                     <TextInput 
                         style={{flex: 1, padding: 4}}
                         value={data.access.field3} 
@@ -327,7 +326,7 @@ export default ThirdDoc = (props) => {
                         onClick={()=>updateData("access", "field3Val", !data.access.field3Val)}
                     />
                 </View>
-                <View style={[s.textWithCheckBoxContainer, { flexDirection: 'row', justifyContent:'center', alignItems: 'center'}]}>
+                <View style={[{ flexDirection: 'row', justifyContent:'center', alignItems: 'center', width: '100%', height: `${(1/11)*100}%`}]}>
                     <TextInput 
                         style={{flex: 1, padding: 4}}
                         value={data.access.field4} 
@@ -342,8 +341,8 @@ export default ThirdDoc = (props) => {
             </View>
             {/* 방제기자제 수령 및 고봔 여건 */}
             <View style={[s.secondSectionColumns, s.borderRight]}>
-                <View style={[s.seconSectionTitle, s.borderBottom, s.headerYellow]}><Text >방제기자재 수령 및 보관 여건</Text></View>
-                <View style={[s.textWithCheckBoxContainer, s.borderBottom]}>
+                <View style={[s.seconSectionTitle, s.borderBottom, s.headerYellow, {height: `${(1/11)*100}%`}]}><Text >방제기자재 수령 및 보관 여건</Text></View>
+                <View style={[s.textWithCheckBoxContainer, s.borderBottom, {height: `${(1/11)*100}%`}]}>
                     <Text style={s.yesnoTextBox}>공터 활용 가능</Text>
                     <CheckBox 
                         style={[s.checkBox, s.yesBox]}
@@ -360,7 +359,7 @@ export default ThirdDoc = (props) => {
                         onClick={()=>updateData("storage", "openSpace", false)}
                     />
                 </View>
-                <View style={[s.textWithCheckBoxContainer, s.borderBottom]}>
+                <View style={[s.textWithCheckBoxContainer, s.borderBottom, {height: `${(1/11)*100}%`}]}>
                     <Text style={s.yesnoTextBox}>공터 100m 이내</Text>
                     <CheckBox 
                         style={[s.checkBox, s.yesBox]}
@@ -377,7 +376,8 @@ export default ThirdDoc = (props) => {
                         onClick={()=>updateData("storage", "openHundredMeter", false)}
                     />
                 </View>
-                <View style={[s.textWithCheckBoxContainer, s.borderBottom]}>
+
+                <View style={[s.textWithCheckBoxContainer, s.borderBottom, {height: `${(1/11)*100}%`}]}>
                     <Text style={{flex: 3, paddingLeft: 7,textAlign: 'left', fontSize: 12}}>방제기자재 보관시설 존재</Text>
                     <CheckBox 
                         style={[s.checkBox, s.yesBox]}
@@ -394,7 +394,7 @@ export default ThirdDoc = (props) => {
                         onClick={()=>updateData("storage", "storageAvailable", false)}
                     />
                 </View>
-                <View style={[s.textWithCheckBoxContainer, s.borderBottom]}>
+                <View style={[s.textWithCheckBoxContainer, s.borderBottom, {height: `${(1/11)*100}%`}]}>
                     <Text style={{flex: 3, paddingLeft: 7,textAlign: 'left', fontSize: 12}}>보관시설 100m 이내</Text>
                     <CheckBox 
                         style={[s.checkBox, s.yesBox]}
@@ -411,7 +411,7 @@ export default ThirdDoc = (props) => {
                         onClick={()=>updateData("storage", "storageHundredMeter", false)}
                     />
                 </View>
-                <View style={[s.textWithCheckBoxContainer, s.borderBottom]}>
+                <View style={[s.textWithCheckBoxContainer, s.borderBottom, {height: `${(1/11)*100}%`}]}>
                     <Text style={s.textWithCheckBox}>선외기 활용 방제기자재 수령가능(보관은 불가)</Text>
                     <CheckBox 
                         style={{width: 24}}
@@ -419,7 +419,7 @@ export default ThirdDoc = (props) => {
                         onClick={()=>updateData("storage", "outBoardRecieve", !data.storage.outBoardRecieve)}
                     />
                 </View>
-                <View style={[s.textWithCheckBoxContainer, s.borderBottom]}>
+                <View style={[s.textWithCheckBoxContainer, s.borderBottom, {height: `${(1/11)*100}%`}]}>
                     <Text style={s.textWithCheckBox}>선착장 근처 방제기자재 보관 가능</Text>
                     <CheckBox 
                         style={{width: 24}}
@@ -427,7 +427,7 @@ export default ThirdDoc = (props) => {
                         onClick={()=>updateData("storage", "marinaReceive", !data.storage.marinaReceive)}
                     />
                 </View>
-                <View style={[s.textWithCheckBoxContainer, s.borderBottom]}>
+                <View style={[s.textWithCheckBoxContainer, s.borderBottom, {height: `${(1/11)*100}%`}]}>
                     <Text style={s.textWithCheckBox}>마을회관내 창고 활용 가능</Text>
                     <CheckBox 
                         style={{width: 24}}
@@ -435,7 +435,7 @@ export default ThirdDoc = (props) => {
                         onClick={()=>updateData("storage", "townHouseStorage", !data.storage.townHouseStorage)}
                     />
                 </View>
-                <View style={[s.borderBottom, {flex: 1, width: '100%', flexDirection: 'row', justifyContent:'center', alignItems: 'center'}]}>
+                <View style={[s.borderBottom, {height: `${(1/11)*100}%`, width: '100%', flexDirection: 'row', justifyContent:'center', alignItems: 'center'}]}>
                     <TextInput 
                         style={{flex: 1, padding: 4}}
                         value={data.storage.field1} 
@@ -447,7 +447,7 @@ export default ThirdDoc = (props) => {
                         onClick={()=>updateData("storage", "field1Val", !data.storage.field1Val)}
                     />
                 </View>
-                <View style={[s.borderBottom, {flex: 1, width: '100%', flexDirection: 'row', justifyContent:'center', alignItems: 'center'}]}>
+                <View style={[s.borderBottom, {height: `${(1/11)*100}%`, width: '100%', flexDirection: 'row', justifyContent:'center', alignItems: 'center'}]}>
                     <TextInput 
                         style={{flex: 1, padding: 4}}
                         value={data.storage.field2} 
@@ -459,7 +459,7 @@ export default ThirdDoc = (props) => {
                         onClick={()=>updateData("storage", "field2Val", !data.storage.field2Val)}
                     />
                 </View>
-                <View style={[{flex: 1, width: '100%', flexDirection: 'row', justifyContent:'center', alignItems: 'center'}]}>
+                <View style={[{height: `${(1/11)*100}%`, width: '100%', flexDirection: 'row', justifyContent:'center', alignItems: 'center'}]}>
                     <TextInput 
                         style={{flex: 1, padding: 4}}
                         value={data.storage.field3} 
@@ -474,12 +474,12 @@ export default ThirdDoc = (props) => {
             </View>
             {/* 페기물 보관 및 반출 여건 */}
             <View style={[s.secondSectionColumns, s.borderRight]}>
-                <View style={[s.seconSectionTitle, s.borderBottom, s.headerYellow]}><Text >페기물 보관 및 반출 여건</Text></View>
+                <View style={[s.seconSectionTitle, s.borderBottom, s.headerYellow, {height: `${(1/11)*100}%`, width: '100%'}]}><Text >폐기물 보관 및 반출 여건</Text></View>
                 <View style={[s.textWithCheckBoxContainer, s.borderBottom]}>
                     <Text style={s.yesnoTextBox}>공터 활용 가능</Text>
                     <CheckBox 
                         style={[s.checkBox, s.yesBox]}
-                        leftText={"yes"} 
+                        leftText={"yes"}  
                         leftTextStyle={s.checkBoxText}
                         isChecked={data.trash.openSpace} 
                         onClick={()=>updateData("trash", "openSpace", true)}
@@ -628,7 +628,7 @@ export default ThirdDoc = (props) => {
             </View>
             {/* 해양 환경 민간 개소 */}
             <View style={[s.secondSectionColumns]}>
-                <View style={[s.seconSectionTitle, s.borderBottom, s.headerYellow]}><Text >해양 환경 민감개소</Text></View>
+                <View style={[s.textWithCheckBoxContainer, s.seconSectionTitle, s.borderBottom, s.headerYellow]}><Text >해양환경 민감 개소</Text></View>
                 <View style={[s.textWithCheckBoxContainer, s.borderBottom]}>
                     <Text style={s.yesnoTextBox}>농수로 인접</Text>
                     <CheckBox 
@@ -714,7 +714,7 @@ export default ThirdDoc = (props) => {
                         onClick={()=>updateData("environment", "nearProtective", false)}
                     />
                 </View>
-                <View style={[s.borderBottom, {flex: 1, width: '100%', flexDirection: 'row', justifyContent:'center', alignItems: 'center'}]}>
+                <View style={[s.textWithCheckBoxContainer, s.borderBottom, { flexDirection: 'row', justifyContent:'center', alignItems: 'center'}]}>
                     <TextInput 
                         style={{flex: 1, padding: 4}}
                         value={data.environment.field1} 
@@ -1373,9 +1373,10 @@ const s = StyleSheet.create({
         fontSize: 12
     },
     textWithCheckBoxContainer: {
-        flex:1,
         flexDirection: 'row',
         alignItems: 'center',
+        height: `${(1/11)*100}%`, 
+        width: '100%'
     },
     C1S2: {
         flex: 5
@@ -1401,7 +1402,7 @@ const s = StyleSheet.create({
         flex: 1,
     },
     seconSectionTitle: {
-        flex: 1,
+        // flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
         width: '100%'

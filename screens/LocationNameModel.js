@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { StyleSheet, Text, View, TextInput, TouchableOpacity } from "react-native";
+import { StyleSheet, Text, View, TextInput, TouchableOpacity, KeyboardAvoidingView } from "react-native";
 
 export default LocationNameModal = (props) => {
     const [textValue, onChangeText] = useState('')
@@ -11,7 +11,11 @@ export default LocationNameModal = (props) => {
         }
     }
     return (
-        <View style={style.modalCenter}>
+        <KeyboardAvoidingView 
+            style={style.modalCenter}
+            behavior={'padding'}
+            keyboardVerticalOffset={0}
+        >
             <View style={style.modalView}>
                 <TextInput 
                     style={style.textInputStyle}
@@ -34,7 +38,7 @@ export default LocationNameModal = (props) => {
                     </TouchableOpacity>
                 </View>
             </View>
-        </View>
+        </KeyboardAvoidingView>
     );
 };
 

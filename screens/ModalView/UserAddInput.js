@@ -1,5 +1,5 @@
 import React, {useState, useEffect } from 'react';
-import {View, TextInput, StyleSheet, Text, TouchableOpacity} from 'react-native';
+import {View, TextInput, StyleSheet, Text, TouchableOpacity, KeyboardAvoidingView} from 'react-native';
 import User from '../../Models/User'
 import AsyncStorage from '@react-native-community/async-storage';
 
@@ -35,7 +35,12 @@ const UserInputView = (props) => {
 
 
 
-    return <TouchableOpacity style={{flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: "rgba(0, 0, 1, 0.5)"}} onPress={props.close}>
+    return <KeyboardAvoidingView
+        behavior={'padding'}
+        keyboardVerticalOffset={0}
+        style={{flex: 1}}
+    >
+        <TouchableOpacity style={{flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: "rgba(0, 0, 1, 0.5)"}} onPress={props.close}>
         <View style={styles.modalBox}>
             <View style={{paddingHorizontal: 30, paddingVertical: 30}}>
                 <Text style={{fontWeight: 'bold', fontSize: 30}}>신규 유저 입력</Text>
@@ -117,7 +122,7 @@ const UserInputView = (props) => {
             </View>
         </View>
     </TouchableOpacity>
-        
+    </KeyboardAvoidingView>
 };
 
 export default UserInputView;

@@ -4,6 +4,7 @@ import MapView, { PROVIDER_GOOGLE, Polygon, Marker, Polyline, Circle, fitToCoord
 import DrawerNavButton from '../components/DrawerNavButton';
 import InitialRegion from '../Models/InitialRegion';
 const DefaultLocationMap = (props) => {
+
     const [initialLocation, setInitial] = useState({
         latitude: 35.82991503548142,
         longitude: 127.66985032707453,
@@ -16,20 +17,23 @@ const DefaultLocationMap = (props) => {
     }, [])
 
     useEffect(()=>{
-
+        console.log("new coordinate", initialLocation)
     }, [initialLocation])
 
     const getInitialLocation = async() => {
         try {
             await AsyncStorage.getItem('initialLocation', (err, result)=>{
-                let parsed = JSON.parse(result)
-                let region = new InitialRegion(
-                    parsed.latitude,
-                    parsed.longitude,
-                    parsed.latitudeDelta,
-                    parsed.longitudeDelta
-                )
-                setInitial(region)
+                console.log("default place", result)
+                if (result !== null) {
+                    let parsed = JSON.parse(result)
+                    let region = new InitialRegion(
+                        parsed.latitude,
+                        parsed.longitude,
+                        parsed.latitudeDelta,
+                        parsed.longitudeDelta
+                    )
+                    setInitial(region)
+                }
             })
         } catch (error) {
 

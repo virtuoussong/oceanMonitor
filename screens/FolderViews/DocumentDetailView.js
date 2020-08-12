@@ -20,9 +20,8 @@ import * as areaAction4 from '../../Redux/actions/area4';
 import {DocDetailModel} from '../../Models/DocDetailModel'
 import TitleInputView from '../DocDetail/components/DocDetail/TitleInput';
 
-import ViewShot, {captureRef} from 'react-native-view-shot' 
+import ViewShot from 'react-native-view-shot' 
 import * as MailComposer from 'expo-mail-composer';
-import RNImageToPdf from 'react-native-image-to-pdf';
 
 import * as Print from 'expo-print';
 import * as Sharing from 'expo-sharing';
@@ -234,7 +233,7 @@ export default DocumentDetailView = (props) => {
         }
       };
 
-      const htmlContent = async (i) => {
+    const htmlContent = async (i) => {
         try {
             let src = await copyFromAssets(i);
             if(Platform.OS === 'ios') {

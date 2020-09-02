@@ -161,8 +161,15 @@ export default DocumentDetailView = (props) => {
     let fifthDocRef = React.useRef(null)
     let sixthDocRef = React.useRef(null)
 
-    const exportPDF = async() => {
-        console.log("pdf")
+    const exportPDF = () => {
+        scrollRef.current.scrollTo({ x: 0, y: 0, animated: true })
+        setTimeout(function () {exportPDF2()}, 1000)
+    }
+
+    const exportPDF2 = async() => {
+        // scrollRef.current.scrollTo({ x: 0, y: 0, animated: true })
+        // console.log("pdf")
+        
         let uri = await viewShotRef.current.capture()
         let uri2 = await viewShotRef2.current.capture()
         let uri3 = await viewShotRef3.current.capture()
@@ -340,6 +347,7 @@ export default DocumentDetailView = (props) => {
     let viewShotRef5 = React.useRef()
     let viewShotRef6 = React.useRef()
 
+    let scrollRef = React.useRef()
     return <View style={styles.container}>
 
             {props.isBarShown && <View style={{width: '100%', height: 55, flexDirection: 'row'}}>
@@ -377,6 +385,7 @@ export default DocumentDetailView = (props) => {
                         horizontal={true}
                         snapToAlignment={"center"}
                         pagingEnabled={true}
+                        ref={scrollRef}
                     >
                         <BasicInfoDoc  refData={firstDocRef} data={data.first} isBarShown={props.isBarShown}/>
 

@@ -59,7 +59,7 @@ let dummyData = new RegionInfo(
 
     "",
     "",
-    ""
+    null
 )
 
 export default RegionDetailView = (props) => {
@@ -71,6 +71,10 @@ export default RegionDetailView = (props) => {
 
     useEffect(()=>{
         regionData.current = data
+    }, [])
+
+    useEffect(()=>{
+        // regionData.current = data
     }, [data])
 
     const nav = useNavigation()
@@ -111,7 +115,8 @@ export default RegionDetailView = (props) => {
     const loadData = async (id) => {
         await getRegionDoc(id).then((i)=>{
             let item = i.rows._array[0].data
-            let parsed = JSON.parse(item)  
+            let parsed = JSON.parse(item) 
+            regionData.current = parsed 
             setData(parsed)
         })
     }
@@ -144,7 +149,7 @@ export default RegionDetailView = (props) => {
 
     const toggleCamera = async() => {
         // setModal(!isModalOn)
-        let permissionResult = await ImagePicker.requestCameraRollPermissionsAsync();
+        let permissionResult = await ImagePicker.requestCameraPermissionsAsync();
 
         if (permissionResult.granted === false) {
         alert("Permission to access camera roll is required!");
@@ -417,7 +422,15 @@ export default RegionDetailView = (props) => {
                         </View> 
                         : 
                         <View style={{flex:1}}>
-                            <Image style={{flex:1}} source={{uri: data.imageLink}}/>
+                            <Image 
+                                style={{flex:1}} 
+                                source={
+                                    {
+                                        uri: data.imageLink,
+                                        cache: 'force-cache'
+                                    }
+                                }
+                            />
                             <View style={{flexDirection: 'row', width: 100, height: 40, position: 'absolute', bottom: 30, right: 16}}>
                                 <TouchableOpacity onPress={()=>toggleCamera()} style={{flex:1, justifyContent:'center', alignItems:'center'}}>
                                     <Image style={[{width: 40, height: 40}]} source={require('../../../../assets/cameraIcon.png')}/>

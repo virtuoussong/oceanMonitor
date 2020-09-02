@@ -594,7 +594,7 @@ const OceanMapView = (props) => {
                   coordinates={i.coordinates}
                   strokeWidth={3}
                   strokeColor={"yellow"}
-                  // fillColor={"#000, rgba(r,g,b,0.5)"}
+                  fillColor={"rgba(23,124,239,0.3)"}
                   lineCap={"round"}
                   tappable={true}
                   
@@ -651,7 +651,7 @@ const OceanMapView = (props) => {
                 coordinates={newPolygon}
                 strokeWidth={3}
                 strokeColor={"yellow"}
-                // fillColor={"#000, rgba(r,g,b,0.5)"}
+                fillColor={"rgba(79,129,189,0.3)"}
                 lineCap={"round"}
                 tappable={true}
                 geodesic={true}

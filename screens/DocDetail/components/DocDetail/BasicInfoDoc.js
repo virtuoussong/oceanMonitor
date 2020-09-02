@@ -7,6 +7,8 @@ import AreaDoc from '../../../../Models/AreaDoc';
 import Camera from '../../../Camera';
 import { Video } from 'expo-av';
 import VideoPlayer from 'expo-video-player'
+import FastImage from 'expo-react-native-fast-image';
+
 
 import * as ImagePicker from 'expo-image-picker';
 // import ImagePicker from 'react-native-image-picker';
@@ -264,7 +266,14 @@ export default BasicInfoDoc = (props) => {
                                 </View>
                             </View> : 
                             <View style={{flex: 1}}>
-                                <Image style={{flex: 1}} source={{uri: areaData.imageLink}}/> 
+                                <Image style={{flex: 1}} 
+                                    source={
+                                        {
+                                            uri: areaData.imageLink,
+                                            cache: 'force-cache'
+                                        }
+                                    }
+                                /> 
                                 <View style={{flexDirection: 'row', width: 100, height: 40, position: 'absolute', bottom: 30, right: 16}}>
                                     <TouchableOpacity onPress={()=>cameraTapped()}>
                                         <Image style={[{width: 40, height: 40}]} source={require("../../../../assets/cameraIcon.png")}/>

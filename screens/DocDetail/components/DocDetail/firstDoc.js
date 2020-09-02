@@ -319,7 +319,14 @@ export default FirstDoc = (props) => {
                     </View> 
                     : 
                     <View style={{flex:1}}>
-                      <Image style={{flex:1}} source={{uri: data.firstSection.imageLink}}/>
+                      <Image style={{flex:1}} 
+                        source={
+                          {
+                            uri: data.firstSection.imageLink,
+                            cache: 'force-cache'
+                          }
+                        }
+                      />
                       <View style={{flexDirection: 'row', width: 100, height: 40, position: 'absolute', bottom: 30, right: 16}}>
                         <TouchableOpacity onPress={()=>takePhoto('firstSection', "imageLink")} style={{flex:1, justifyContent:'center', alignItems:'center'}}>
                           <Image style={[{width: 40, height: 40}]} source={require('../../../../assets/cameraIcon.png')}/>
@@ -527,7 +534,14 @@ export default FirstDoc = (props) => {
                     </View> 
                     : 
                     <View style={{flex:1}}>
-                      <Image style={{flex:1}} source={{uri: data.secondSection.imageLink}}/>
+                      <Image style={{flex:1}} 
+                        source={
+                          {
+                            uri: data.secondSection.imageLink, 
+                            cache: 'force-cache'
+                          }
+                        }
+                      />
                       <View style={{flexDirection: 'row', width: 100, height: 40, position: 'absolute', bottom: 30, right: 16}}>
                         <TouchableOpacity onPress={()=>takePhoto('secondSection', "imageLink")} style={{flex:1, justifyContent:'center', alignItems:'center'}}>
                           <Image style={[{width: 40, height: 40}]} source={require('../../../../assets/cameraIcon.png')}/>
@@ -755,7 +769,14 @@ export default FirstDoc = (props) => {
                     </View> 
                     : 
                     <View style={{flex:1}}>
-                      <Image style={{flex:1}} source={{uri: data.thirdSection.imageLink}}/>
+                      <Image style={{flex:1}} 
+                        source={
+                          {
+                            uri: data.thirdSection.imageLink,
+                            cache: 'force-cache'
+                          }
+                        }
+                      />
                       <View style={{flexDirection: 'row', width: 100, height: 40, position: 'absolute', bottom: 30, right: 16}}>
                         <TouchableOpacity onPress={()=>takePhoto('thirdSection', "imageLink")} style={{flex:1, justifyContent:'center', alignItems:'center'}}>
                           <Image style={[{width: 40, height: 40}]} source={require('../../../../assets/cameraIcon.png')}/>

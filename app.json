@@ -1,11 +1,11 @@
 {
   "expo": {
     "name": "해양오염도 측정 앱",
-    "slug": "OceanMonitor",
+    "slug": "oceanMonitor",
+    "privacy": "hidden",
     "platforms": [
       "ios",
-      "android",
-      "web"
+      "android"
     ],
     "version": "1.0.0",
     "orientation": "landscape",

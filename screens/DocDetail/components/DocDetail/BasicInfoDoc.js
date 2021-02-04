@@ -57,10 +57,6 @@ export default BasicInfoDoc = (props) => {
           return;
         }
 
-        // ImagePickerIOS.openSelectDialog({}, imageUri => {
-        //     // this.setState({ image: imageUri });
-        //   }, error => console.error(error));
-
         let result = await ImagePicker.launchImageLibraryAsync({
             mediaTypes: ImagePicker.MediaTypeOptions.All,
             allowsEditing: true,
@@ -77,9 +73,6 @@ export default BasicInfoDoc = (props) => {
             })
         }
 
-        // ImagePicker.launchImageLibrary(options, (response) => {
-        //     // Same code as in above section!
-        // });
     }
 
     const cameraTapped = async () => {
@@ -106,16 +99,6 @@ export default BasicInfoDoc = (props) => {
         }
     }
 
-    // const toggleCamera = () => {
-    //     setModal(!isModalOn)
-    // }
-
-    // const savePhoto=(i)=> {
-    //     editAreaData({
-    //         ...areaData,
-    //         imageLink: i
-    //     })
-    // }
 
     const toggleCalendar = () =>{
         setCalendarOn(!isCalendarOn)
@@ -374,16 +357,13 @@ const styles = StyleSheet.create({
     },
     container: {
         flex:1,
-    
         justifyContent: 'flex-start',
         alignItems: 'flex-start',
-        backgroundColor: 'white',
-
         borderStyle: 'solid',
         borderColor: 'black',
         borderWidth: 1,
         borderRightWidth: 0,
-        backgroundColor: 'white'
+        backgroundColor: '#000'
     }, 
     
 })

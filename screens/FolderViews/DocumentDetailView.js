@@ -181,30 +181,30 @@ export default DocumentDetailView = (props) => {
         //     format: "jpg",
         //     quality: 1
         //   })
+        if (Platform.OS === "android") {
 
-        console.log(uri2)
-        let newUri = `file://${uri}`
-        let newUri2 = `file://${uri2}`
-        let newUri3 = `file://${uri3}`
-        let newUri4 = `file://${uri4}`
-        let newUri5 = `file://${uri5}`
-        let newUri6 = `file://${uri6}`
-        // myAsyncPDFFunction([newUri, newUri2, newUri3, newUri4, newUri5, newUri6])
-        // myAsyncPDFFunction([uri, uri2, uri3, uri4, uri5, uri6])
-       
-        // console.log("html image path", i[0])
-        const img1 = await htmlContent(newUri)
-        const img2 = await htmlContent(newUri2)
-        const img3 = await htmlContent(newUri3)
-        const img4 = await htmlContent(newUri4)
-        const img5 = await htmlContent(newUri5)
-        const img6 = await htmlContent(newUri6)
+            myAsyncPDFFunction([uri, uri2, uri3, uri4, uri5, uri6])
 
-        myAsyncPDFFunction([img1, img2, img3, img4, img5, img6])
+        } else if (Platform.OS === "ios") {
+            let newUri = `file://${uri}`
+            let newUri2 = `file://${uri2}`
+            let newUri3 = `file://${uri3}`
+            let newUri4 = `file://${uri4}`
+            let newUri5 = `file://${uri5}`
+            let newUri6 = `file://${uri6}`
+            
+            const img1 = await htmlContent(newUri)
+            const img2 = await htmlContent(newUri2)
+            const img3 = await htmlContent(newUri3)
+            const img4 = await htmlContent(newUri4)
+            const img5 = await htmlContent(newUri5)
+            const img6 = await htmlContent(newUri6)
+    
+            myAsyncPDFFunction([img1, img2, img3, img4, img5, img6])
+        }
+        
+        
 
-        // myAsyncPDFFunction(html)
-
-        // openEmail([newUri, newUri2, newUri3, newUri4, newUri5, newUri6])
     }
 
     const copyFromAssets = async (asset) => {

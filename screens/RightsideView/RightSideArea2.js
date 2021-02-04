@@ -10,6 +10,7 @@ import {
     TouchableHighlight,
     Text
 } from "react-native";
+// import Modal from 'react-native-modal';
 import { HeaderBackButton } from 'react-navigation-stack'
 import RightSideCell from '../../components/RightSideFlatListCell';
 import RegionDetail from '../DocDetail/components/RegionDetail/RegionDetailView';
@@ -124,7 +125,10 @@ export default RightSideArea2 = (props) => {
     return (
         <SafeAreaView style={styles.viewContainer}>
 
-            <Modal visible={isDocOn} animationType="slide">
+            <Modal 
+                visible={isDocOn} 
+                animationType="slide"
+            >
                 <RegionDetail 
                     id={locationId} 
                     docID={docID} 

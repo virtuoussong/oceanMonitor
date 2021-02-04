@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import {StyleSheet, View, Text, TextInput, Image, TouchableOpacity, Modal, Dimensions} from 'react-native';
+import {StyleSheet, View, Text, TextInput, Image, TouchableOpacity, Modal, Dimensions, Platform, Share} from 'react-native';
 import { useNavigation } from '@react-navigation/native'
 import DrawerButton from '../../../../components/DrawerNavButton';
 import TitleInputView from '../DocDetail/TitleInput';
@@ -20,6 +20,9 @@ import * as Print from 'expo-print';
 import * as Sharing from 'expo-sharing';
 import { Asset } from "expo-asset";
 import * as ImageManipulator from 'expo-image-manipulator';
+import * as MediaLibrary from "expo-media-library";
+
+import RNImageToPdf from 'react-native-image-to-pdf';
 
 let dummyData = new RegionInfo(
     "",
@@ -243,7 +246,6 @@ export default RegionDetailView = (props) => {
     }
 
     useEffect(()=>{
-        console.log("key ㄴㄷㅆㄷㅇ", key)
         if (key === "recordDataSun" || key === "recordDataMoon") {
             setCalendarOn(!isCalendarOn)
         }
@@ -258,18 +260,92 @@ export default RegionDetailView = (props) => {
 
     const exportPDF = async() => {
         let uri = await viewShotRef.current.capture()
-        let newUri = `file://${uri}`
-        const img1 = await htmlContent(newUri)
-        myAsyncPDFFunction([img1])
+        
+        
+        if (Platform.OS === 'ios') {
+            let newUri = `file://${uri}`
+            const img1 = await htmlContent(newUri)
+            myAsyncPDFFunction([img1])
+        } else if (Platform.OS === 'android') {            
+            getContentForAndroid(uri)
+        }
+        
     }
 
-    const htmlContent = async (i) => {
+    const getContentForAndroid = async(url) => {
+
+        const htmlContent = `
+            <!DOCTYPE html>
+            <html lang="en">
+            <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Pdf Content</title>
+            <style>
+                body {
+                    font-size: 16px;
+                    color: rgb(255, 196, 0);
+                    float: none !important;
+                }
+                h1 {
+                    text-align: center;
+                }
+
+                div {
+                    width: ${Dimensions.get('screen').width};
+                    height: ${Dimensions.get('screen').height};
+                }
+
+                .print:last-child {
+                    page-break-after: auto;
+               }
+
+                .fit {
+                    display: block;
+                    max-width: 100%;
+                    max-height: 100%;
+                    width: auto;
+                    height: auto;
+                }
+            </style>
+            </head>
+            <body>
+                <div class="print"><img class=fit src=${url}></div>
+            </body>
+            </html>
+        `;
+
         try {
-            let src = await copyFromAssets(i);
-            if(Platform.OS === 'ios') {
-                src = await processLocalImageIOS(src);
-            }
+            const { uri } = await Print.printToFileAsync({ 
+                html: htmlContent,
+                width: Dimensions.get('screen').width,
+                height: Dimensions.get('screen').height-50, 
+            });
+            await Sharing.shareAsync(uri);
+            // openEmail([`file://${uri}`])
+        } catch (err) {
+            console.error(err);
+        }
+
+    }
+
+
+    const htmlContent = async (i) => {
+
+        try {
+            let src = await copyFromAssets(i)
+            src = await processLocalImageIOS(src)
             return src
+
+            // if(Platform.OS === 'ios') {
+            //     return src = await processLocalImageIOS(src);
+            // } else if (Platform.OS === 'android') {
+            //     const permission = await MediaLibrary.requestPermissionsAsync();
+            //     console.log(`android permission :${permission}`)
+            //     return i
+            // }
+            // return src
+
         } catch (error) {
             console.log(error);
         }
@@ -320,6 +396,7 @@ export default RegionDetailView = (props) => {
                         font-size: 16px;
                         color: rgb(255, 196, 0);
                         float: none !important;
+                        background-color: white;
                     }
                     h1 {
                         text-align: center;
@@ -469,9 +546,10 @@ export default RegionDetailView = (props) => {
             </View>
             <View style={[{flex: 1, width: '100%', justifyContent: 'center', paddingLeft: 20}, styles.borderBottom, styles.headerLightBlue2,]}><Text>▶일반현황</Text></View>
             <View style={[{flex: 3, width: '100%'}, styles.flexRow, styles.borderBottom]}>
+                
                 <View style={[{flex: 1}, styles.borderRight, styles.center]}>
-                <View style={[{flex:2,  width: '100%'}, styles.center, styles.borderBottom, styles.headerYellowColor]}><Text style={{textAlign: 'center'}}>{"주민수\n(명)"}</Text></View>
-                    <View style={[{flex:1,  width: '100%'}, styles.center,]}>
+                    <View style={[{height:'65%',  width: '100%'}, styles.center, styles.borderBottom, styles.headerYellowColor]}><Text style={{textAlign: 'center'}}>{"주민수\n(명)"}</Text></View>
+                    <View style={[{height:'35%',  width: '100%'}, styles.center,]}>
                         <TextInput style={{flex:1, width: '100%', textAlign: "center"}} 
                             onChange={(i)=>setData({
                             ...data,
@@ -481,9 +559,10 @@ export default RegionDetailView = (props) => {
                         />
                     </View>
                 </View>
+
                 <View style={[{flex: 1}, styles.borderRight, styles.center]}>
-                    <View style={[{height: '66%',  width: '100%'}, styles.center, styles.borderBottom, styles.headerYellowColor]}><Text style={{textAlign: 'center'}}>가구수</Text></View>
-                    <View style={[{height: '34%',  width: '100%'}, styles.center]}>
+                    <View style={[{height: '65%', width: '100%'}, styles.center, styles.borderBottom, styles.headerYellowColor]}><Text style={{textAlign: 'center'}}>가구수</Text></View>
+                    <View style={[{height: '35%', width: '100%'}, styles.center]}>
                         <TextInput style={{flex:1, width: '100%', textAlign: "center"}} 
                             onChange={(i)=>setData({
                             ...data,
@@ -493,23 +572,25 @@ export default RegionDetailView = (props) => {
                         />
                     </View>
                 </View>
-                <View style={[{flex: 1}, styles.borderRight, styles.center]}>
-                    <View style={[{flex:2,  width: '100%'}, styles.center, styles.borderBottom, styles.headerYellowColor]}><Text style={{textAlign: 'center'}}>{"어촌계\n반수"}</Text></View>
-                    <View style={[{flex:1,  width: '100%'}, styles.center,]}>
-                        <TextInput style={{flex:1, width: '100%', textAlign: "center"}} 
-                            onChange={(i)=>setData({
-                            ...data,
-                            banCount: i.nativeEvent.text
-                            })} 
-                            value={data.banCount}
-                        />
+
+                    <View style={[{flex: 1}, styles.borderRight, styles.center]}>
+                        <View style={[{height:'65%',  width: '100%'}, styles.center, styles.borderBottom, styles.headerYellowColor]}><Text style={{textAlign: 'center'}}>{"어촌계\n반수"}</Text></View>
+                        <View style={[{height: '35%',  width: '100%'}, styles.center]}>
+                            <TextInput style={{flex:1, width: '100%', textAlign: "center"}} 
+                                onChange={(i)=>setData({
+                                ...data,
+                                banCount: i.nativeEvent.text
+                                })} 
+                                value={data.banCount}
+                            />
+                        </View>
                     </View>
-                </View>
+
                 <View style={[{flex: 1}, styles.borderRight, styles.center]}>
-                    <View style={[{flex:2,  width: '100%'}, styles.center, styles.borderBottom, styles.headerYellowColor]}>
+                    <View style={[{height: '65%',  width: '100%'}, styles.center, styles.borderBottom, styles.headerYellowColor]}>
                         <Text style={{textAlign: 'center'}}>{"어촌계\n인원수"}</Text>
                     </View>
-                    <View style={[{flex:1,  width: '100%'}, styles.center,]}>
+                    <View style={[{height: '35%',  width: '100%'}, styles.center,]}>
                         <TextInput style={{flex:1, width: '100%', textAlign: "center"}} 
                             onChange={(i)=>setData({
                             ...data,
@@ -771,7 +852,7 @@ export default RegionDetailView = (props) => {
             <View style={[{flex: 1, width: '100%', justifyContent: 'center', alignItems: 'center'}, styles.borderBottom, styles.headerYellowColor]}>
                 <Text>해양환경 민감 개소 및 특징</Text>
             </View>
-            <View style={[{flex: 3, width: '100%', justifyContent: 'top', padding: 10}, styles.borderBottom]}>
+            <View style={[{flex: 3, width: '100%', justifyContent: 'center', padding: 10}, styles.borderBottom]}>
                 <TextInput multiline={true} style={{flex:1, width: '100%', textAlignVertical: 'top', textAlign: "left"}} 
                     onChange={(i)=>setData({
                         ...data,
@@ -805,7 +886,8 @@ const styles = StyleSheet.create({
     constainer: {
         flex: 1,
         justifyContent: 'center',
-        alignItems: 'center'
+        alignItems: 'center', 
+        backgroundColor: 'white'
     },
     center: {
         justifyContent: 'center',

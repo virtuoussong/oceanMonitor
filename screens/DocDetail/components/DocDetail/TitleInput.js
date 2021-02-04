@@ -125,7 +125,8 @@ const styles = StyleSheet.create({
         borderColor: 'black',
         borderWidth: 1,
         borderRightWidth: 0,
-        borderLeftWidth: 0
+        borderLeftWidth: 0,
+        backgroundColor: 'white'
     },
     areaName: {
         padding: 20,
@@ -173,7 +174,8 @@ const styles = StyleSheet.create({
         borderLeftWidth: 1,
         borderLeftColor: 'black',
         justifyContent: 'center',
-        textAlign: 'center'
+        textAlign: 'center',
+        backgroundColor: 'white'
         
     },
     agentBoxRow: {

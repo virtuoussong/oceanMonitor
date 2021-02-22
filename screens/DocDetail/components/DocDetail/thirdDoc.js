@@ -437,6 +437,7 @@ export default ThirdDoc = (props) => {
                 </View>
                 <View style={[s.borderBottom, {height: `${(1/11)*100}%`, width: '100%', flexDirection: 'row', justifyContent:'center', alignItems: 'center'}]}>
                     <TextInput 
+                        placeholderTextColor={"#000"}
                         style={{flex: 1, padding: 4}}
                         value={data.storage.field1} 
                         onChange={(i)=>updateData("storage", "field1", i.nativeEvent.text)}
@@ -449,6 +450,7 @@ export default ThirdDoc = (props) => {
                 </View>
                 <View style={[s.borderBottom, {height: `${(1/11)*100}%`, width: '100%', flexDirection: 'row', justifyContent:'center', alignItems: 'center'}]}>
                     <TextInput 
+                        placeholderTextColor={"#000"}
                         style={{flex: 1, padding: 4}}
                         value={data.storage.field2} 
                         onChange={(i)=>updateData("storage", "field2", i.nativeEvent.text)}
@@ -461,6 +463,7 @@ export default ThirdDoc = (props) => {
                 </View>
                 <View style={[{height: `${(1/11)*100}%`, width: '100%', flexDirection: 'row', justifyContent:'center', alignItems: 'center'}]}>
                     <TextInput 
+                        placeholderTextColor={"#000"}
                         style={{flex: 1, padding: 4}}
                         value={data.storage.field3} 
                         onChange={(i)=>updateData("storage", "field3", i.nativeEvent.text)}
@@ -579,6 +582,7 @@ export default ThirdDoc = (props) => {
                 </View>
                 <View style={[s.borderBottom, {flex: 1, width: '100%', flexDirection: 'row', justifyContent:'center', alignItems: 'center'}]}>
                     <TextInput 
+                        placeholderTextColor={"#000"}
                         style={{flex: 1, padding: 4}}
                         value={data.trash.field1} 
                         onChange={(i)=>updateData("trash", "field1", i.nativeEvent.text)}
@@ -591,6 +595,7 @@ export default ThirdDoc = (props) => {
                 </View>
                 <View style={[s.borderBottom, {flex: 1, width: '100%', flexDirection: 'row', justifyContent:'center', alignItems: 'center'}]}>
                     <TextInput 
+                        placeholderTextColor={"#000"}
                         style={{flex: 1, padding: 4}}
                         value={data.trash.field2} 
                         onChange={(i)=>updateData("trash", "field2", i.nativeEvent.text)}
@@ -603,6 +608,7 @@ export default ThirdDoc = (props) => {
                 </View>
                 <View style={[s.borderBottom, {flex: 1, width: '100%', flexDirection: 'row', justifyContent:'center', alignItems: 'center'}]}>
                     <TextInput 
+                        placeholderTextColor={"#000"}
                         style={{flex: 1, padding: 4}}
                         value={data.trash.field3} 
                         onChange={(i)=>updateData("trash", "field3", i.nativeEvent.text)}
@@ -615,6 +621,7 @@ export default ThirdDoc = (props) => {
                 </View>
                 <View style={[{flex: 1, width: '100%', flexDirection: 'row', justifyContent:'center', alignItems: 'center'}]}>
                     <TextInput 
+                        placeholderTextColor={"#000"}
                         style={{flex: 1, padding: 4}}
                         value={data.trash.field4} 
                         onChange={(i)=>updateData("trash", "field4", i.nativeEvent.text)}
@@ -716,6 +723,7 @@ export default ThirdDoc = (props) => {
                 </View>
                 <View style={[s.textWithCheckBoxContainer, s.borderBottom, { flexDirection: 'row', justifyContent:'center', alignItems: 'center'}]}>
                     <TextInput 
+                        placeholderTextColor={"#000"}
                         style={{flex: 1, padding: 4}}
                         value={data.environment.field1} 
                         onChange={(i)=>updateData("environment", "field1", i.nativeEvent.text)}
@@ -728,6 +736,7 @@ export default ThirdDoc = (props) => {
                 </View>
                 <View style={[s.borderBottom, {flex: 1, width: '100%', flexDirection: 'row', justifyContent:'center', alignItems: 'center'}]}>
                     <TextInput 
+                        placeholderTextColor={"#000"}
                         style={{flex: 1, padding: 4}}
                         value={data.environment.field2} 
                         onChange={(i)=>updateData("environment", "field2", i.nativeEvent.text)}
@@ -740,6 +749,7 @@ export default ThirdDoc = (props) => {
                 </View>
                 <View style={[s.borderBottom, {flex: 1, width: '100%', flexDirection: 'row', justifyContent:'center', alignItems: 'center'}]}>
                     <TextInput 
+                        placeholderTextColor={"#000"}
                         style={{flex: 1, padding: 4}}
                         value={data.environment.field3} 
                         onChange={(i)=>updateData("environment", "field3", i.nativeEvent.text)}
@@ -752,6 +762,7 @@ export default ThirdDoc = (props) => {
                 </View>
                 <View style={[s.borderBottom, {flex: 1, width: '100%', flexDirection: 'row', justifyContent:'center', alignItems: 'center'}]}>
                     <TextInput 
+                        placeholderTextColor={"#000"}
                         style={{flex: 1, padding: 4}}
                         value={data.environment.field4} 
                         onChange={(i)=>updateData("environment", "field4", i.nativeEvent.text)}
@@ -764,6 +775,7 @@ export default ThirdDoc = (props) => {
                 </View>
                 <View style={[{flex: 1, width: '100%', flexDirection: 'row', justifyContent:'center', alignItems: 'center'}]}>
                     <TextInput 
+                        placeholderTextColor={"#000"}
                         style={{flex: 1, padding: 4}}
                         value={data.environment.field5} 
                         onChange={(i)=>updateData("environment", "field5", i.nativeEvent.text)}
@@ -933,6 +945,7 @@ export default ThirdDoc = (props) => {
                             <View style={[{justifyContent: 'center', alignItems: 'center', width: '100%', height: '46.5%'}, s.borderBottom, s.headerYellow]}>
                                 <TextInput 
                                     placeholder={"직접\n입력"}
+                                    placeholderTextColor={"#000"}
                                     style={{flex:1, width: '100%', textAlign: 'center'}}
                                     value={data.agent.field1} 
                                     onChange={(i)=>updateData("agent", "field1", i.nativeEvent.text)}
@@ -949,6 +962,7 @@ export default ThirdDoc = (props) => {
                             <View style={[{justifyContent: 'center', alignItems: 'center', width: '100%', height: '46.5%'}, s.borderBottom, s.headerYellow]}>
                                 <TextInput 
                                     placeholder={"직접입력"}
+                                    placeholderTextColor={"#000"}
                                     style={{flex:1, width: '100%', textAlign: 'center'}}
                                     value={data.agent.field2} 
                                     onChange={(i)=>updateData("agent", "field2", i.nativeEvent.text)}
@@ -965,6 +979,7 @@ export default ThirdDoc = (props) => {
                             <View style={[{justifyContent: 'center', alignItems: 'center', width: '100%', height: '46.5%'}, s.borderBottom, s.headerYellow]}>
                                 <TextInput 
                                     placeholder={"직접입력"}
+                                    placeholderTextColor={"#000"}
                                     style={{flex:1, width: '100%', textAlign: 'center'}}
                                     value={data.agent.field3} 
                                     onChange={(i)=>updateData("agent", "field3", i.nativeEvent.text)}
@@ -981,6 +996,7 @@ export default ThirdDoc = (props) => {
                             <View style={[{justifyContent: 'center', alignItems: 'center', width: '100%', height: '46.5%'}, s.borderBottom, s.headerYellow]}>
                                 <TextInput 
                                     placeholder={"직접입력"}
+                                    placeholderTextColor={"#000"}
                                     style={{flex:1, width: '100%', textAlign: 'center'}}
                                     value={data.agent.field4} 
                                     onChange={(i)=>updateData("agent", "field4", i.nativeEvent.text)}
@@ -1047,7 +1063,7 @@ export default ThirdDoc = (props) => {
             </View>
             <View style={[s.lastSection]}>
                 <View style={[{flex: 3}, s.borderRight]}>
-                    <View style={[{flex:1}, s.borderBottom, s.flexWrapper, s.headerYellow]}><Text>선박</Text></View>
+                    <View style={[{flex:1}, s.borderBottom, s.flexWrapper, s.headerYellow]}><Text>선박(척)</Text></View>
                     <View style={[{flex:2, flexDirection: 'row'}]}>
                         <View style={[{flex:1}, s.borderRight]}>
                             <View style={[{flex:1}, s.borderBottom, s.flexWrapper, s.headerYellow]}><Text>방제선</Text></View>
@@ -1076,7 +1092,7 @@ export default ThirdDoc = (props) => {
                     </View>
                 </View>
                 <View style={[{flex: 4}, s.borderRight]}>
-                    <View style={[{flex:1}, s.borderBottom, s.flexWrapper, s.headerYellow]}><Text>유흡착재</Text></View>
+                    <View style={[{flex:1}, s.borderBottom, s.flexWrapper, s.headerYellow]}><Text>유흡착재(kg)</Text></View>
                     <View style={[{flex:2, flexDirection: 'row'}]}>
                         <View style={[{flex:1}, s.borderRight]}>
                             <View style={[{flex:1}, s.borderBottom, s.flexWrapper, s.headerYellow]}><Text>패드형</Text></View>
@@ -1115,7 +1131,7 @@ export default ThirdDoc = (props) => {
                 <View style={[{flex: 1}, s.borderRight]}>
                     
                     <View style={[{flex:1}]}>
-                        <View style={[{flex:2}, s.borderBottom, s.flexWrapper, s.headerYellow]}><Text>{"유처\n리제"}</Text></View>
+                        <View style={[{flex:2}, s.borderBottom, s.flexWrapper, s.headerYellow]}><Text>{"유처\n리제(L)"}</Text></View>
                         <TextInput 
                             style={{flex:1, width: '100%', textAlign: 'center'}}
                             value={data.tool.highPressure} 
@@ -1125,7 +1141,7 @@ export default ThirdDoc = (props) => {
                     
                 </View>
                 <View style={[{flex: 2}, s.borderRight]}>
-                    <View style={[{width: '100%', flex: 1.5}, s.borderBottom, s.flexWrapper, s.headerYellow]}><Text>세척기</Text></View>
+                    <View style={[{width: '100%', flex: 1.5}, s.borderBottom, s.flexWrapper, s.headerYellow]}><Text>세척기(개)</Text></View>
                     <View style={[{flex:2, flexDirection: 'row'}]}>
                         <View style={[{flex:1}, s.borderRight]}>
                             <View style={[{width: '100%', height: '49%'}, s.borderBottom, s.flexWrapper, s.headerYellow]}><Text>{"고압\n저압"}</Text></View>
@@ -1146,7 +1162,7 @@ export default ThirdDoc = (props) => {
                     </View>
                 </View>
                 <View style={[{flex: 3}, s.borderRight]}>
-                    <View style={[{flex:1}, s.borderBottom, s.flexWrapper, s.headerYellow]}><Text>차량</Text></View>
+                    <View style={[{flex:1}, s.borderBottom, s.flexWrapper, s.headerYellow]}><Text>차량(대)</Text></View>
                     <View style={[{flex:2, flexDirection: 'row'}]}>
                         <View style={[{flex:1}, s.borderRight]}>
                             <View style={[{flex:1}, s.borderBottom, s.flexWrapper, s.headerYellow]}><Text>{"크레인"}</Text></View>
@@ -1175,7 +1191,7 @@ export default ThirdDoc = (props) => {
                     </View>
                 </View>
                 <View style={[{flex: 4}, s.borderRight]}>
-                    <View style={[{flex:1}, s.borderBottom, s.flexWrapper, s.headerYellow]}><Text>장갑</Text></View>
+                    <View style={[{flex:1}, s.borderBottom, s.flexWrapper, s.headerYellow]}><Text>장갑(타)</Text></View>
                     <View style={[{flex:2, flexDirection: 'row'}]}>
                         <View style={[{flex:1}, s.borderRight]}>
                             <View style={[{flex:1}, s.borderBottom, s.flexWrapper, s.headerYellow]}><Text>{"면"}</Text></View>
@@ -1212,7 +1228,7 @@ export default ThirdDoc = (props) => {
                     </View>
                 </View>
                 <View style={[{flex: 2}, s.borderRight]}>
-                    <View style={[{flex:1.5}, s.borderBottom, s.flexWrapper, s.headerYellow]}><Text>마대</Text></View>
+                    <View style={[{flex:1.5}, s.borderBottom, s.flexWrapper, s.headerYellow]}><Text>마대(장)</Text></View>
                     <View style={[{flex:2, flexDirection: 'row'}]}>
                         <View style={[{flex:1}, s.borderRight]}>
                             <View style={[{flex: 0.35}, s.borderBottom, s.flexWrapper, s.headerYellow]}><Text>{"이중\n마대"}</Text></View>

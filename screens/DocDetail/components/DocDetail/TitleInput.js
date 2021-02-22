@@ -163,7 +163,7 @@ const styles = StyleSheet.create({
         backgroundColor: 'white',
         height: '100%',
         padding: 20,
-        fontSize: 14,
+        fontSize: 20,
         textAlign: 'center'
     },
     inspectors: {

@@ -107,6 +107,7 @@ export default FourthdDoc = (props) => {
                                     maxHeight: '100%',
                                     padding: 10,
                                     textAlignVertical: 'top',
+                                    fontSize: 18
                                 }]}
                                 ref={majorRef}
                                 onFocus={()=>inputFocus('major')}
@@ -127,6 +128,7 @@ export default FourthdDoc = (props) => {
                                     maxHeight: '100%',
                                     padding: 10,
                                     textAlignVertical: 'top',
+                                    fontSize: 18
                                 }]}
 
                                 value={data.variance}

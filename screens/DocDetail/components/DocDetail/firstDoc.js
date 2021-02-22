@@ -392,7 +392,7 @@ export default FirstDoc = (props) => {
 
                 <View style={[styles.midSizeCell]}>
                 <TouchableOpacity style={[styles.inputCell, styles.borderBottom, styles.firstSectionColor]}>
-                    <Text>경사도</Text>
+                    <Text>경사도(도)</Text>
                 </TouchableOpacity>
                 <View style={styles.inputCell}>
                     <TextInput
@@ -489,7 +489,7 @@ export default FirstDoc = (props) => {
               <TouchableOpacity style={styles.inputCell}
                 onPress={() => selectInput('secondSection', 'groundType2')}
               >
-                <Text>{data.secondSection.groundType2}</Text>
+                <Text style={{textAlign: 'center'}}>{data.secondSection.groundType2}</Text>
               </TouchableOpacity>
             </View>
             <View style={[styles.midSizeCell]}>
@@ -622,7 +622,7 @@ export default FirstDoc = (props) => {
                   styles.secondSectionColor,
                 ]}
               >
-                <Text>경사도</Text>
+                <Text>경사도(도)</Text>
               </TouchableOpacity>
 
                 <View style={styles.inputCell}>
@@ -860,7 +860,7 @@ export default FirstDoc = (props) => {
                   styles.thirdSectionColor,
                 ]}
               >
-                <Text>경사도</Text>
+                <Text>경사도(도)</Text>
               </TouchableOpacity>
              
                 <View style={styles.inputCell}>

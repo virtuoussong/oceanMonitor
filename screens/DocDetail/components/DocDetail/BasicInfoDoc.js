@@ -128,7 +128,7 @@ export default BasicInfoDoc = (props) => {
         {/* <TitleInputView/> */}
         <View style={styles.divisionWrapper}>
             {/* 섹션 1 */}
-            <View style={[{width: '15%', height: '100%'}, styles.rightBorderLine]}>
+            <View style={[{width: '15%', height: '100%', backgroundColor: 'white'}, styles.rightBorderLine]}>
                 <View style={[styles.flexRow, styles.borderBottom, {flex: 1}]}>
                     <View style={[{flex: 1}, styles.borderRight, styles.centerView, styles.headerYellow]}>
                         <Text>{"조사\n일시"}</Text>
@@ -218,7 +218,7 @@ export default BasicInfoDoc = (props) => {
             </View>
 
             {/* 섹션 2 */}
-            <View style={[{width: '85%', height: '100%'}, styles.centerView]}>
+            <View style={[{width: '85%', height: '100%', backgroundColor: 'white'}, styles.centerView]}>
                 {areaData.imageLink !== null ? 
                     <View style={{width: '100%', height: '100%'}}>
                         {areaData.imageLink.endsWith(('mp4', 'mov')) ? 

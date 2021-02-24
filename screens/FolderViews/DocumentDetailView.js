@@ -48,11 +48,20 @@ export default DocumentDetailView = (props) => {
             }
             
             nav.setOptions({
-                headerRight: () => <TouchableOpacity 
+                headerRight: () => <View style={{flexDirection:'row'}}>
+                    <TouchableOpacity 
+                        style={{marginRight: 32}} 
+                        onPress={()=>exportPDF()}
+                    >
+                        <Text style={{fontSize: 20}}>출력</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity 
                         style={{marginRight: 16}} 
-                        onPress={()=>saveDocFromNav()}>
+                        onPress={()=>saveDocFromNav()}
+                    >
                         <Text style={{fontSize: 20}}>저장</Text>
                     </TouchableOpacity>
+                </View>
             })
         }
        

@@ -55,7 +55,7 @@ export default FourthdDoc = (props) => {
     const toggleInstructionImage = () => {
         setImageModal(!isImageModalOn)
     }
-
+//test
     return  <View style={[styles.container, styles.borderRight]}>
         <Modal
             transparent={true}

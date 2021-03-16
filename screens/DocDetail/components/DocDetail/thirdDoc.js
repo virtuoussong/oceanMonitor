@@ -1131,11 +1131,11 @@ export default ThirdDoc = (props) => {
                 <View style={[{flex: 1}, s.borderRight]}>
                     
                     <View style={[{flex:1}]}>
-                        <View style={[{flex:2}, s.borderBottom, s.flexWrapper, s.headerYellow]}><Text>{"유처\n리제(L)"}</Text></View>
+                        <View style={[{flex:2}, s.borderBottom, s.flexWrapper, s.headerYellow]}><Text>{"유처\n리제\n(L)"}</Text></View>
                         <TextInput 
                             style={{flex:1, width: '100%', textAlign: 'center'}}
-                            value={data.tool.highPressure} 
-                            onChange={(i)=>updateData("tool", "highPressure", i.nativeEvent.text)}
+                            value={data.tool.oilCleaner} 
+                            onChange={(i)=>updateData("tool", "oilCleaner", i.nativeEvent.text)}
                         />
                     </View>
                     

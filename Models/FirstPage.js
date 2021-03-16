@@ -41,7 +41,7 @@ export const SectionType = {
 
 export const GroudType = {
     ARTIFICIAL : "인공석축",
-    VERTICAL : "수직안벽",
+    VERTICAL : "수직암벽",
     NATURAL : "자연암반",
     SAND : "모래해변",
     TETRA : "테트라포트",

@@ -458,7 +458,7 @@ const styles = StyleSheet.create({
     },
     scrollView : {
         // flex: 1,
-        width:Dimensions.get('window').width,
+        width: Dimensions.get('window').width,
         // height:Dimensions.get('window').height - 120,
         backgroundColor: 'white',
         marginHorizontal: 0,
